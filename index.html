@@ -141,8 +141,8 @@ function getRandomCard(){
   let roll=Math.random()*100; let rarity;
   if(roll<=50) rarity="Common";
   else if(roll<=80) rarity="Rare";
-  else if(roll<=95) rarity="Special";
-  else rarity="Legendary";
+  else if(roll<=95) rarity="Legendary";
+  else rarity="Special";
   const possible=cards.filter(c=>c.rarity===rarity);
   return possible[Math.floor(Math.random()*possible.length)];
 }
@@ -282,3 +282,4 @@ setInterval(updateLeaderboard,10000);
 </script>
 </body>
 </html>
+
