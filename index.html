@@ -11,38 +11,379 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <style>
-body { margin:0; font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#0d0d0d,#1a1a1a);
-  color:#fff; text-align:center; overflow-x:hidden; }
-h1 { font-family:'Orbitron',sans-serif; color:#ffcc00; margin:20px 0; cursor:pointer; text-shadow:0 0 10px #ffcc00; }
-button { padding:12px 25px; margin:10px; border:none; border-radius:12px;
-  background: linear-gradient(45deg,#ff6600,#ffcc00); font-weight:bold; color:#000; font-size:18px; cursor:pointer; transition:0.3s;
+body { 
+  margin:0; 
+  font-family:'Roboto',sans-serif; 
+  background: linear-gradient(135deg,#0d0d0d,#1a1a1a);
+  color:#fff; 
+  text-align:center; 
+  overflow-x:hidden; 
 }
-button:hover{transform:scale(1.05);}
-#currency{font-size:22px;margin:10px;color:#00ff99;font-weight:bold;}
-#lastCard{margin:20px;position:relative;height:200px;}
-#collection{display:flex;flex-wrap:wrap;justify-content:center;}
-.card{display:inline-block; margin:10px; text-align:center; transition:0.5s; border-radius:12px; padding:5px; position:relative;}
-.card img{max-width:150px; border-radius:12px; transition:0.5s;}
-.rarity-Common{border:3px solid gray; box-shadow:0 0 15px gray;}
-.rarity-Rare{border:3px solid #3399ff; box-shadow:0 0 15px #3399ff; animation:glowBlue 2s infinite alternate;}
-.rarity-Special{border:3px solid #cc33ff; box-shadow:0 0 20px #cc33ff; animation:glowPurple 2s infinite alternate;}
-.rarity-Legendary{border:3px solid gold; box-shadow:0 0 25px gold; animation:glowGold 2s infinite alternate;}
-@keyframes glowBlue{0%{box-shadow:0 0 15px #3399ff;}100%{box-shadow:0 0 30px #33f;}}
-@keyframes glowPurple{0%{box-shadow:0 0 15px #cc33ff;}100%{box-shadow:0 0 35px #f3f;}}
-@keyframes glowGold{0%{box-shadow:0 0 20px gold;}100%{box-shadow:0 0 40px #ff0;}}
-.animate-card{transform:scale(0) rotateY(0deg); animation:popCard 0.8s forwards;}
-@keyframes popCard{0%{transform:scale(0) rotateY(0deg);opacity:0;}50%{transform:scale(1.3) rotateY(180deg);opacity:1;}100%{transform:scale(1) rotateY(360deg);opacity:1;}}
-.timer{font-size:16px;color:#ff6666;margin:10px;}
-#adminPanel{position:fixed; top:50px; right:-400px; width:360px; background:#111; border:2px solid #ffcc00; border-radius:10px; padding:20px; transition:0.5s; z-index:1000;}
-#adminPanel.show{right:20px;}
-#adminPanel h2{color:#ffcc00;margin-top:0;font-family:'Orbitron',sans-serif;}
-#adminPanel button{width:90%;margin:5px;}
-#cardModal{display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); justify-content:center; align-items:center; z-index:2000;}
-#cardContent{background:#111;padding:20px;border:3px solid #ffcc00;border-radius:15px;text-align:center;position:relative; max-width:300px; animation:modalPop 0.5s forwards;}
-#cardContent img{max-width:100%;border-radius:12px;box-shadow:0 0 20px gold;margin-bottom:10px;}
-@keyframes modalPop{0%{transform:scale(0);}60%{transform:scale(1.2);}100%{transform:scale(1);}}
-#cardContent button{padding:8px 15px;margin-top:10px;border:none;border-radius:8px;background:#ff3333;color:#fff;cursor:pointer;transition:0.3s;}
-#cardContent button:hover{transform:scale(1.05);}
+
+h1 { 
+  font-family:'Orbitron',sans-serif; 
+  color:#ffcc00; 
+  margin:20px 0; 
+  cursor:pointer; 
+  text-shadow:0 0 10px #ffcc00; 
+}
+
+button { 
+  padding:12px 25px; 
+  margin:10px; 
+  border:none; 
+  border-radius:12px;
+  background: linear-gradient(45deg,#ff6600,#ffcc00); 
+  font-weight:bold; 
+  color:#000; 
+  font-size:18px; 
+  cursor:pointer; 
+  transition:0.3s;
+}
+
+button:hover{
+  transform:scale(1.05);
+}
+
+#currency{
+  font-size:22px;
+  margin:10px;
+  color:#00ff99;
+  font-weight:bold;
+}
+
+#lastCard .card {
+  max-width: 150px; /* уменьшили размер карточки */
+  font-size: 16px;  /* сделали текст поменьше */
+  margin: 12px auto; /* центрируем карточку */
+}
+
+#lastCard .card img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 14px;
+}
+
+
+.card{
+  display:inline-block; 
+  margin:10px; 
+  text-align:center; 
+  transition:0.5s; 
+  border-radius:12px; 
+  padding:5px; 
+  position:relative;
+}
+
+.card img{
+  max-width:150px; 
+  border-radius:12px; 
+  transition:0.5s;
+}
+
+.rarity-Common{
+  border:3px solid gray; 
+  box-shadow:0 0 15px gray;
+}
+
+.rarity-Rare{
+  border:3px solid #3399ff; 
+  box-shadow:0 0 15px #3399ff; 
+  animation:glowBlue 2s infinite alternate;
+}
+
+.rarity-Special{
+  border:3px solid #cc33ff; 
+  box-shadow:0 0 20px #cc33ff; 
+  animation:glowPurple 2s infinite alternate;
+}
+
+.rarity-Legendary{
+  border:3px solid gold; 
+  box-shadow:0 0 25px gold; 
+  animation:glowGold 2s infinite alternate;
+}
+
+@keyframes glowBlue{
+  0%{box-shadow:0 0 15px #3399ff;}
+  100%{box-shadow:0 0 30px #33f;}
+}
+
+@keyframes glowPurple{
+  0%{box-shadow:0 0 15px #cc33ff;}
+  100%{box-shadow:0 0 35px #f3f;}
+}
+
+@keyframes glowGold{
+  0%{box-shadow:0 0 20px gold;}
+  100%{box-shadow:0 0 40px #ff0;}
+}
+
+.animate-card{
+  transform:scale(0) rotateY(0deg); 
+  animation:popCard 0.8s forwards;
+}
+
+@keyframes popCard{
+  0%{transform:scale(0) rotateY(0deg);opacity:0;}
+  50%{transform:scale(1.3) rotateY(180deg);opacity:1;}
+  100%{transform:scale(1) rotateY(360deg);opacity:1;}
+}
+
+.timer{
+  font-size:16px;
+  color:#ff6666;
+  margin:10px;
+}
+
+#collection {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 80px;
+  margin-top: 20px;
+}
+
+h2 {
+  margin-top: 40px;
+  margin-bottom: 25px;
+  font-size: 24px;
+  text-align: center;
+}
+
+/* АДМИН ПАНЕЛЬ */
+#adminPanel{
+  position:fixed; 
+  top:50px; 
+  right:-400px; 
+  width:360px; 
+  background:#111; 
+  border:2px solid #ffcc00; 
+  border-radius:10px; 
+  padding:20px; 
+  transition:0.5s; 
+  z-index:1000;
+}
+
+#adminPanel.show{
+  right:20px;
+}
+
+#adminPanel h2{
+  color:#ffcc00;
+  margin-top:0;
+  font-family:'Orbitron',sans-serif;
+}
+
+#adminPanel button{
+  width:90%;
+  margin:5px;
+}
+
+/* МОДАЛЬНОЕ ОКНО КАРТОЧКИ */
+#cardModal{
+  display:none; 
+  position:fixed; 
+  top:0; 
+  left:0; 
+  width:100%; 
+  height:100%; 
+  background:rgba(0,0,0,0.85); 
+  justify-content:center; 
+  align-items:center; 
+  z-index:2000;
+}
+
+#cardContent {
+  background: #111;
+  padding: 15px;
+  border: 2px solid #ffcc00;
+  border-radius: 12px;
+  text-align: center;
+  position: relative;
+  max-width: 240px;   /* меньше */
+  transform: scale(0.9); /* чуть сжатое */
+  animation: modalPop 0.4s forwards;
+}
+
+
+#cardContent img{
+  max-width:100%;
+  border-radius:12px;
+  box-shadow:0 0 20px gold;
+  margin-bottom:10px;
+}
+
+@keyframes modalPop{
+  0%{transform:scale(0);}
+  60%{transform:scale(1.2);}
+  100%{transform:scale(1);}
+}
+
+#cardContent button{
+  padding:8px 15px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+  background:#ff3333;
+  color:#fff;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+#cardContent button:hover{
+  transform:scale(1.05);
+}
+
+/* НАВБАР */
+#navbar {
+  display: flex;
+  justify-content: space-around;
+  background: #111;
+  padding: 15px 10px;
+  border-top: 2px solid #ffcc00;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 3000;
+}
+
+#navbar button {
+  flex: 1;
+  margin: 0 5px;
+  padding: 12px 10px;
+  background: linear-gradient(45deg,#ff6600,#ffcc00);
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#navbar button:hover {
+  transform: scale(1.05);
+}
+
+#navbar button.active {
+  background: linear-gradient(45deg,#00ff99,#ffcc00);
+  box-shadow: 0 0 15px rgba(0, 255, 153, 0.5);
+}
+
+/* МОДАЛЬНЫЕ ОКНА МЕНЮ */
+.menu-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  z-index: 4000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.menu-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  border: 3px solid #ffcc00;
+  border-radius: 20px;
+  padding: 30px;
+  width: 90vw;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 0 50px rgba(255, 204, 0, 0.3);
+  animation: slideIn 0.4s ease-out;
+}
+
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #ffcc00;
+  padding-bottom: 15px;
+}
+
+.menu-title {
+  font-family: 'Orbitron', sans-serif;
+  color: #ffcc00;
+  font-size: 28px;
+  text-shadow: 0 0 10px #ffcc00;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #ff3333;
+  font-size: 32px;
+  cursor: pointer;
+  transition: 0.3s;
+  padding: 5px 10px;
+  border-radius: 50%;
+}
+
+.close-btn:hover {
+  background: rgba(255, 51, 51, 0.2);
+  transform: rotate(90deg);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+  to { 
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* СТИЛИ ДЛЯ КОТИКА */
+.cat-container {
+  display: inline-block;
+  margin: 20px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.cat-container:hover {
+  transform: scale(1.05);
+}
+
+.cat-container:active {
+  transform: scale(0.95);
+}
+
+#catVideo {
+  width: 200px;
+  height: 200px;
+  border-radius: 15px;
+  border: 3px solid #ffcc00;
+  box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
+  object-fit: cover;
+}
+
+.click-effect {
+  animation: clickPulse 0.3s ease-out;
+}
+
+@keyframes clickPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
 </style>
 </head>
 <body>
@@ -56,9 +397,7 @@ button:hover{transform:scale(1.05);}
 <h2>Моя коллекция</h2>
 <div id="collection"></div>
 
-<h2>Топ игроков</h2>
-<div id="leaderboard"></div>
-
+<!-- АДМИН ПАНЕЛЬ -->
 <div id="adminPanel">
 <h2>Админ-панель</h2>
 <button onclick="addCurrency(100)">💰 Добавить 100 монет</button>
@@ -66,21 +405,66 @@ button:hover{transform:scale(1.05);}
 <button onclick="resetTimer()">⏰ Сбросить таймер</button>
 </div>
 
-<!-- Модальное окно карточки -->
+<!-- МОДАЛЬНОЕ ОКНО КАРТОЧКИ -->
 <div id="cardModal">
   <div id="cardContent">
-    <span id="closeModal" style="position:absolute;top:10px;right:15px;cursor:pointer;font-size:22px;color:#ff3333;">&times;</span>
     <img id="modalImage" src="">
     <h2 id="modalName"></h2>
-    <p id="modalRarity"></p>
+    <p id="modalRarity"></p>	
     <p id="modalType"></p>
     <button id="sellCardBtn">💰 Продать карточку</button>
-    <button id="viewTgBtn">🔗 Посмотреть в TG</button>
+  </div>
+</div>
+
+<!-- НАВБАР -->
+<div id="navbar">
+  <button onclick="toggleMenu('clicker')">🖱 Кликалка</button>
+  <button onclick="toggleMenu('packs')">🎁 Паки</button>
+  <button onclick="toggleMenu('leaderboard')">🏆 Топ</button>
+</div>
+
+<!-- МОДАЛЬНЫЕ ОКНА МЕНЮ -->
+<div id="clickerModal" class="menu-modal">
+  <div class="menu-content">
+    <div class="menu-header">
+      <h2 class="menu-title">🖱 Кликалка</h2>
+      <button class="close-btn" onclick="closeMenu('clicker')">&times;</button>
+    </div>
+    <p>Нажимай на котика и зарабатывай монеты!</p>
+    <div class="cat-container" onclick="earnClick()">
+      <video id="catVideo" muted>
+        <source src="cat_petting.mp4" type="video/mp4">
+        Ваш браузер не поддерживает видео.
+      </video>
+    </div>
+    <p id="energyDisplay">⚡ Энергия: 50/50</p>
+  </div>
+</div>
+
+<div id="packsModal" class="menu-modal">
+  <div class="menu-content">
+    <div class="menu-header">
+      <h2 class="menu-title">🎁 Магазин паков</h2>
+      <button class="close-btn" onclick="closeMenu('packs')">&times;</button>
+    </div>
+    <button onclick="buyCommonPack()" style="width: 100%; margin: 10px 0; padding: 15px;">🟦 Обычный пак (30 монет)</button>
+    <button onclick="buyRarePack()" style="width: 100%; margin: 10px 0; padding: 15px;">🟩 Редкий пак (100 монет)</button>
+    <button onclick="buyLegendaryPack()" style="width: 100%; margin: 10px 0; padding: 15px;">🟨 Легендарный пак (300 монет)</button>
+  </div>
+</div>
+
+<div id="leaderboardModal" class="menu-modal">
+  <div class="menu-content">
+    <div class="menu-header">
+      <h2 class="menu-title">🏆 Топ игроков</h2>
+      <button class="close-btn" onclick="closeMenu('leaderboard')">&times;</button>
+    </div>
+    <div id="leaderboardContent" style="max-height: 400px; overflow-y: auto;"></div>
   </div>
 </div>
 
 <script>
-// ---- FIREBASE ----
+// FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyBIPugjKSmRvbDNFS_7ClFkbjlb8zfugXM",
   authDomain: "regcandy-74da6.firebaseapp.com",
@@ -93,50 +477,53 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ---- КАРТОЧКИ ----
+// КАРТОЧКИ
 const cards=[
-  {name:"Reghype",rarity:"Special",type:"Twitch",image:"https://i.ibb.co/4ZkdscHc/Regcandy.png", tgLink:"https://t.me/reghypearchive/2"},
-  {name:"DistrsAI",rarity:"Special",type:"Twitch",image:"https://i.ibb.co/RpcgpQP3/DistrsAI.png", tgLink:"https://t.me/reghypearchive/3"},
-  {name:"Demogorgon",rarity:"Legendary",type:"Moder",image:"https://i.ibb.co/gL7N2X0/Demogorgon.png", tgLink:"https://t.me/reghypearchive/4"},
-  {name:"Apelsinka",rarity:"Legendary",type:"Moder",image:"https://i.ibb.co/fzcGyTYS/Apelsinka.png", tgLink:"https://t.me/reghypearchive/5"},
-  {name:"Freddy Fuzbear",rarity:"Rare",type:"Chaters",image:"https://i.ibb.co/2YK9JMZ4/Freddy.png", tgLink:"https://t.me/reghypearchive/6"},
-  {name:"Bonnie",rarity:"Rare",type:"Chaters",image:"https://i.ibb.co/JRYhbkkr/Bonnie.png", tgLink:"https://t.me/reghypearchive/7"},
-  {name:"Mark",rarity:"Rare",type:"Chaters",image:"https://i.ibb.co/9kP3JMg7/Mark.png", tgLink:"https://t.me/reghypearchive/8"},
-  {name:"Anton Fazbear",rarity:"Common",type:"Chaters",image:"https://i.ibb.co/4wSYkmHs/Anton.png", tgLink:"https://t.me/reghypearchive/9"},
-  {name:"Рони",rarity:"Common",type:"Chaters",image:"https://i.ibb.co/vCqGvqwp/Roni.png", tgLink:"https://t.me/reghypearchive/10"},
-  {name:"Neatexq",rarity:"Rare",type:"Chaters",image:"https://i.ibb.co/C3rhmgZW/Neatexq.png", tgLink:"https://t.me/reghypearchive/11"},
-  {name:"Foxy",rarity:"Rare",type:"Chaters",image:"https://i.ibb.co/XfgNcQ23/Foxy.png", tgLink:"https://t.me/reghypearchive/12"},
-  {name:"Andrew",rarity:"Common",type:"Chaters",image:"https://i.ibb.co/M5NDbCGm/Andrew.png", tgLink:"https://t.me/reghypearchive/13"},
-  {name:"Cheбуnеля",rarity:"Common",type:"Chaters",image:"https://i.ibb.co/NgKMHFjY/Chebunela.png", tgLink:"https://t.me/reghypearchive/14"},
-  {name:"Алэх",rarity:"Rare",type:"Chaters",image:"https://i.ibb.co/xqXgNgDr/Alex.png", tgLink:"https://t.me/reghypearchive/15"},
-  {name:"Foxy Skin",rarity:"Special",type:"Skin",image:"https://i.ibb.co/5WGtgMgN/Foxy-Skin.png", tgLink:"https://t.me/reghypearchive/16"},
-  {name:"Demogorgon Skin",rarity:"Special",type:"Skin",image:"https://i.ibb.co/bRQBfSBQ/Demogorgon-Skin.png", tgLink:"https://t.me/reghypearchive/17"},
-  {name:"Freddy Skin",rarity:"Special",type:"Skin",image:"https://i.ibb.co/wZjcHdWR/Freddy-Skin.png", tgLink:"https://t.me/reghypearchive/18"},
-  {name:"X06R",rarity:"Common",type:"Chaters",image:"https://i.ibb.co/d0CHmK8s/X06R.png", tgLink:"https://t.me/reghypearchive/19"}
+  {name:"Reghype",rarity:"Special",type:"Twitch",image:"cards/Regcandy.png", tgLink:"https://t.me/reghypearchive/2"},
+  {name:"DistrsAI",rarity:"Special",type:"Twitch",image:"cards/DistrsAI.png", tgLink:"https://t.me/reghypearchive/3"},
+  {name:"Demogorgon",rarity:"Legendary",type:"Moder",image:"cards/Demogorgon.png", tgLink:"https://t.me/reghypearchive/4"},
+  {name:"Apelsinka",rarity:"Legendary",type:"Moder",image:"cards/Apelsinka.png", tgLink:"https://t.me/reghypearchive/5"},
+  {name:"Freddy Fuzbear",rarity:"Rare",type:"Chaters",image:"cards/Freddy.png", tgLink:"https://t.me/reghypearchive/6"},
+  {name:"Bonnie",rarity:"Rare",type:"Chaters",image:"cards/Bonnie.png", tgLink:"https://t.me/reghypearchive/7"},
+  {name:"Mark",rarity:"Rare",type:"Chaters",image:"cards/Mark.png", tgLink:"https://t.me/reghypearchive/8"},
+  {name:"Anton Fazbear",rarity:"Common",type:"Chaters",image:"cards/Anton.png", tgLink:"https://t.me/reghypearchive/9"},
+  {name:"Рони",rarity:"Common",type:"Chaters",image:"cards/Roni.png", tgLink:"https://t.me/reghypearchive/10"},
+  {name:"Neatexq",rarity:"Rare",type:"Chaters",image:"cards/Neatexq.png", tgLink:"https://t.me/reghypearchive/11"},
+  {name:"Foxy",rarity:"Rare",type:"Chaters",image:"cards/Foxy.png", tgLink:"https://t.me/reghypearchive/12"},
+  {name:"Andrew",rarity:"Common",type:"Chaters",image:"cards/Andrew.png", tgLink:"https://t.me/reghypearchive/13"},
+  {name:"Cheбуnеля",rarity:"Common",type:"Chaters",image:"cards/Chebunela.png", tgLink:"https://t.me/reghypearchive/14"},
+  {name:"Алэх",rarity:"Rare",type:"Chaters",image:"cards/Alex.png", tgLink:"https://t.me/reghypearchive/15"},
+  {name:"Foxy Skin",rarity:"Special",type:"Skin",image:"cards/Foxy-Skin.png", tgLink:"https://t.me/reghypearchive/16"},
+  {name:"Demogorgon Skin",rarity:"Special",type:"Skin",image:"cards/Demogorgon-Skin.png", tgLink:"https://t.me/reghypearchive/17"},
+  {name:"Freddy Skin",rarity:"Special",type:"Skin",image:"cards/Freddy-Skin.png", tgLink:"https://t.me/reghypearchive/18"},
+  {name:"X06R",rarity:"Common",type:"Chaters",image:"cards/X06R.png", tgLink:"https://t.me/reghypearchive/19"}
 ];
 
-// ---- ПЕРЕМЕННЫЕ ----
+// ПЕРЕМЕННЫЕ
 let collection = JSON.parse(localStorage.getItem('collection')) || [];
 let currency = localStorage.getItem('currency') ? parseInt(localStorage.getItem('currency')) : 100;
 let lastFreePack = parseInt(localStorage.getItem('lastFreePack')) || 0;
 const packCooldown = 4*3600*1000;
 let playerName = localStorage.getItem('playerName');
+let energy = parseInt(localStorage.getItem('energy')) || 50;
+const maxEnergy = 50;
+const regenTime = 5000;
 
-// ---- НИК ПРИ ПЕРВОМ ЗАХОДЕ ----
+// НИК ПРИ ПЕРВОМ ЗАХОДЕ
 if(!playerName){
   playerName = prompt("Придумай свой ник:");
   localStorage.setItem('playerName', playerName);
   db.ref('players/' + playerName).set({currency: currency, cards: collection.length});
 }
 
-// ---- АДМИН-ПАНЕЛЬ ----
+// АДМИН-ПАНЕЛЬ
 let logoClickCount=0;
 document.getElementById('logo').addEventListener('click',()=>{
   logoClickCount++;
   if(logoClickCount>=5){document.getElementById('adminPanel').classList.toggle('show'); logoClickCount=0;}
 });
 
-// ---- ФУНКЦИИ ----
+// ОСНОВНЫЕ ФУНКЦИИ
 function getRandomCard(){
   let roll=Math.random()*100; let rarity;
   if(roll<=50) rarity="Common";
@@ -197,6 +584,7 @@ function saveData(){
   localStorage.setItem('collection',JSON.stringify(collection));
   localStorage.setItem('currency',currency);
   localStorage.setItem('lastFreePack',lastFreePack);
+  localStorage.setItem('energy', energy);
   document.getElementById('currency').innerText=`💰 Валюта: ${currency} монет`;
 }
 
@@ -212,11 +600,18 @@ function updateTimer(){
   } else timerEl.innerText='Бесплатный пак готов!';
 }
 
+function updateEnergyDisplay() {
+  const energyEl = document.getElementById('energyDisplay');
+  if(energyEl) {
+    energyEl.innerText = `⚡ Энергия: ${energy}/${maxEnergy}`;
+  }
+}
+
 function addCurrency(amount){currency+=amount; saveData(); updatePlayerData();}
 function resetCollection(){collection=[]; saveData(); renderCollection(); updatePlayerData();}
 function resetTimer(){lastFreePack=0; saveData(); updateTimer();}
 
-// ---- КАРТОЧКА МОДАЛКА ----
+// КАРТОЧКА МОДАЛКА
 function showCardDetails(card,index){
   const modal = document.getElementById('cardModal');
   document.getElementById('modalImage').src = card.image;
@@ -239,20 +634,19 @@ function showCardDetails(card,index){
     modal.style.display='none';
   };
   
-  const tgBtn = document.getElementById('viewTgBtn');
-  if(card.tgLink){
-    tgBtn.style.display = 'inline-block';
-    tgBtn.onclick = ()=>window.open(card.tgLink,'_blank');
-  } else {
-    tgBtn.style.display = 'none';
-  }
+
 
   modal.style.display='flex';
 }
 
-document.getElementById('closeModal').onclick = ()=>{document.getElementById('cardModal').style.display='none';};
+document.getElementById('cardModal').addEventListener('click', function(e) {
+  if (e.target.id === 'cardModal') {
+    document.getElementById('cardModal').style.display = 'none';
+  }
+});
 
-// ---- ONLINE TOP ----
+
+// ОНЛАЙН ТОП
 function updatePlayerData(){
   db.ref('players/' + playerName).set({currency: currency, cards: collection.length});
   updateLeaderboard();
@@ -262,24 +656,176 @@ function updateLeaderboard(){
   db.ref('players').once('value', snapshot=>{
     const data = snapshot.val();
     if(!data) return;
-    const arr = Object.entries(data).sort((a,b)=>b[1].currency - a[1].currency);
-    const lb = document.getElementById('leaderboard');
-    lb.innerHTML = '<h3>Топ игроков:</h3>';
-    arr.forEach(([name, info],i)=>{
-      lb.innerHTML += `<p>${i+1}. ${name} - ${info.currency} монет, ${info.cards} карточек</p>`;
-    });
+    
+    const arr = Object.entries(data)
+      .map(([name, info]) => ({
+        name: name || "Игрок",
+        currency: info?.currency || 0,
+        cards: info?.cards || 0
+      }))
+      .sort((a,b)=>b.currency - a.currency);
+
+    const lb = document.getElementById('leaderboardContent');
+    if(lb) {
+      lb.innerHTML = '';
+      arr.forEach((player, i)=>{
+        lb.innerHTML += `<p>${i+1}. ${player.name} - ${player.currency} монет, ${player.cards} карточек</p>`;
+      });
+    }
   });
 }
 
-// ---- ИНИЦИАЛИЗАЦИЯ ----
+
+// УПРАВЛЕНИЕ МОДАЛЬНЫМИ ОКНАМИ МЕНЮ
+let currentOpenMenu = null;
+
+function toggleMenu(menuType) {
+  const modal = document.getElementById(menuType + 'Modal');
+  const buttons = document.querySelectorAll('#navbar button');
+  let targetButton = null;
+  
+  // Найти нажатую кнопку
+  buttons.forEach(btn => {
+    if(btn.onclick && btn.onclick.toString().includes(menuType)) {
+      targetButton = btn;
+    }
+  });
+  
+  // Если уже открыто это меню - закрыть
+  if (currentOpenMenu === menuType) {
+    closeMenu(menuType);
+    return;
+  }
+  
+  // Закрыть другие меню
+  closeAllMenus();
+  
+  // Открыть нужное меню
+  modal.style.display = 'flex';
+  if(targetButton) targetButton.classList.add('active');
+  currentOpenMenu = menuType;
+  
+  // Обновить данные для лидерборда
+  if (menuType === 'leaderboard') {
+    updateLeaderboard();
+  }
+}
+
+function closeMenu(menuType) {
+  const modal = document.getElementById(menuType + 'Modal');
+  const buttons = document.querySelectorAll('#navbar button');
+  let targetButton = null;
+  
+  buttons.forEach(btn => {
+    if(btn.onclick && btn.onclick.toString().includes(menuType)) {
+      targetButton = btn;
+    }
+  });
+  
+  modal.style.display = 'none';
+  if(targetButton) targetButton.classList.remove('active');
+  currentOpenMenu = null;
+}
+
+function closeAllMenus() {
+  document.querySelectorAll('.menu-modal').forEach(modal => {
+    modal.style.display = 'none';
+  });
+  document.querySelectorAll('#navbar button').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  currentOpenMenu = null;
+}
+
+// Закрытие по клику вне модального окна
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('menu-modal')) {
+    closeAllMenus();
+  }
+});
+
+// ФУНКЦИИ КОТИКА
+function animateCat() {
+  const catVideo = document.getElementById('catVideo');
+  const container = document.querySelector('.cat-container');
+  
+  if(container && catVideo) {
+    container.classList.add('click-effect');
+    setTimeout(() => {
+      container.classList.remove('click-effect');
+    }, 300);
+    
+    catVideo.currentTime = 0;
+    catVideo.play();
+  }
+}
+
+function earnClick() {
+  if (energy <= 0) {
+    alert("⚡ У тебя нет энергии! Подожди восстановления.");
+    return;
+  }
+  
+  energy--;
+  currency++;
+  saveData();
+  updateEnergyDisplay();
+  animateCat();
+}
+
+// МАГАЗИН ПАКОВ
+function buyCommonPack(){
+  if(currency<30){alert("Недостаточно монет!");return;}
+  currency-=30;
+  const card = getRandomCard();
+  collection.push(card);
+  saveData(); 
+  renderCollection(); 
+  updatePlayerData();
+  showLastCard(card);
+}
+
+function buyRarePack(){
+  if(currency<100){alert("Недостаточно монет!");return;}
+  currency-=100;
+  let rareCards=cards.filter(c=>c.rarity==="Rare"||c.rarity==="Special");
+  const card = rareCards[Math.floor(Math.random()*rareCards.length)];
+  collection.push(card);
+  saveData(); 
+  renderCollection(); 
+  updatePlayerData();
+  showLastCard(card);
+}
+
+function buyLegendaryPack(){
+  if(currency<300){alert("Недостаточно монет!");return;}
+  currency-=300;
+  let legendaryCards=cards.filter(c=>c.rarity==="Legendary"||c.rarity==="Special");
+  const card = legendaryCards[Math.floor(Math.random()*legendaryCards.length)];
+  collection.push(card);
+  saveData(); 
+  renderCollection(); 
+  updatePlayerData();
+  showLastCard(card);
+}
+
+// ВОССТАНОВЛЕНИЕ ЭНЕРГИИ
+setInterval(()=>{
+  if (energy < maxEnergy) {
+    energy++;
+    updateEnergyDisplay();
+  }
+}, regenTime);
+
+// ИНИЦИАЛИЗАЦИЯ
 renderCollection();
 updateTimer();
 saveData();
 updatePlayerData();
+updateEnergyDisplay();
 setInterval(updateTimer,1000);
 setInterval(updateLeaderboard,10000);
-
 </script>
+
 </body>
 </html>
-
