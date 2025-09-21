@@ -1699,12 +1699,6 @@ class GameManager {
     // Загружаем лидерборд
     this.loadLeaderboard();
  
-    // Проверяем доступ к быстрой админ кнопке
-    if (localStorage.getItem('adminAccessed') === 'true') {
-      const quickBtn = document.getElementById('quickAdminBtn');
-      if (quickBtn) quickBtn.style.display = 'flex';
-    }
- 
     console.log('🎮 Reghype Card Game загружен!');
     console.log('🆔 ID игрока:', this.playerId);
     console.log('👤 Имя игрока:', this.data.playerName);
@@ -2320,8 +2314,6 @@ class AdminManager {
   static authenticate() {
     this.isAuthenticated = true;
     localStorage.setItem('adminAccessed', 'true');
-    const quickBtn = document.getElementById('quickAdminBtn');
-    if (quickBtn) quickBtn.style.display = 'flex';
     const adminPanel = document.getElementById('adminPanel');
     if (adminPanel) adminPanel.classList.add('show');
     this.log('Админ успешно аутентифицирован', 'success');
@@ -3133,11 +3125,12 @@ document.addEventListener('keydown', (e) => {
     if (fPressTimer) clearTimeout(fPressTimer);
     fPressTimer = setTimeout(() => {
       fPressCount = 0;
-    }, 1000); // 1 second window for presses
+    }, 1000); // 1 second window
 
     if (fPressCount >= 3) {
-      if (localStorage.getItem('adminAccessed') === 'true') {
-        AdminManager.openQuick();
+      const quickBtn = document.getElementById('quickAdminBtn');
+      if (quickBtn) {
+        quickBtn.style.display = 'flex';
       }
       fPressCount = 0;
     }
