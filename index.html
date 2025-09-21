@@ -2954,6 +2954,43 @@ document.addEventListener('DOMContentLoaded', () => {
   gameManager.init();
   AdminManager.init();
 });
+// Функция для показа профиля другого игрока
+function showPlayerProfile(playerId) {
+  const player = gameManager.leaderboardCache.find(p => p.id === playerId);
+  if (!player) return;
+
+  const currentProfile = document.getElementById('currentPlayerProfile');
+  if (currentProfile) currentProfile.style.display = 'none';
+
+  const otherProfile = document.getElementById('otherPlayerProfile');
+  if (otherProfile) otherProfile.style.display = 'block';
+
+  const otherName = document.getElementById('otherProfileName');
+  if (otherName) otherName.textContent = player.name;
+
+  const otherCurrency = document.getElementById('otherProfileCurrency');
+  if (otherCurrency) otherCurrency.textContent = player.currency;
+
+  const otherCards = document.getElementById('otherProfileCards');
+  if (otherCards) otherCards.textContent = player.cards;
+
+  const otherAvatar = document.getElementById('otherProfileAvatar');
+  if (otherAvatar) otherAvatar.src = player.avatar;
+
+  const otherLastOnline = document.getElementById('otherProfileLastOnline');
+  if (otherLastOnline) otherLastOnline.textContent = gameManager.getLastOnlineText(player.lastOnline);
+
+  gameManager.displayOtherPlayerCollection(player);
+}
+
+// Функция для возврата к своему профилю
+function showCurrentProfile() {
+  const otherProfile = document.getElementById('otherPlayerProfile');
+  if (otherProfile) otherProfile.style.display = 'none';
+
+  const currentProfile = document.getElementById('currentPlayerProfile');
+  if (currentProfile) currentProfile.style.display = 'block';
+}
 </script>
 </body>
 </html>
