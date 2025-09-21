@@ -546,32 +546,77 @@ h2 {
 }
 /* СТИЛИ ДЛЯ КОТИКА */
 .cat-container {
-  display: inline-block;
-  margin: 20px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto;
+  width: 250px;
+  height: 250px;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.2s ease-in-out;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
 }
 .cat-container:hover {
   transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(255, 204, 0, 0.7);
 }
 .cat-container:active {
   transform: scale(0.95);
 }
 #catVideo {
-  width: 200px;
-  height: 200px;
-  border-radius: 15px;
-  border: 3px solid #ffcc00;
-  box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid #ffcc00;
+  transition: all 0.3s ease;
 }
 .click-effect {
-  animation: clickPulse 0.3s ease-out;
+  animation: clickPulse 0.4s ease-out, glowEffect 0.6s ease-out;
+}
+@keyframes glowEffect {
+  0% { box-shadow: 0 0 20px rgba(255, 204, 0, 0.5); }
+  50% { box-shadow: 0 0 40px rgba(255, 204, 0, 1); }
+  100% { box-shadow: 0 0 20px rgba(255, 204, 0, 0.5); }
 }
 @keyframes clickPulse {
   0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  30% { transform: scale(1.15); }
   100% { transform: scale(1); }
+}
+.particle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #ffcc00;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  animation: particleBurst 0.6s ease-out forwards;
+}
+@keyframes particleBurst {
+  0% {
+    transform: translate(0, 0) scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(1);
+    opacity: 0;
+  }
+}
+#energyDisplay {
+  font-size: 18px;
+  color: #00ff99;
+  margin-top: 15px;
+  text-shadow: 0 0 5px rgba(0, 255, 153, 0.5);
+  animation: energyGlow 2s infinite alternate;
+}
+@keyframes energyGlow {
+  0% { text-shadow: 0 0 5px rgba(0, 255, 153, 0.5); }
+  100% { text-shadow: 0 0 15px rgba(0, 255, 153, 0.8); }
 }
 /* СТИЛИ ПРОФИЛЯ */
 .profile-section {
@@ -1388,7 +1433,7 @@ h2 {
     </div>
     <p>Нажимай на котика и зарабатывай монеты!</p>
     <div class="cat-container" onclick="ClickerManager.earnClick()">
-      <video id="catVideo" muted preload="auto">
+      <video id="catVideo" muted playsinline preload="auto">
         <source src="cat_petting.mp4" type="video/mp4">
         Ваш браузер не поддерживает видео.
       </video>
@@ -2776,10 +2821,24 @@ class ClickerManager {
     const catContainer = document.querySelector('.cat-container');
     if (catContainer) {
       catContainer.classList.add('click-effect');
-      setTimeout(() => catContainer.classList.remove('click-effect'), 300);
+      setTimeout(() => catContainer.classList.remove('click-effect'), 400);
+      this.createParticles(catContainer);
     }
    
     this.playVideo();
+  }
+ 
+  static createParticles(container) {
+    for (let i = 0; i < 8; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = '50%';
+      particle.style.top = '50%';
+      particle.style.--dx = `${Math.random() * 100 - 50}px`;
+      particle.style.--dy = `${Math.random() * 100 - 50}px`;
+      container.appendChild(particle);
+      setTimeout(() => particle.remove(), 600);
+    }
   }
  
   static async playVideo() {
