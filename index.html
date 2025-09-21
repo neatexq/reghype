@@ -692,35 +692,266 @@ h2 {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.95);
+  background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
+  backdrop-filter: blur(10px);
 }
 
 .setup-content {
-  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
-  border: 3px solid #ffcc00;
-  border-radius: 20px;
-  padding: 40px;
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.95), rgba(45, 45, 45, 0.95));
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: 25px;
+  padding: 50px;
   text-align: center;
-  max-width: 500px;
-  box-shadow: 0 0 50px rgba(255, 204, 0, 0.3);
-  animation: modalPop 0.6s forwards;
+  max-width: 600px;
+  width: 90%;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 204, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: setupAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.setup-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, 
+    rgba(255, 204, 0, 0.1) 0%, 
+    rgba(255, 102, 0, 0.05) 25%,
+    rgba(0, 255, 153, 0.05) 50%,
+    rgba(255, 204, 0, 0.1) 75%,
+    rgba(255, 204, 0, 0.1) 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 6s ease infinite;
+  border-radius: 25px;
+  z-index: -1;
+}
+
+.setup-content::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #ffcc00, #ff6600, #00ff99, #ffcc00);
+  background-size: 400% 400%;
+  animation: borderGlow 3s ease infinite;
+  border-radius: 25px;
+  z-index: -2;
+}
+
+@keyframes setupAppear {
+  0% { 
+    opacity: 0;
+    transform: scale(0.8) rotateY(-15deg);
+    filter: blur(10px);
+  }
+  100% { 
+    opacity: 1;
+    transform: scale(1) rotateY(0deg);
+    filter: blur(0px);
+  }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes borderGlow {
+  0%, 100% { 
+    background-position: 0% 50%;
+    opacity: 0.8;
+  }
+  50% { 
+    background-position: 100% 50%;
+    opacity: 1;
+  }
 }
 
 .setup-content h2 {
   color: #ffcc00;
   font-family: 'Orbitron', sans-serif;
-  margin-bottom: 30px;
-  text-shadow: 0 0 15px #ffcc00;
+  font-size: 32px;
+  margin-bottom: 20px;
+  text-shadow: 
+    0 0 20px rgba(255, 204, 0, 0.8),
+    0 0 40px rgba(255, 204, 0, 0.4);
+  animation: titlePulse 2s ease-in-out infinite alternate;
+  position: relative;
+}
+
+.setup-content h2::after {
+  content: '✨';
+  position: absolute;
+  right: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  animation: sparkle 1.5s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+  0% { text-shadow: 0 0 20px rgba(255, 204, 0, 0.8), 0 0 40px rgba(255, 204, 0, 0.4); }
+  100% { text-shadow: 0 0 30px rgba(255, 204, 0, 1), 0 0 60px rgba(255, 204, 0, 0.6); }
+}
+
+@keyframes sparkle {
+  0%, 100% { 
+    opacity: 0.5;
+    transform: translateY(-50%) scale(1) rotate(0deg);
+  }
+  50% { 
+    opacity: 1;
+    transform: translateY(-50%) scale(1.2) rotate(180deg);
+  }
 }
 
 .setup-content p {
-  color: #ccc;
-  margin-bottom: 25px;
-  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 35px;
+  line-height: 1.6;
+  font-size: 16px;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+}
+
+.nickname-input-container {
+  position: relative;
+  margin: 30px 0;
+}
+
+.nickname-input-container input {
+  width: 100%;
+  max-width: 350px;
+  padding: 18px 25px;
+  border: 2px solid transparent;
+  border-radius: 15px;
+  background: linear-gradient(135deg, rgba(17, 17, 17, 0.9), rgba(34, 34, 34, 0.9));
+  color: #fff;
+  font-size: 18px;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 204, 0, 0.2);
+  outline: none;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+.nickname-input-container input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+.nickname-input-container input:focus {
+  border-color: #ffcc00;
+  background: linear-gradient(135deg, rgba(17, 17, 17, 1), rgba(34, 34, 34, 1));
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.3),
+    0 0 0 2px rgba(255, 204, 0, 0.3),
+    0 0 20px rgba(255, 204, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.nickname-input-container input:valid {
+  border-color: #00ff99;
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.3),
+    0 0 0 2px rgba(0, 255, 153, 0.3),
+    0 0 15px rgba(0, 255, 153, 0.2);
+}
+
+.character-counter {
+  position: absolute;
+  bottom: -25px;
+  right: 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.character-counter.warning {
+  color: #ff6666;
+  font-weight: bold;
+}
+
+.start-button {
+  background: linear-gradient(135deg, #ff6600, #ffcc00, #ff6600);
+  background-size: 200% 200%;
+  border: none;
+  border-radius: 15px;
+  padding: 18px 40px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  margin-top: 25px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 8px 25px rgba(255, 102, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  animation: buttonGlow 2s ease-in-out infinite alternate;
+}
+
+.start-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: all 0.6s;
+}
+
+.start-button:hover::before {
+  left: 100%;
+}
+
+.start-button:hover {
+  background-position: 100% 100%;
+  transform: translateY(-3px);
+  box-shadow: 
+    0 12px 35px rgba(255, 102, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.start-button:active {
+  transform: translateY(-1px);
+  box-shadow: 
+    0 6px 20px rgba(255, 102, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.start-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  animation: none;
+}
+
+@keyframes buttonGlow {
+  0% { box-shadow: 0 8px 25px rgba(255, 102, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2); }
+  100% { box-shadow: 0 8px 35px rgba(255, 102, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3); }
 }
 
 #gameContainer {
@@ -777,10 +1008,11 @@ h2 {
   <div class="setup-content">
     <h2>Добро пожаловать в Reghype!</h2>
     <p>Придумайте уникальный никнейм для начала игры:</p>
-    <input type="text" id="initialNameInput" placeholder="Ваш никнейм" maxlength="20">
-    <div class="name-actions">
-      <button onclick="completeInitialSetup()">🚀 Начать игру</button>
+    <div class="nickname-input-container">
+      <input type="text" id="initialNameInput" placeholder="Ваш никнейм" maxlength="12" autocomplete="off" spellcheck="false">
+      <div class="character-counter" id="characterCounter">0/12</div>
     </div>
+    <button class="start-button" id="startGameButton" onclick="completeInitialSetup()" disabled>🚀 Начать игру</button>
   </div>
 </div>
 
@@ -1134,13 +1366,54 @@ class GameManager {
       });
     }
     
+    // Обработчики для первоначального ввода никнейма
     const initialNameInput = document.getElementById('initialNameInput');
-    if (initialNameInput) {
+    const characterCounter = document.getElementById('characterCounter');
+    const startButton = document.getElementById('startGameButton');
+    
+    if (initialNameInput && characterCounter && startButton) {
+      // Обработчик ввода с валидацией
+      initialNameInput.addEventListener('input', (e) => {
+        const value = e.target.value;
+        const length = value.length;
+        
+        // Обновляем счетчик символов
+        characterCounter.textContent = `${length}/12`;
+        
+        // Меняем цвет если приближается к лимиту
+        if (length >= 10) {
+          characterCounter.classList.add('warning');
+        } else {
+          characterCounter.classList.remove('warning');
+        }
+        
+        // Валидация для кнопки
+        const isValid = value.trim().length >= 2 && value.trim().length <= 12;
+        startButton.disabled = !isValid;
+        
+        // Визуальная обратная связь
+        if (isValid) {
+          initialNameInput.style.borderColor = '#00ff99';
+        } else if (length > 0) {
+          initialNameInput.style.borderColor = '#ff6666';
+        } else {
+          initialNameInput.style.borderColor = 'transparent';
+        }
+      });
+      
+      // Обработчик Enter
       initialNameInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && !startButton.disabled) {
           completeInitialSetup();
         }
       });
+      
+      // Фокус на поле при появлении
+      setTimeout(() => {
+        if (document.getElementById('initialSetup').style.display === 'flex') {
+          initialNameInput.focus();
+        }
+      }, 500);
     }
     
     // Периодическое обновление лидерборда (каждую минуту)
@@ -1826,13 +2099,20 @@ async function completeInitialSetup() {
   const input = document.getElementById('initialNameInput');
   const playerName = input.value.trim();
   
-  if (!playerName || playerName.length === 0) {
-    gameManager.showNotification('Введите никнейм!');
+  if (!playerName || playerName.length < 2) {
+    gameManager.showNotification('Никнейм должен содержать минимум 2 символа!');
     return;
   }
   
-  if (playerName.length > 20) {
-    gameManager.showNotification('Никнейм слишком длинный!');
+  if (playerName.length > 12) {
+    gameManager.showNotification('Никнейм слишком длинный (максимум 12 символов)!');
+    return;
+  }
+  
+  // Проверяем на недопустимые символы
+  const validNameRegex = /^[a-zA-Zа-яА-Я0-9_\-]+$/;
+  if (!validNameRegex.test(playerName)) {
+    gameManager.showNotification('Используйте только буквы, цифры, _ и -');
     return;
   }
   
