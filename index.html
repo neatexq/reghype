@@ -5,54 +5,47 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reghype</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto&display=swap" rel="stylesheet">
-
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
 <style>
 /* ОСНОВНЫЕ СТИЛИ */
-body { 
-  margin:0; 
-  font-family:'Roboto',sans-serif; 
+body {
+  margin:0;
+  font-family:'Roboto',sans-serif;
   background: linear-gradient(135deg,#0d0d0d,#1a1a1a);
-  color:#fff; 
-  text-align:center; 
-  overflow-x:hidden; 
+  color:#fff;
+  text-align:center;
+  overflow-x:hidden;
 }
-
-h1 { 
-  font-family:'Orbitron',sans-serif; 
-  color:#ffcc00; 
-  margin:20px 0; 
-  cursor:pointer; 
-  text-shadow:0 0 10px #ffcc00; 
+h1 {
+  font-family:'Orbitron',sans-serif;
+  color:#ffcc00;
+  margin:20px 0;
+  cursor:pointer;
+  text-shadow:0 0 10px #ffcc00;
 }
-
-button { 
-  padding:12px 25px; 
-  margin:10px; 
-  border:none; 
+button {
+  padding:12px 25px;
+  margin:10px;
+  border:none;
   border-radius:12px;
-  background: linear-gradient(45deg,#ff6600,#ffcc00); 
-  font-weight:bold; 
-  color:#000; 
-  font-size:18px; 
-  cursor:pointer; 
+  background: linear-gradient(45deg,#ff6600,#ffcc00);
+  font-weight:bold;
+  color:#000;
+  font-size:18px;
+  cursor:pointer;
   transition:0.3s;
 }
-
 button:hover{
   transform:scale(1.05);
 }
-
 #currency{
   font-size:22px;
   margin:10px;
   color:#00ff99;
   font-weight:bold;
 }
-
 /* ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ */
 .profile-info {
   display: flex;
@@ -61,7 +54,6 @@ button:hover{
   margin: 20px 0;
   gap: 15px;
 }
-
 .profile-avatar {
   width: 60px;
   height: 60px;
@@ -71,12 +63,10 @@ button:hover{
   cursor: pointer;
   transition: 0.3s;
 }
-
 .profile-avatar:hover {
   transform: scale(1.1);
   box-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
 }
-
 .profile-name {
   font-size: 20px;
   color: #00ff99;
@@ -84,97 +74,81 @@ button:hover{
   cursor: pointer;
   transition: 0.3s;
 }
-
 .profile-name:hover {
   color: #ffcc00;
   text-shadow: 0 0 10px #ffcc00;
 }
-
 /* КАРТОЧКИ */
 #lastCard .card {
   max-width: 150px;
   font-size: 16px;
   margin: 12px auto;
 }
-
 #lastCard .card img {
   max-width: 100%;
   height: auto;
   border-radius: 14px;
 }
-
 .card{
-  display:inline-block; 
-  margin:10px; 
-  text-align:center; 
-  transition:0.5s; 
-  border-radius:12px; 
-  padding:5px; 
+  display:inline-block;
+  margin:10px;
+  text-align:center;
+  transition:0.5s;
+  border-radius:12px;
+  padding:5px;
   position:relative;
 }
-
 .card img{
-  max-width:150px; 
-  border-radius:12px; 
+  max-width:150px;
+  border-radius:12px;
   transition:0.5s;
 }
-
 /* РЕДКОСТИ КАРТОЧЕК */
 .rarity-Common{
-  border:3px solid gray; 
+  border:3px solid gray;
   box-shadow:0 0 15px gray;
 }
-
 .rarity-Rare{
-  border:3px solid #3399ff; 
-  box-shadow:0 0 15px #3399ff; 
+  border:3px solid #3399ff;
+  box-shadow:0 0 15px #3399ff;
   animation:glowBlue 2s infinite alternate;
 }
-
 .rarity-Special{
-  border:3px solid #cc33ff; 
-  box-shadow:0 0 20px #cc33ff; 
+  border:3px solid #cc33ff;
+  box-shadow:0 0 20px #cc33ff;
   animation:glowPurple 2s infinite alternate;
 }
-
 .rarity-Legendary{
-  border:3px solid gold; 
-  box-shadow:0 0 25px gold; 
+  border:3px solid gold;
+  box-shadow:0 0 25px gold;
   animation:glowGold 2s infinite alternate;
 }
-
 @keyframes glowBlue{
   0%{box-shadow:0 0 15px #3399ff;}
   100%{box-shadow:0 0 30px #33f;}
 }
-
 @keyframes glowPurple{
   0%{box-shadow:0 0 15px #cc33ff;}
   100%{box-shadow:0 0 35px #f3f;}
 }
-
 @keyframes glowGold{
   0%{box-shadow:0 0 20px gold;}
   100%{box-shadow:0 0 40px #ff0;}
 }
-
 .animate-card{
-  transform:scale(0) rotateY(0deg); 
+  transform:scale(0) rotateY(0deg);
   animation:popCard 0.8s forwards;
 }
-
 @keyframes popCard{
   0%{transform:scale(0) rotateY(0deg);opacity:0;}
   50%{transform:scale(1.3) rotateY(180deg);opacity:1;}
   100%{transform:scale(1) rotateY(360deg);opacity:1;}
 }
-
 .timer{
   font-size:16px;
   color:#ff6666;
   margin:10px;
 }
-
 #collection {
   display: flex;
   flex-wrap: wrap;
@@ -182,14 +156,12 @@ button:hover{
   margin-bottom: 80px;
   margin-top: 20px;
 }
-
 h2 {
   margin-top: 40px;
   margin-bottom: 25px;
   font-size: 24px;
   text-align: center;
 }
-
 /* АДМИН ПАНЕЛЬ */
 #adminPanel{
   position: fixed;
@@ -205,7 +177,6 @@ h2 {
   overflow-y: auto;
   box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
 }
-
 #adminPanel::before {
   content: '';
   position: absolute;
@@ -213,8 +184,8 @@ h2 {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, 
-    rgba(255, 0, 0, 0.1), 
+  background: linear-gradient(45deg,
+    rgba(255, 0, 0, 0.1),
     rgba(255, 102, 0, 0.05),
     rgba(255, 204, 0, 0.1),
     rgba(255, 0, 0, 0.1)
@@ -223,23 +194,19 @@ h2 {
   animation: adminGlow 4s ease infinite;
   z-index: -1;
 }
-
 @keyframes adminGlow {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
 }
-
 #adminPanel.show{
   right: 0;
   border-left-color: #ff3333;
 }
-
 .admin-header {
   padding: 20px;
   border-bottom: 2px solid rgba(255, 51, 51, 0.3);
   background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), rgba(255, 51, 51, 0.05));
 }
-
 .admin-header h2 {
   color: #ff3333;
   margin: 0;
@@ -250,7 +217,6 @@ h2 {
   align-items: center;
   gap: 10px;
 }
-
 .admin-close-btn {
   position: absolute;
   top: 15px;
@@ -268,17 +234,14 @@ h2 {
   justify-content: center;
   font-size: 18px;
 }
-
 .admin-close-btn:hover {
   background: rgba(255, 51, 51, 0.4);
   transform: rotate(90deg);
 }
-
 .admin-section {
   padding: 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-
 .admin-section h3 {
   color: #ffcc00;
   font-family: 'Orbitron', sans-serif;
@@ -287,14 +250,12 @@ h2 {
   text-transform: uppercase;
   letter-spacing: 1px;
 }
-
 .admin-input-group {
   display: flex;
   gap: 10px;
   margin-bottom: 15px;
   align-items: center;
 }
-
 .admin-input {
   flex: 1;
   padding: 8px 12px;
@@ -306,12 +267,10 @@ h2 {
   outline: none;
   transition: 0.3s;
 }
-
 .admin-input:focus {
   border-color: #ffcc00;
   box-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
 }
-
 .admin-select {
   padding: 8px 12px;
   border: 1px solid rgba(255, 204, 0, 0.3);
@@ -322,7 +281,6 @@ h2 {
   outline: none;
   cursor: pointer;
 }
-
 .admin-button {
   padding: 10px 15px;
   border: none;
@@ -337,24 +295,19 @@ h2 {
   letter-spacing: 0.5px;
   margin: 2px;
 }
-
 .admin-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(255, 51, 51, 0.4);
 }
-
 .admin-button.danger {
   background: linear-gradient(45deg, #cc0000, #ff3333);
 }
-
 .admin-button.warning {
   background: linear-gradient(45deg, #ff6600, #ffaa00);
 }
-
 .admin-button.success {
   background: linear-gradient(45deg, #00cc66, #00ff99);
 }
-
 .admin-log {
   background: rgba(0, 0, 0, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -367,28 +320,23 @@ h2 {
   color: #ccc;
   margin-top: 10px;
 }
-
 .log-entry {
   margin-bottom: 5px;
   padding: 2px 5px;
   border-radius: 3px;
 }
-
 .log-entry.success {
   background: rgba(0, 255, 0, 0.1);
   color: #00ff00;
 }
-
 .log-entry.error {
   background: rgba(255, 0, 0, 0.1);
   color: #ff6666;
 }
-
 .log-entry.warning {
   background: rgba(255, 165, 0, 0.1);
   color: #ffaa00;
 }
-
 .player-search-list {
   max-height: 200px;
   overflow-y: auto;
@@ -396,22 +344,18 @@ h2 {
   border-radius: 6px;
   background: rgba(0, 0, 0, 0.7);
 }
-
 .player-search-item {
   padding: 8px 12px;
   cursor: pointer;
   transition: 0.3s;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-
 .player-search-item:hover {
   background: rgba(255, 204, 0, 0.2);
 }
-
 .player-search-item:last-child {
   border-bottom: none;
 }
-
 .admin-warning {
   background: rgba(255, 165, 0, 0.2);
   border: 1px solid #ffaa00;
@@ -422,7 +366,6 @@ h2 {
   font-size: 14px;
   text-align: center;
 }
-
 .admin-danger-zone {
   background: rgba(255, 0, 0, 0.1);
   border: 2px solid rgba(255, 51, 51, 0.5);
@@ -430,13 +373,11 @@ h2 {
   padding: 20px;
   margin: 20px 0;
 }
-
 .admin-danger-zone h3 {
   color: #ff3333;
   text-align: center;
   margin-bottom: 15px;
 }
-
 .card-preview {
   display: flex;
   align-items: center;
@@ -446,28 +387,25 @@ h2 {
   border-radius: 6px;
   margin: 5px 0;
 }
-
 .card-preview img {
   width: 30px;
   height: 40px;
   object-fit: cover;
   border-radius: 3px;
 }
-
 /* МОДАЛЬНОЕ ОКНО КАРТОЧКИ */
 #cardModal{
-  display:none; 
-  position:fixed; 
-  top:0; 
-  left:0; 
-  width:100%; 
-  height:100%; 
-  background:rgba(0,0,0,0.85); 
-  justify-content:center; 
-  align-items:center; 
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.85);
+  justify-content:center;
+  align-items:center;
   z-index:2000;
 }
-
 #cardContent {
   background: #111;
   padding: 15px;
@@ -479,20 +417,17 @@ h2 {
   transform: scale(0.9);
   animation: modalPop 0.4s forwards;
 }
-
 #cardContent img{
   max-width:100%;
   border-radius:12px;
   box-shadow:0 0 20px gold;
   margin-bottom:10px;
 }
-
 @keyframes modalPop{
   0%{transform:scale(0);}
   60%{transform:scale(1.2);}
   100%{transform:scale(1);}
 }
-
 #cardContent button{
   padding:8px 15px;
   margin-top:10px;
@@ -503,11 +438,9 @@ h2 {
   cursor:pointer;
   transition:0.3s;
 }
-
 #cardContent button:hover{
   transform:scale(1.05);
 }
-
 /* НАВБАР */
 #navbar {
   display: flex;
@@ -521,7 +454,6 @@ h2 {
   right: 0;
   z-index: 3000;
 }
-
 #navbar button {
   flex: 1;
   margin: 0 5px;
@@ -533,16 +465,13 @@ h2 {
   cursor: pointer;
   transition: 0.3s;
 }
-
 #navbar button:hover {
   transform: scale(1.05);
 }
-
 #navbar button.active {
   background: linear-gradient(45deg,#00ff99,#ffcc00);
   box-shadow: 0 0 15px rgba(0, 255, 153, 0.5);
 }
-
 /* МОДАЛЬНЫЕ ОКНА МЕНЮ */
 .menu-modal {
   display: none;
@@ -556,7 +485,6 @@ h2 {
   z-index: 4000;
   animation: fadeIn 0.3s ease-out;
 }
-
 .menu-content {
   position: absolute;
   top: 50%;
@@ -573,7 +501,6 @@ h2 {
   box-shadow: 0 0 50px rgba(255, 204, 0, 0.3);
   animation: slideIn 0.4s ease-out;
 }
-
 .menu-header {
   display: flex;
   justify-content: space-between;
@@ -582,7 +509,6 @@ h2 {
   border-bottom: 2px solid #ffcc00;
   padding-bottom: 15px;
 }
-
 .menu-title {
   font-family: 'Orbitron', sans-serif;
   color: #ffcc00;
@@ -590,7 +516,6 @@ h2 {
   text-shadow: 0 0 10px #ffcc00;
   margin: 0;
 }
-
 .close-btn {
   background: none;
   border: none;
@@ -601,28 +526,24 @@ h2 {
   padding: 5px 10px;
   border-radius: 50%;
 }
-
 .close-btn:hover {
   background: rgba(255, 51, 51, 0.2);
   transform: rotate(90deg);
 }
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
 @keyframes slideIn {
-  from { 
+  from {
     opacity: 0;
     transform: translate(-50%, -60%);
   }
-  to { 
+  to {
     opacity: 1;
     transform: translate(-50%, -50%);
   }
 }
-
 /* СТИЛИ ДЛЯ КОТИКА */
 .cat-container {
   display: inline-block;
@@ -630,15 +551,12 @@ h2 {
   cursor: pointer;
   transition: transform 0.2s;
 }
-
 .cat-container:hover {
   transform: scale(1.05);
 }
-
 .cat-container:active {
   transform: scale(0.95);
 }
-
 #catVideo {
   width: 200px;
   height: 200px;
@@ -647,17 +565,14 @@ h2 {
   box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
   object-fit: cover;
 }
-
 .click-effect {
   animation: clickPulse 0.3s ease-out;
 }
-
 @keyframes clickPulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.1); }
   100% { transform: scale(1); }
 }
-
 /* СТИЛИ ПРОФИЛЯ */
 .profile-section {
   background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
@@ -668,14 +583,12 @@ h2 {
   max-width: 500px;
   margin: 20px auto;
 }
-
 .profile-header {
   display: flex;
   align-items: center;
   gap: 20px;
   margin-bottom: 20px;
 }
-
 .profile-avatar-large {
   width: 100px;
   height: 100px;
@@ -685,68 +598,57 @@ h2 {
   cursor: pointer;
   transition: 0.3s;
 }
-
 .profile-avatar-large:hover {
   transform: scale(1.1);
   box-shadow: 0 0 20px rgba(255, 204, 0, 0.7);
 }
-
 .profile-details h3 {
   color: #ffcc00;
   margin: 0 0 10px 0;
   font-family: 'Orbitron', sans-serif;
 }
-
 .profile-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 15px;
   text-align: center;
 }
-
 .stat-item {
   background: rgba(255, 204, 0, 0.1);
   padding: 15px;
   border-radius: 10px;
   border: 1px solid rgba(255, 204, 0, 0.3);
 }
-
 .stat-value {
   font-size: 24px;
   font-weight: bold;
   color: #00ff99;
   display: block;
 }
-
 .stat-label {
   color: #ccc;
   font-size: 14px;
 }
-
 .profile-actions {
   display: flex;
   gap: 10px;
   justify-content: center;
   margin-top: 20px;
 }
-
 .profile-actions button {
   padding: 10px 20px;
   font-size: 14px;
 }
-
 /* Скрытый input для загрузки файлов */
 #avatarInput {
   display: none;
 }
-
 /* Коллекция в профиле */
 .profile-collection {
   margin-top: 30px;
   border-top: 2px solid #ffcc00;
   padding-top: 20px;
 }
-
 .collection-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -754,7 +656,6 @@ h2 {
   max-height: 400px;
   overflow-y: auto;
 }
-
 .collection-card {
   aspect-ratio: 1;
   border: 2px solid #666;
@@ -763,17 +664,14 @@ h2 {
   transition: 0.3s;
   cursor: pointer;
 }
-
 .collection-card:hover {
   transform: scale(1.05);
 }
-
 .collection-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-
 /* КАСТОМНЫЙ МОДАЛЬНЫЙ ДИАЛОГ ДЛЯ СМЕНЫ ИМЕНИ */
 #nameModal {
   display: none;
@@ -787,7 +685,6 @@ h2 {
   align-items: center;
   z-index: 5000;
 }
-
 .name-content {
   background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
   border: 3px solid #ffcc00;
@@ -797,13 +694,11 @@ h2 {
   max-width: 400px;
   animation: modalPop 0.4s forwards;
 }
-
 .name-content h3 {
   color: #ffcc00;
   margin-bottom: 20px;
   font-family: 'Orbitron', sans-serif;
 }
-
 .name-content input {
   width: 100%;
   padding: 12px;
@@ -815,30 +710,25 @@ h2 {
   margin-bottom: 20px;
   box-sizing: border-box;
 }
-
 .name-content input:focus {
   outline: none;
   box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
 }
-
 .name-actions {
   display: flex;
   gap: 10px;
   justify-content: center;
 }
-
 .name-actions button {
   padding: 10px 20px;
   margin: 0;
 }
-
 /* ЛИДЕРБОРД С ПРОКРУТКОЙ */
 .leaderboard-container {
   max-height: 400px;
   overflow-y: auto;
   padding-right: 10px;
 }
-
 .leader-item {
   display: flex;
   justify-content: space-between;
@@ -851,23 +741,19 @@ h2 {
   cursor: pointer;
   transition: 0.3s;
 }
-
 .leader-item:hover {
   background: rgba(255, 204, 0, 0.1);
   border-color: #ffcc00;
   transform: translateX(5px);
 }
-
 .leader-item.current-player {
   background: rgba(255, 204, 0, 0.2);
   border-color: #ffcc00;
 }
-
 .leader-info {
   text-align: left;
   flex: 1;
 }
-
 .leader-name {
   font-weight: bold;
   color: #fff;
@@ -876,23 +762,19 @@ h2 {
   align-items: center;
   gap: 10px;
 }
-
 .leader-stats {
   font-size: 14px;
   color: #ccc;
 }
-
 .leader-rank {
   font-size: 24px;
   margin-right: 10px;
 }
-
 .last-online {
   font-size: 12px;
   color: #888;
   margin-top: 3px;
 }
-
 .online-status {
   width: 12px;
   height: 12px;
@@ -900,16 +782,13 @@ h2 {
   display: inline-block;
   margin-left: 5px;
 }
-
 .online-status.online {
   background: #00ff99;
   box-shadow: 0 0 6px #00ff99;
 }
-
 .online-status.offline {
   background: #666;
 }
-
 /* ПРОФИЛЬ ДРУГОГО ИГРОКА */
 .other-profile-section {
   background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
@@ -919,7 +798,6 @@ h2 {
   margin: 20px auto;
   max-width: 500px;
 }
-
 /* ПЕРВОНАЧАЛЬНАЯ НАСТРОЙКА */
 #initialSetup {
   position: fixed;
@@ -934,7 +812,6 @@ h2 {
   z-index: 9999;
   backdrop-filter: blur(10px);
 }
-
 .setup-content {
   background: linear-gradient(135deg, rgba(26, 26, 26, 0.95), rgba(45, 45, 45, 0.95));
   border: 2px solid transparent;
@@ -946,13 +823,12 @@ h2 {
   width: 90%;
   position: relative;
   overflow: hidden;
-  box-shadow: 
+  box-shadow:
     0 25px 50px rgba(0, 0, 0, 0.5),
     0 0 0 1px rgba(255, 204, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   animation: setupAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
-
 .setup-content::before {
   content: '';
   position: absolute;
@@ -960,8 +836,8 @@ h2 {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, 
-    rgba(255, 204, 0, 0.1) 0%, 
+  background: linear-gradient(45deg,
+    rgba(255, 204, 0, 0.1) 0%,
     rgba(255, 102, 0, 0.05) 25%,
     rgba(0, 255, 153, 0.05) 50%,
     rgba(255, 204, 0, 0.1) 75%,
@@ -972,7 +848,6 @@ h2 {
   border-radius: 25px;
   z-index: -1;
 }
-
 .setup-content::after {
   content: '';
   position: absolute;
@@ -986,49 +861,44 @@ h2 {
   border-radius: 25px;
   z-index: -2;
 }
-
 @keyframes setupAppear {
-  0% { 
+  0% {
     opacity: 0;
     transform: scale(0.8) rotateY(-15deg);
     filter: blur(10px);
   }
-  100% { 
+  100% {
     opacity: 1;
     transform: scale(1) rotateY(0deg);
     filter: blur(0px);
   }
 }
-
 @keyframes gradientShift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
-
 @keyframes borderGlow {
-  0%, 100% { 
+  0%, 100% {
     background-position: 0% 50%;
     opacity: 0.8;
   }
-  50% { 
+  50% {
     background-position: 100% 50%;
     opacity: 1;
   }
 }
-
 .setup-content h2 {
   color: #ffcc00;
   font-family: 'Orbitron', sans-serif;
   font-size: 32px;
   margin-bottom: 20px;
-  text-shadow: 
+  text-shadow:
     0 0 20px rgba(255, 204, 0, 0.8),
     0 0 40px rgba(255, 204, 0, 0.4);
   animation: titlePulse 2s ease-in-out infinite alternate;
   position: relative;
 }
-
 .setup-content h2::after {
   content: '✨';
   position: absolute;
@@ -1037,23 +907,20 @@ h2 {
   transform: translateY(-50%);
   animation: sparkle 1.5s ease-in-out infinite;
 }
-
 @keyframes titlePulse {
   0% { text-shadow: 0 0 20px rgba(255, 204, 0, 0.8), 0 0 40px rgba(255, 204, 0, 0.4); }
   100% { text-shadow: 0 0 30px rgba(255, 204, 0, 1), 0 0 60px rgba(255, 204, 0, 0.6); }
 }
-
 @keyframes sparkle {
-  0%, 100% { 
+  0%, 100% {
     opacity: 0.5;
     transform: translateY(-50%) scale(1) rotate(0deg);
   }
-  50% { 
+  50% {
     opacity: 1;
     transform: translateY(-50%) scale(1.2) rotate(180deg);
   }
 }
-
 .setup-content p {
   color: rgba(255, 255, 255, 0.8);
   margin-bottom: 35px;
@@ -1062,12 +929,10 @@ h2 {
   font-weight: 300;
   letter-spacing: 0.5px;
 }
-
 .nickname-input-container {
   position: relative;
   margin: 30px 0;
 }
-
 .nickname-input-container input {
   width: 100%;
   max-width: 350px;
@@ -1080,7 +945,7 @@ h2 {
   font-weight: 500;
   text-align: center;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 
+  box-shadow:
     inset 0 3px 8px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(255, 204, 0, 0.2),
     0 4px 15px rgba(255, 204, 0, 0.1);
@@ -1090,33 +955,29 @@ h2 {
   box-sizing: border-box;
   backdrop-filter: blur(10px);
 }
-
 .nickname-input-container input::placeholder {
   color: rgba(255, 204, 0, 0.4);
   font-weight: 300;
   letter-spacing: 1px;
 }
-
 .nickname-input-container input:focus {
   border-color: #ffcc00;
   background: linear-gradient(135deg, rgba(20, 20, 20, 1), rgba(40, 40, 40, 1));
-  box-shadow: 
+  box-shadow:
     inset 0 3px 8px rgba(0, 0, 0, 0.4),
     0 0 0 3px rgba(255, 204, 0, 0.4),
     0 0 25px rgba(255, 204, 0, 0.3),
     0 4px 20px rgba(255, 204, 0, 0.2);
   transform: translateY(-3px) scale(1.02);
 }
-
 .nickname-input-container input:valid {
   border-color: #00ff99;
-  box-shadow: 
+  box-shadow:
     inset 0 3px 8px rgba(0, 0, 0, 0.4),
     0 0 0 2px rgba(0, 255, 153, 0.4),
     0 0 20px rgba(0, 255, 153, 0.2),
     0 4px 15px rgba(0, 255, 153, 0.1);
 }
-
 .character-counter {
   position: absolute;
   bottom: -25px;
@@ -1125,12 +986,10 @@ h2 {
   color: rgba(255, 255, 255, 0.5);
   transition: all 0.3s ease;
 }
-
 .character-counter.warning {
   color: #ff6666;
   font-weight: bold;
 }
-
 .start-button {
   background: linear-gradient(135deg, #ff6600, #ffcc00, #ff6600);
   background-size: 200% 200%;
@@ -1145,12 +1004,11 @@ h2 {
   margin-top: 25px;
   position: relative;
   overflow: hidden;
-  box-shadow: 
+  box-shadow:
     0 8px 25px rgba(255, 102, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   animation: buttonGlow 2s ease-in-out infinite alternate;
 }
-
 .start-button::before {
   content: '';
   position: absolute;
@@ -1161,42 +1019,35 @@ h2 {
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
   transition: all 0.6s;
 }
-
 .start-button:hover::before {
   left: 100%;
 }
-
 .start-button:hover {
   background-position: 100% 100%;
   transform: translateY(-3px);
-  box-shadow: 
+  box-shadow:
     0 12px 35px rgba(255, 102, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
-
 .start-button:active {
   transform: translateY(-1px);
-  box-shadow: 
+  box-shadow:
     0 6px 20px rgba(255, 102, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
-
 .start-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
   animation: none;
 }
-
 @keyframes buttonGlow {
   0% { box-shadow: 0 8px 25px rgba(255, 102, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2); }
   100% { box-shadow: 0 8px 35px rgba(255, 102, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3); }
 }
-
 #gameContainer {
   display: none;
 }
-
 .loading-screen {
   position: fixed;
   top: 0;
@@ -1210,7 +1061,6 @@ h2 {
   align-items: center;
   z-index: 10000;
 }
-
 .loading-spinner {
   width: 60px;
   height: 60px;
@@ -1220,33 +1070,82 @@ h2 {
   animation: spin 1s linear infinite;
   margin-bottom: 20px;
 }
-
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
 .loading-text {
   color: #ffcc00;
   font-family: 'Orbitron', sans-serif;
   font-size: 18px;
   text-shadow: 0 0 10px #ffcc00;
 }
-
 @keyframes slideDown {
   from { transform: translateX(-50%) translateY(-100px); opacity: 0; }
   to { transform: translateX(-50%) translateY(0); opacity: 1; }
 }
+#adminAuthModal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 9998;
+}
+.admin-auth-content {
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  border: 3px solid #ff3333;
+  border-radius: 15px;
+  padding: 25px;
+  text-align: center;
+  max-width: 400px;
+  animation: modalPop 0.4s forwards;
+}
+.admin-auth-content h3 {
+  color: #ff3333;
+  margin-bottom: 20px;
+  font-family: 'Orbitron', sans-serif;
+}
+.admin-auth-content input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ff3333;
+  border-radius: 8px;
+  background: #111;
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  type: password;
+}
+.admin-auth-content input:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
+}
+.admin-auth-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.admin-auth-actions button {
+  padding: 10px 20px;
+  margin: 0;
+}
+.admin-section select {
+  flex: 1;
+}
 </style>
 </head>
 <body>
-
 <!-- ЭКРАН ЗАГРУЗКИ -->
 <div id="loadingScreen" class="loading-screen">
   <div class="loading-spinner"></div>
   <div class="loading-text">Загрузка Reghype...</div>
 </div>
-
 <!-- ПЕРВОНАЧАЛЬНАЯ НАСТРОЙКА -->
 <div id="initialSetup" style="display: none;">
   <div class="setup-content">
@@ -1256,21 +1155,20 @@ h2 {
       <input type="text" id="initialNameInput" placeholder="Ваш никнейм" maxlength="12" autocomplete="off" spellcheck="false">
       <div class="character-counter" id="characterCounter">0/12</div>
     </div>
+    <p>Выберите аватарку (опционально):</p>
+    <input type="file" id="initialAvatarInput" accept="image/*" onchange="handleInitialAvatarUpload(event)">
+    <img id="initialAvatarPreview" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMzAiIGZpbGw9IiNmZmNjMDAiLz4KPGZ0ZXh0IHg9IjMwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5CCPC90ZXh0Pgo8L3N2Zz4K" alt="Предпросмотр аватарки" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid #ffcc00; margin: 10px 0;">
     <button class="start-button" id="startGameButton" disabled>🚀 Начать игру</button>
   </div>
 </div>
-
 <!-- ОСНОВНАЯ ИГРА -->
 <div id="gameContainer">
-
 <h1 id="logo">Reghype</h1>
-
 <!-- ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ -->
 <div class="profile-info">
   <img id="profileAvatar" class="profile-avatar" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMzAiIGZpbGw9IiNmZmNjMDAiLz4KPGZ0ZXh0IHg9IjMwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5CCPC90ZXh0Pgo8L3N2Zz4K" alt="Аватар" onclick="openProfile()">
   <div class="profile-name" id="profileName" onclick="openProfile()">Игрок</div>
 </div>
-
 <div id="currency">💰 Валюта: 100 монет</div>
 <button onclick="openPack()">🎁 Бесплатный пак</button>
 <button onclick="buyPack()">💎 Купить пак (50 монет)</button>
@@ -1278,112 +1176,128 @@ h2 {
 <div id="lastCard"></div>
 <h2>Моя коллекция</h2>
 <div id="collection"></div>
-
 <!-- СКРЫТЫЕ ЭЛЕМЕНТЫ -->
 <input type="file" id="avatarInput" accept="image/*" onchange="handleAvatarUpload(event)">
-
 <!-- СЧЕТЧИК КЛИКОВ ДЛЯ АДМИН ПАНЕЛИ (скрытый) -->
 <div id="adminClickCounter" style="display: none;"></div>
-
 <!-- АДМИН ПАНЕЛЬ -->
 <div id="adminPanel">
   <div class="admin-header">
-    <h2>🛡️ ADMIN CONTROL</h2>
+    <h2>🛡️ АДМИН-ПАНЕЛЬ</h2>
     <button class="admin-close-btn" onclick="AdminManager.close()">&times;</button>
   </div>
-  
+ 
   <div class="admin-section">
-    <h3>💰 Currency Management</h3>
+    <h3>💰 Управление валютой</h3>
     <div class="admin-input-group">
-      <input type="number" class="admin-input" id="adminCurrency" placeholder="Amount" min="0" max="999999">
-      <button class="admin-button success" onclick="AdminManager.setCurrency()">Set</button>
-      <button class="admin-button" onclick="AdminManager.addCurrency()">Add</button>
+      <input type="number" class="admin-input" id="adminCurrency" placeholder="Сумма" min="0" max="999999">
+      <button class="admin-button success" onclick="AdminManager.setCurrency()">Установить</button>
+      <button class="admin-button" onclick="AdminManager.addCurrency()">Добавить</button>
     </div>
   </div>
-  
+ 
   <div class="admin-section">
-    <h3>🃏 Card Management</h3>
+    <h3>🃏 Управление карточками</h3>
     <div class="admin-input-group">
       <select class="admin-select" id="adminCardSelect">
-        <option value="">Select Card...</option>
+        <option value="">Выберите карточку...</option>
       </select>
-      <button class="admin-button success" onclick="AdminManager.giveCard()">Give</button>
+      <button class="admin-button success" onclick="AdminManager.giveCard()">Выдать</button>
     </div>
     <div class="admin-input-group">
-      <input type="number" class="admin-input" id="adminCardAmount" placeholder="Amount" min="1" max="50" value="1">
-      <button class="admin-button" onclick="AdminManager.giveMultipleCards()">Give Multiple</button>
+      <input type="number" class="admin-input" id="adminCardAmount" placeholder="Количество" min="1" max="50" value="1">
+      <button class="admin-button" onclick="AdminManager.giveMultipleCards()">Выдать несколько</button>
     </div>
   </div>
-  
+ 
   <div class="admin-section">
-    <h3>👥 Player Management</h3>
+    <h3>👥 Управление игроками</h3>
     <div class="admin-input-group">
-      <input type="text" class="admin-input" id="playerSearch" placeholder="Search player..." onkeyup="AdminManager.searchPlayers(this.value)">
+      <input type="text" class="admin-input" id="playerSearch" placeholder="Поиск игрока..." onkeyup="AdminManager.searchPlayers(this.value)">
     </div>
     <div id="playerSearchResults" class="player-search-list" style="display: none;"></div>
     <div id="selectedPlayer" style="display: none;">
-      <p>Selected: <span id="selectedPlayerName"></span></p>
+      <p>Выбран: <span id="selectedPlayerName"></span></p>
       <div class="admin-input-group">
-        <input type="number" class="admin-input" id="playerCurrency" placeholder="Currency">
-        <button class="admin-button" onclick="AdminManager.setPlayerCurrency()">Set Money</button>
+        <input type="number" class="admin-input" id="playerCurrency" placeholder="Валюта">
+        <button class="admin-button" onclick="AdminManager.setPlayerCurrency()">Установить деньги</button>
       </div>
       <div class="admin-input-group">
         <select class="admin-select" id="playerCardSelect">
-          <option value="">Select Card...</option>
+          <option value="">Выберите карточку...</option>
         </select>
-        <button class="admin-button" onclick="AdminManager.givePlayerCard()">Give Card</button>
+        <button class="admin-button" onclick="AdminManager.givePlayerCard()">Выдать карточку</button>
       </div>
+      <div class="admin-input-group">
+        <select class="admin-select" id="playerRoleSelect">
+          <option value="user">Пользователь</option>
+          <option value="moder">Модератор</option>
+          <option value="admin">Администратор</option>
+          <option value="banned">Забанен</option>
+        </select>
+        <button class="admin-button warning" onclick="AdminManager.setPlayerRole()">Установить роль</button>
+      </div>
+      <button class="admin-button danger" onclick="AdminManager.banPlayer()">Забанить игрока</button>
     </div>
   </div>
-  
+ 
   <div class="admin-section">
-    <h3>📊 Server Stats</h3>
+    <h3>📊 Статистика сервера</h3>
     <div id="serverStats">
-      <p>Total Players: <span id="totalPlayers">Loading...</span></p>
-      <p>Online Players: <span id="onlinePlayers">Loading...</span></p>
-      <p>Total Cards: <span id="totalCards">Loading...</span></p>
+      <p>Всего игроков: <span id="totalPlayers">Загрузка...</span></p>
+      <p>Онлайн игроков: <span id="onlinePlayers">Загрузка...</span></p>
+      <p>Всего карточек: <span id="totalCards">Загрузка...</span></p>
     </div>
-    <button class="admin-button" onclick="AdminManager.refreshStats()">Refresh Stats</button>
+    <button class="admin-button" onclick="AdminManager.refreshStats()">Обновить статистику</button>
   </div>
-  
+ 
   <div class="admin-section">
-    <h3>🔧 Quick Actions</h3>
-    <button class="admin-button" onclick="AdminManager.resetTimer()">Reset Timer</button>
-    <button class="admin-button warning" onclick="AdminManager.clearCollection()">Clear My Cards</button>
-    <button class="admin-button" onclick="AdminManager.maxEnergy()">Max Energy</button>
-    <button class="admin-button success" onclick="AdminManager.giveRandomLegendary()">Give Legendary</button>
+    <h3>🔧 Быстрые действия</h3>
+    <button class="admin-button" onclick="AdminManager.resetTimer()">Сбросить таймер</button>
+    <button class="admin-button warning" onclick="AdminManager.clearCollection()">Очистить мои карточки</button>
+    <button class="admin-button" onclick="AdminManager.maxEnergy()">Макс энергия</button>
+    <button class="admin-button success" onclick="AdminManager.giveRandomLegendary()">Выдать легендарку</button>
   </div>
-  
+ 
   <div class="admin-danger-zone">
-    <h3>⚠️ DANGER ZONE</h3>
+    <h3>⚠️ ОПАСНАЯ ЗОНА</h3>
     <div class="admin-warning">
-      These actions are irreversible and affect ALL players!
+      Эти действия необратимы и затрагивают ВСЕХ игроков!
     </div>
-    <button class="admin-button danger" onclick="AdminManager.resetAllPlayers()">🔄 RESET ALL ACCOUNTS</button>
-    <button class="admin-button danger" onclick="AdminManager.clearAllData()">💥 WIPE DATABASE</button>
-    <button class="admin-button danger" onclick="AdminManager.shutdownServer()">🛑 MAINTENANCE MODE</button>
+    <button class="admin-button danger" onclick="AdminManager.resetAllPlayers()">🔄 СБРОСИТЬ ВСЕ АККАУНТЫ</button>
+    <button class="admin-button danger" onclick="AdminManager.clearAllData()">💥 СТЕРЕТЬ БАЗУ ДАННЫХ</button>
+    <button class="admin-button danger" onclick="AdminManager.shutdownServer()">🛑 РЕЖИМ ОБСЛУЖИВАНИЯ</button>
   </div>
-  
+ 
   <div class="admin-section">
-    <h3>📝 Admin Log</h3>
+    <h3>📝 Лог админа</h3>
     <div id="adminLog" class="admin-log">
-      <div class="log-entry">Admin panel initialized...</div>
+      <div class="log-entry">Админ-панель инициализирована...</div>
     </div>
-    <button class="admin-button" onclick="AdminManager.clearLog()">Clear Log</button>
+    <button class="admin-button" onclick="AdminManager.clearLog()">Очистить лог</button>
   </div>
 </div>
-
+<!-- МОДАЛЬНОЕ ОКНО АУТЕНТИФИКАЦИИ АДМИНА -->
+<div id="adminAuthModal">
+  <div class="admin-auth-content">
+    <h3>Админ Аутентификация</h3>
+    <input type="password" id="adminPasswordInput" placeholder="Введите пароль">
+    <div class="admin-auth-actions">
+      <button onclick="AdminManager.verifyPassword()">✅ Войти</button>
+      <button onclick="AdminManager.cancelAuth()" style="background: linear-gradient(45deg,#ff3333,#ff6666);">❌ Отмена</button>
+    </div>
+  </div>
+</div>
 <!-- МОДАЛЬНОЕ ОКНО КАРТОЧКИ -->
 <div id="cardModal">
   <div id="cardContent">
     <img id="modalImage" src="">
     <h2 id="modalName"></h2>
-    <p id="modalRarity"></p>	
+    <p id="modalRarity"></p>
     <p id="modalType"></p>
     <button id="sellCardBtn">💰 Продать карточку</button>
   </div>
 </div>
-
 <!-- МОДАЛЬНОЕ ОКНО СМЕНЫ ИМЕНИ -->
 <div id="nameModal">
   <div class="name-content">
@@ -1395,7 +1309,6 @@ h2 {
     </div>
   </div>
 </div>
-
 <!-- НАВБАР -->
 <div id="navbar">
   <button onclick="MenuManager.toggle('profile')">👤 Профиль</button>
@@ -1403,7 +1316,6 @@ h2 {
   <button onclick="MenuManager.toggle('packs')">🎁 Паки</button>
   <button onclick="MenuManager.toggle('leaderboard')">🏆 Топ</button>
 </div>
-
 <!-- МОДАЛЬНЫЕ ОКНА МЕНЮ -->
 <div id="profileModal" class="menu-modal">
   <div class="menu-content">
@@ -1428,18 +1340,18 @@ h2 {
           </div>
         </div>
       </div>
-      
+     
       <div class="profile-actions">
         <button onclick="showNameModal()">✏️ Сменить имя</button>
         <button onclick="changeAvatar()">🖼️ Сменить аватар</button>
       </div>
-      
+     
       <div class="profile-collection">
         <h3>Коллекция карточек</h3>
         <div id="profileCollectionGrid" class="collection-grid"></div>
       </div>
     </div>
-    
+   
     <!-- Профиль другого игрока -->
     <div class="other-profile-section" id="otherPlayerProfile" style="display: none;">
       <button onclick="showCurrentProfile()" style="margin-bottom: 15px;">🔙 Назад к моему профилю</button>
@@ -1460,7 +1372,7 @@ h2 {
           </div>
         </div>
       </div>
-      
+     
       <div class="profile-collection">
         <h3>Коллекция карточек</h3>
         <div id="otherProfileCollectionGrid" class="collection-grid"></div>
@@ -1468,7 +1380,6 @@ h2 {
     </div>
   </div>
 </div>
-
 <div id="clickerModal" class="menu-modal">
   <div class="menu-content">
     <div class="menu-header">
@@ -1485,7 +1396,6 @@ h2 {
     <p id="energyDisplay">⚡ Энергия: 50/50</p>
   </div>
 </div>
-
 <div id="packsModal" class="menu-modal">
   <div class="menu-content">
     <div class="menu-header">
@@ -1497,7 +1407,6 @@ h2 {
     <button onclick="PackManager.buyLegendaryPack()" style="width: 100%; margin: 10px 0; padding: 15px;">🟨 Легендарный пак (300 монет)</button>
   </div>
 </div>
-
 <div id="leaderboardModal" class="menu-modal">
   <div class="menu-content">
     <div class="menu-header">
@@ -1507,9 +1416,7 @@ h2 {
     <div id="leaderboardContent" class="leaderboard-container"></div>
   </div>
 </div>
-
 </div>
-
 <script>
 // FIREBASE КОНФИГУРАЦИЯ
 const firebaseConfig = {
@@ -1523,7 +1430,6 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-
 // КАРТОЧКИ
 const cards=[
   {name:"Reghype",rarity:"Special",type:"Twitch",image:"cards/Regcandy.png", tgLink:"https://t.me/reghypearchive/2"},
@@ -1545,14 +1451,12 @@ const cards=[
   {name:"Freddy Skin",rarity:"Special",type:"Skin",image:"cards/Freddy-Skin.png", tgLink:"https://t.me/reghypearchive/18"},
   {name:"X06R",rarity:"Common",type:"Chaters",image:"cards/X06R.png", tgLink:"https://t.me/reghypearchive/19"}
 ];
-
 // СЛУЧАЙНЫЕ ИМЕНА ДЛЯ НПС
 const randomNames = [
   "КрутойИгрок", "МегаГеймер", "ЛегендаПаков", "КартоРыцарь", "СуперКоллектор",
   "ПакоМан", "КарточныйКороль", "ГрозаПаков", "МастерКарт", "ЛучшийИгрок",
   "ФантастикГеймер", "КрутойДжокер", "ПрофиПакер", "КоролевскийИгрок", "УльтраКоллектор"
 ];
-
 // ОСНОВНОЙ МЕНЕДЖЕР ИГРЫ
 class GameManager {
   constructor() {
@@ -1564,32 +1468,32 @@ class GameManager {
       playerName: null,
       playerAvatar: this.getDefaultAvatar(),
       energy: 50,
-      lastOnline: Date.now()
+      lastOnline: Date.now(),
+      role: 'user'
     };
-    
+   
     this.constants = {
       packCooldown: 4 * 3600 * 1000,
       maxEnergy: 50,
       regenTime: 5000
     };
-
     // Для админ панели
     this.adminClickSequence = [];
     this.adminSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
-    
+   
     this.isInitialized = false;
     this.leaderboardCache = [];
   }
-  
+ 
   async init() {
     // Показываем загрузку
     const loadingScreen = document.getElementById('loadingScreen');
     if (loadingScreen) loadingScreen.style.display = 'flex';
-    
+   
     try {
       // Проверяем, первый ли это запуск
       const savedPlayerId = localStorage.getItem('playerId');
-      
+     
       if (!savedPlayerId) {
         // Первый запуск - показываем настройку
         if (loadingScreen) loadingScreen.style.display = 'none';
@@ -1598,14 +1502,26 @@ class GameManager {
         this.setupEventListeners();
         return;
       }
-      
-      // Загружаем данные игрока
+     
+      // Проверяем наличие данных в Firebase
       this.playerId = savedPlayerId;
+      const snapshot = await db.ref(`players/${this.playerId}`).once('value');
+      if (!snapshot.val()) {
+        // Данные в Firebase отсутствуют - показываем начальную настройку заново
+        localStorage.clear();
+        if (loadingScreen) loadingScreen.style.display = 'none';
+        const initialSetup = document.getElementById('initialSetup');
+        if (initialSetup) initialSetup.style.display = 'flex';
+        this.setupEventListeners();
+        return;
+      }
+     
+      // Загружаем данные игрока
       await this.loadPlayerData();
-      
+     
       // Запускаем игру
       this.startGame();
-      
+     
     } catch (error) {
       console.error('Ошибка инициализации:', error);
       this.showNotification('Ошибка загрузки данных');
@@ -1616,64 +1532,67 @@ class GameManager {
       this.setupEventListeners();
     }
   }
-  
+ 
   cleanup() {
     // Очищаем интервалы при закрытии
     if (this.onlineInterval) {
       clearInterval(this.onlineInterval);
     }
   }
-  
-  async completeInitialSetup(playerName) {
+ 
+  async completeInitialSetup(playerName, avatarDataUrl = null) {
     try {
       const loadingScreen = document.getElementById('loadingScreen');
       if (loadingScreen) loadingScreen.style.display = 'flex';
       const initialSetup = document.getElementById('initialSetup');
       if (initialSetup) initialSetup.style.display = 'none';
-      
+     
       // Генерируем уникальный ID игрока
       this.playerId = 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-      
+     
       // Инициализируем данные
       this.data.playerName = playerName;
+      if (avatarDataUrl) {
+        this.data.playerAvatar = avatarDataUrl;
+      }
       this.data.lastOnline = Date.now();
-      
+     
       // Сохраняем в localStorage
       localStorage.setItem('playerId', this.playerId);
-      
+     
       // Сохраняем в Firebase
       await this.savePlayerData();
-      
+     
       // Запускаем игру
       this.startGame();
-      
+     
     } catch (error) {
       console.error('Ошибка создания профиля:', error);
       this.showNotification('Ошибка создания профиля');
     }
   }
-  
+ 
   startGame() {
     const loadingScreen = document.getElementById('loadingScreen');
     if (loadingScreen) loadingScreen.style.display = 'none';
     const gameContainer = document.getElementById('gameContainer');
     if (gameContainer) gameContainer.style.display = 'block';
-    
+   
     this.isInitialized = true;
     this.setupEventListeners();
     this.updateUI();
     this.startTimer();
     this.startEnergyRegen();
     this.startOnlineStatusUpdate();
-    
+   
     // Загружаем лидерборд
     this.loadLeaderboard();
-    
+   
     console.log('🎮 Reghype Card Game загружен!');
     console.log('🆔 ID игрока:', this.playerId);
     console.log('👤 Имя игрока:', this.data.playerName);
   }
-  
+ 
   setupEventListeners() {
     // Обработчики событий
     document.addEventListener('click', (e) => {
@@ -1681,21 +1600,19 @@ class GameManager {
         this.closeCardModal();
       }
     });
-
     // Админ панель через клавиатуру (Konami Code)
     document.addEventListener('keydown', (e) => {
       this.adminClickSequence.push(e.code);
       if (this.adminClickSequence.length > this.adminSequence.length) {
         this.adminClickSequence.shift();
       }
-      
+     
       if (JSON.stringify(this.adminClickSequence) === JSON.stringify(this.adminSequence)) {
-        const adminPanel = document.getElementById('adminPanel');
-        if (adminPanel) adminPanel.classList.toggle('show');
+        AdminManager.showAuthModal();
         this.adminClickSequence = [];
       }
     });
-    
+   
     // Обработчик для Enter в поле ввода имени
     const nameInput = document.getElementById('nameInput');
     if (nameInput) {
@@ -1705,32 +1622,32 @@ class GameManager {
         }
       });
     }
-    
+   
     // Обработчики для первоначального ввода никнейма
     const initialNameInput = document.getElementById('initialNameInput');
     const characterCounter = document.getElementById('characterCounter');
     const startButton = document.getElementById('startGameButton');
-    
+   
     if (initialNameInput && characterCounter && startButton) {
       // Обработчик ввода с валидацией
       initialNameInput.addEventListener('input', (e) => {
         const value = e.target.value;
         const length = value.length;
-        
+       
         // Обновляем счетчик символов
         characterCounter.textContent = `${length}/12`;
-        
+       
         // Меняем цвет если приближается к лимиту
         if (length >= 10) {
           characterCounter.classList.add('warning');
         } else {
           characterCounter.classList.remove('warning');
         }
-        
+       
         // Валидация для кнопки
         const isValid = value.trim().length >= 2 && value.trim().length <= 12;
         startButton.disabled = !isValid;
-        
+       
         // Визуальная обратная связь
         if (isValid) {
           initialNameInput.style.borderColor = '#00ff99';
@@ -1740,14 +1657,14 @@ class GameManager {
           initialNameInput.style.borderColor = 'transparent';
         }
       });
-      
+     
       // Обработчик Enter
       initialNameInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && !startButton.disabled) {
           completeInitialSetup();
         }
       });
-      
+     
       // Фокус на поле при появлении
       setTimeout(() => {
         const initialSetup = document.getElementById('initialSetup');
@@ -1755,11 +1672,11 @@ class GameManager {
           initialNameInput.focus();
         }
       }, 500);
-      
+     
       // Обработчик кнопки
       startButton.onclick = () => completeInitialSetup();
     }
-    
+   
     // Периодическое обновление лидерборда (каждую минуту)
     setInterval(() => {
       if (MenuManager.activeMenu === 'leaderboard') {
@@ -1767,12 +1684,12 @@ class GameManager {
       }
     }, 60000);
   }
-  
+ 
   async loadPlayerData() {
     try {
       const snapshot = await db.ref(`players/${this.playerId}`).once('value');
       const playerData = snapshot.val();
-      
+     
       if (playerData) {
         this.data = { ...this.data, ...playerData };
       } else {
@@ -1783,38 +1700,44 @@ class GameManager {
           lastFreePack: parseInt(localStorage.getItem('lastFreePack')) || 0,
           playerName: localStorage.getItem('playerName'),
           playerAvatar: localStorage.getItem('playerAvatar') || this.getDefaultAvatar(),
-          energy: parseInt(localStorage.getItem('energy')) || 50
+          energy: parseInt(localStorage.getItem('energy')) || 50,
+          role: localStorage.getItem('role') || 'user'
         };
-        
+       
         if (localData.playerName) {
           this.data = { ...this.data, ...localData };
           await this.savePlayerData();
         }
       }
+      // Проверить на бан
+      if (this.data.role === 'banned') {
+        this.showNotification('Ваш аккаунт забанен!');
+        // Блокировать интерфейс или logout
+      }
     } catch (error) {
       console.error('Ошибка загрузки данных игрока:', error);
     }
   }
-  
+ 
   async savePlayerData() {
     if (!this.playerId || !this.isInitialized) return;
-    
+   
     try {
       this.data.lastOnline = Date.now();
-      
+     
       // Сохраняем в Firebase
       await db.ref(`players/${this.playerId}`).set(this.data);
-      
+     
       // Также сохраняем локально как backup
       Object.entries(this.data).forEach(([key, value]) => {
         localStorage.setItem(key, typeof value === 'object' ? JSON.stringify(value) : value);
       });
-      
+     
     } catch (error) {
       console.error('Ошибка сохранения данных:', error);
     }
   }
-  
+ 
   startOnlineStatusUpdate() {
     // Обновляем статус онлайн каждые 15 секунд
     this.onlineInterval = setInterval(async () => {
@@ -1826,7 +1749,7 @@ class GameManager {
         }
       }
     }, 15000);
-    
+   
     // Обновляем статус при закрытии страницы
     window.addEventListener('beforeunload', async () => {
       if (this.playerId) {
@@ -1835,13 +1758,13 @@ class GameManager {
           const data = JSON.stringify({
             lastOnline: Date.now() - 60000 // Ставим время на минуту назад чтобы сразу показать офлайн
           });
-          
+         
           // Пытаемся через sendBeacon (более надежно)
           if (navigator.sendBeacon) {
-            navigator.sendBeacon(`https://regcandy-74da6-default-rtdb.firebaseio.com/players/${this.playerId}/lastOnline.json`, 
+            navigator.sendBeacon(`https://regcandy-74da6-default-rtdb.firebaseio.com/players/${this.playerId}/lastOnline.json`,
                                  JSON.stringify(Date.now() - 60000));
           }
-          
+         
           // Также через обычный запрос как запасной вариант
           await db.ref(`players/${this.playerId}/lastOnline`).set(Date.now() - 60000);
         } catch (error) {
@@ -1849,7 +1772,7 @@ class GameManager {
         }
       }
     });
-    
+   
     // Отслеживаем потерю фокуса окна (переключение на другую вкладку)
     document.addEventListener('visibilitychange', async () => {
       if (this.playerId) {
@@ -1866,24 +1789,24 @@ class GameManager {
         }
       }
     });
-    
+   
     // Отслеживаем активность пользователя
     let lastActivity = Date.now();
     const updateActivity = () => {
       lastActivity = Date.now();
     };
-    
+   
     document.addEventListener('mousedown', updateActivity);
     document.addEventListener('mousemove', updateActivity);
     document.addEventListener('keydown', updateActivity);
     document.addEventListener('scroll', updateActivity);
     document.addEventListener('touchstart', updateActivity);
-    
+   
     // Проверяем активность каждые 30 секунд
     setInterval(async () => {
       if (this.playerId && this.isInitialized) {
         const inactiveTime = Date.now() - lastActivity;
-        
+       
         // Если неактивен более 2 минут, помечаем как неактивного
         if (inactiveTime > 2 * 60 * 1000) {
           try {
@@ -1895,12 +1818,12 @@ class GameManager {
       }
     }, 30000);
   }
-  
+ 
   async loadLeaderboard() {
     try {
       const snapshot = await db.ref('players').orderByChild('currency').limitToLast(50).once('value');
       const players = snapshot.val();
-      
+     
       if (players) {
         this.leaderboardCache = Object.entries(players)
           .map(([id, data]) => ({
@@ -1910,6 +1833,7 @@ class GameManager {
             currency: data.currency || 0,
             avatar: data.playerAvatar || this.getDefaultAvatar(),
             lastOnline: data.lastOnline || 0,
+            role: data.role || 'user',
             isCurrentPlayer: id === this.playerId
           }))
           .sort((a, b) => {
@@ -1918,9 +1842,9 @@ class GameManager {
             return b.currency - a.currency;
           });
       }
-      
+     
       this.displayLeaderboard();
-      
+     
     } catch (error) {
       console.error('Ошибка загрузки лидерборда:', error);
       // Показываем хотя бы текущего игрока
@@ -1931,12 +1855,13 @@ class GameManager {
         currency: this.data.currency,
         avatar: this.data.playerAvatar,
         lastOnline: Date.now(),
+        role: this.data.role,
         isCurrentPlayer: true
       }];
       this.displayLeaderboard();
     }
   }
-  
+ 
   displayLeaderboard() {
     const content = document.getElementById('leaderboardContent');
     if (!content) return;
@@ -1944,16 +1869,17 @@ class GameManager {
       const rankEmoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '🎖️';
       const isOnline = this.isPlayerOnline(player.lastOnline);
       const lastOnlineText = this.getLastOnlineText(player.lastOnline);
-      
+      const roleBadge = player.role === 'admin' ? '👑' : player.role === 'moder' ? '🛡️' : player.role === 'banned' ? '🚫' : '';
+     
       return `
-        <div class="leader-item ${player.isCurrentPlayer ? 'current-player' : ''}" 
-             onclick="showPlayerProfile('${player.id}')" 
+        <div class="leader-item ${player.isCurrentPlayer ? 'current-player' : ''}"
+             onclick="showPlayerProfile('${player.id}')"
              data-player-id="${player.id}"
              style="cursor: pointer;">
           <div class="leader-rank">${rankEmoji}</div>
           <div class="leader-info">
             <div class="leader-name">
-              ${index + 1}. ${player.name}
+              ${index + 1}. ${player.name} ${roleBadge}
               <div class="online-status ${isOnline ? 'online' : 'offline'}" title="${isOnline ? 'В сети' : lastOnlineText}"></div>
             </div>
             <div class="leader-stats">Карточек: ${player.cards} • Монет: ${player.currency}</div>
@@ -1962,7 +1888,7 @@ class GameManager {
         </div>
       `;
     }).join('');
-    
+   
     // Добавляем обработчики событий для каждого элемента лидерборда
     document.querySelectorAll('.leader-item').forEach(item => {
       item.addEventListener('click', (e) => {
@@ -1974,64 +1900,64 @@ class GameManager {
       });
     });
   }
-  
+ 
   isPlayerOnline(lastOnline) {
     const now = Date.now();
     const diff = now - lastOnline;
     return diff < 45 * 1000; // Онлайн если был активен меньше 45 секунд назад
   }
-  
+ 
   getLastOnlineText(lastOnline) {
     const now = Date.now();
     const diff = now - lastOnline;
-    
+   
     if (diff < 5 * 60 * 1000) return 'В сети';
     if (diff < 60 * 60 * 1000) return `${Math.floor(diff / 60000)} мин. назад`;
     if (diff < 24 * 60 * 60 * 1000) return `${Math.floor(diff / 3600000)} ч. назад`;
     return `${Math.floor(diff / 86400000)} дн. назад`;
   }
-  
+ 
   getDefaultAvatar() {
     return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMzAiIGZpbGw9IiNmZmNjMDAiLz4KPGZ0ZXh0IHg9IjMwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5CCPC90ZXh0Pgo8L3N2Zz4K";
   }
-  
+ 
   updateUI() {
     if (!this.isInitialized) return;
-    
+   
     const currency = document.getElementById('currency');
     if (currency) currency.textContent = `💰 Валюта: ${this.data.currency} монет`;
-    
+   
     const profileName = document.getElementById('profileName');
     if (profileName) profileName.textContent = this.data.playerName;
-    
+   
     const profileNameLarge = document.getElementById('profileNameLarge');
     if (profileNameLarge) profileNameLarge.textContent = this.data.playerName;
-    
+   
     const profileCurrency = document.getElementById('profileCurrency');
     if (profileCurrency) profileCurrency.textContent = this.data.currency;
-    
+   
     const profileCards = document.getElementById('profileCards');
     if (profileCards) profileCards.textContent = this.data.collection.length;
-    
+   
     const energyDisplay = document.getElementById('energyDisplay');
     if (energyDisplay) energyDisplay.textContent = `⚡ Энергия: ${this.data.energy}/${this.constants.maxEnergy}`;
-    
+   
     // Обновление аватаров
     const profileAvatar = document.getElementById('profileAvatar');
     if (profileAvatar) profileAvatar.src = this.data.playerAvatar;
-    
+   
     const profileAvatarLarge = document.getElementById('profileAvatarLarge');
     if (profileAvatarLarge) profileAvatarLarge.src = this.data.playerAvatar;
-    
+   
     this.displayCollection();
     this.displayProfileCollection();
   }
-  
+ 
   displayCollection() {
     const collection = document.getElementById('collection');
     if (!collection) return;
     collection.innerHTML = '';
-    
+   
     this.data.collection.forEach((card, index) => {
       const cardDiv = document.createElement('div');
       cardDiv.className = `card rarity-${card.rarity}`;
@@ -2043,56 +1969,55 @@ class GameManager {
       collection.appendChild(cardDiv);
     });
   }
-  
+ 
   displayProfileCollection() {
     const grid = document.getElementById('profileCollectionGrid');
     if (!grid) return;
     grid.innerHTML = '';
-    
+   
     this.data.collection.forEach((card, index) => {
       const cardDiv = document.createElement('div');
       cardDiv.className = `collection-card rarity-${card.rarity}`;
       cardDiv.innerHTML = `<img src="${card.image}" alt="${card.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMzMzIi8+Cjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Карта</text+Cjwvc3ZnPgo='">`;
-      
+     
       cardDiv.addEventListener('click', (e) => {
         e.stopPropagation();
         this.showCardModal(card, index);
       });
-      
+     
       grid.appendChild(cardDiv);
     });
   }
-
   async displayOtherPlayerCollection(player) {
     const grid = document.getElementById('otherProfileCollectionGrid');
     if (!grid) return;
     grid.innerHTML = '';
-    
+   
     try {
       // Загружаем реальную коллекцию игрока из Firebase
       const snapshot = await db.ref(`players/${player.id}/collection`).once('value');
       const playerCards = snapshot.val() || [];
-      
+     
       playerCards.forEach((card, index) => {
         const cardDiv = document.createElement('div');
         cardDiv.className = `collection-card rarity-${card.rarity}`;
         cardDiv.innerHTML = `<img src="${card.image}" alt="${card.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMzMzIi8+Cjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Карта</text+Cjwvc3ZnPgo='">`;
-        
+       
         // Для чужих карточек показываем только информацию (без продажи)
         cardDiv.addEventListener('click', (e) => {
           e.stopPropagation();
           this.showCardModal(card, -1, true); // -1 означает что карточка не может быть продана
         });
-        
+       
         grid.appendChild(cardDiv);
       });
-      
+     
     } catch (error) {
       console.error('Ошибка загрузки коллекции игрока:', error);
       grid.innerHTML = '<p>Ошибка загрузки коллекции</p>';
     }
   }
-  
+ 
   showCardModal(card, index, isOtherPlayer = false) {
     const modal = document.getElementById('cardModal');
     if (!modal) return;
@@ -2104,7 +2029,7 @@ class GameManager {
     if (modalRarity) modalRarity.textContent = `Редкость: ${card.rarity}`;
     const modalType = document.getElementById('modalType');
     if (modalType) modalType.textContent = `Тип: ${card.type}`;
-    
+   
     const sellBtn = document.getElementById('sellCardBtn');
     if (sellBtn) {
       if (isOtherPlayer || index === -1) {
@@ -2114,29 +2039,29 @@ class GameManager {
         sellBtn.onclick = () => this.sellCard(index);
       }
     }
-    
+   
     modal.style.display = 'flex';
   }
-  
+ 
   closeCardModal() {
     const modal = document.getElementById('cardModal');
     if (modal) modal.style.display = 'none';
   }
-  
+ 
   async sellCard(index) {
     const card = this.data.collection[index];
     const prices = { Common: 10, Rare: 30, Special: 75, Legendary: 150 };
     const price = prices[card.rarity] || 10;
-    
+   
     this.data.currency += price;
     this.data.collection.splice(index, 1);
     await this.savePlayerData();
     this.updateUI();
     this.closeCardModal();
-    
+   
     this.showNotification(`Продано за ${price} монет!`);
   }
-  
+ 
   async openPack(packType = 'free') {
     if (packType === 'free') {
       const now = Date.now();
@@ -2152,14 +2077,14 @@ class GameManager {
       }
       this.data.currency -= 50;
     }
-    
+   
     const newCard = this.generateRandomCard();
     this.data.collection.push(newCard);
     await this.savePlayerData();
     this.displayNewCard(newCard);
     this.updateUI();
   }
-  
+ 
   generateRandomCard(rarityBonus = 0) {
     const rarityWeights = {
       Common: 60 - rarityBonus,
@@ -2167,10 +2092,10 @@ class GameManager {
       Special: 8 + rarityBonus / 2,
       Legendary: 2 + rarityBonus / 2
     };
-    
+   
     const totalWeight = Object.values(rarityWeights).reduce((a, b) => a + b, 0);
     let random = Math.random() * totalWeight;
-    
+   
     let selectedRarity = 'Common';
     for (const [rarity, weight] of Object.entries(rarityWeights)) {
       random -= weight;
@@ -2179,11 +2104,11 @@ class GameManager {
         break;
       }
     }
-    
+   
     const cardsOfRarity = cards.filter(card => card.rarity === selectedRarity);
     return cardsOfRarity[Math.floor(Math.random() * cardsOfRarity.length)];
   }
-  
+ 
   displayNewCard(card) {
     const lastCard = document.getElementById('lastCard');
     if (!lastCard) return;
@@ -2194,12 +2119,12 @@ class GameManager {
       </div>
     `;
   }
-  
+ 
   startTimer() {
     setInterval(() => {
       const now = Date.now();
       const timeLeft = this.constants.packCooldown - (now - this.data.lastFreePack);
-      
+     
       const timer = document.getElementById('timer');
       if (!timer) return;
       if (timeLeft <= 0) {
@@ -2208,12 +2133,12 @@ class GameManager {
         const hours = Math.floor(timeLeft / 3600000);
         const minutes = Math.floor((timeLeft % 3600000) / 60000);
         const seconds = Math.floor((timeLeft % 60000) / 1000);
-        timer.textContent = 
+        timer.textContent =
           `До бесплатного пака: ${hours}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
       }
     }, 1000);
   }
-  
+ 
   startEnergyRegen() {
     setInterval(async () => {
       if (this.data.energy < this.constants.maxEnergy) {
@@ -2223,7 +2148,7 @@ class GameManager {
       }
     }, this.constants.regenTime);
   }
-  
+ 
   showNotification(text) {
     const notification = document.createElement('div');
     notification.style.cssText = `
@@ -2241,60 +2166,62 @@ class GameManager {
     `;
     notification.textContent = text;
     document.body.appendChild(notification);
-    
+   
     setTimeout(() => {
       notification.remove();
     }, 3000);
   }
 }
-
 // АДМИН МЕНЕДЖЕР
 class AdminManager {
   static selectedPlayer = null;
   static isAuthenticated = false;
+  static adminPassword = 'admin1337'; // В реальности хранить securely, но для примера
   static adminSequence = ['KeyA', 'KeyD', 'KeyM', 'KeyI', 'KeyN', 'Digit1', 'Digit3', 'Digit3', 'Digit7'];
   static currentSequence = [];
-  
+ 
+  static showAuthModal() {
+    const modal = document.getElementById('adminAuthModal');
+    if (modal) modal.style.display = 'flex';
+    const input = document.getElementById('adminPasswordInput');
+    if (input) input.focus();
+  }
+  static verifyPassword() {
+    const input = document.getElementById('adminPasswordInput');
+    if (input && input.value === this.adminPassword) {
+      this.authenticate();
+      this.cancelAuth();
+    } else {
+      gameManager.showNotification('Неверный пароль!');
+    }
+  }
+  static cancelAuth() {
+    const modal = document.getElementById('adminAuthModal');
+    if (modal) modal.style.display = 'none';
+    const input = document.getElementById('adminPasswordInput');
+    if (input) input.value = '';
+  }
+ 
   static init() {
     this.populateCardSelects();
     this.refreshStats();
-    this.log('Admin panel ready', 'success');
-    
-    // Скрытая аутентификация - нужно ввести "admin1337" + Enter
-    let secretInput = '';
-    document.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      
-      if (e.key === 'Enter' && secretInput === 'admin1337') {
-        this.authenticate();
-        secretInput = '';
-        return;
-      }
-      
-      if (e.key.length === 1) {
-        secretInput += e.key.toLowerCase();
-        if (secretInput.length > 10) {
-          secretInput = secretInput.slice(-10);
-        }
-      } else if (e.key === 'Escape') {
-        secretInput = '';
-      }
-    });
+    this.log('Админ-панель готова', 'success');
+   
   }
-  
+ 
   static authenticate() {
     this.isAuthenticated = true;
     const adminPanel = document.getElementById('adminPanel');
     if (adminPanel) adminPanel.classList.add('show');
-    this.log('Admin authenticated successfully', 'success');
+    this.log('Админ успешно аутентифицирован', 'success');
     this.refreshStats();
   }
-  
+ 
   static close() {
     const adminPanel = document.getElementById('adminPanel');
     if (adminPanel) adminPanel.classList.remove('show');
   }
-  
+ 
   static log(message, type = 'info') {
     const logDiv = document.getElementById('adminLog');
     if (!logDiv) return;
@@ -2305,21 +2232,21 @@ class AdminManager {
     logDiv.appendChild(entry);
     logDiv.scrollTop = logDiv.scrollHeight;
   }
-  
+ 
   static clearLog() {
     const logDiv = document.getElementById('adminLog');
-    if (logDiv) logDiv.innerHTML = '<div class="log-entry">Log cleared...</div>';
+    if (logDiv) logDiv.innerHTML = '<div class="log-entry">Лог очищен...</div>';
   }
-  
+ 
   static populateCardSelects() {
     const selects = [
       document.getElementById('adminCardSelect'),
       document.getElementById('playerCardSelect')
     ];
-    
+   
     selects.forEach(select => {
       if (select) {
-        select.innerHTML = '<option value="">Select Card...</option>';
+        select.innerHTML = '<option value="">Выберите карточку...</option>';
         cards.forEach((card, index) => {
           const option = document.createElement('option');
           option.value = index;
@@ -2329,67 +2256,67 @@ class AdminManager {
       }
     });
   }
-  
+ 
   // Управление валютой
   static async setCurrency() {
     const adminCurrency = document.getElementById('adminCurrency');
     if (!adminCurrency) return;
     const amount = parseInt(adminCurrency.value);
     if (isNaN(amount) || amount < 0) {
-      this.log('Invalid currency amount', 'error');
+      this.log('Неверная сумма валюты', 'error');
       return;
     }
-    
+   
     try {
       gameManager.data.currency = amount;
       await gameManager.savePlayerData();
       gameManager.updateUI();
-      this.log(`Currency set to ${amount}`, 'success');
+      this.log(`Валюта установлена на ${amount}`, 'success');
     } catch (error) {
-      this.log(`Error setting currency: ${error.message}`, 'error');
+      this.log(`Ошибка установки валюты: ${error.message}`, 'error');
     }
   }
-  
+ 
   static async addCurrency() {
     const adminCurrency = document.getElementById('adminCurrency');
     if (!adminCurrency) return;
     const amount = parseInt(adminCurrency.value);
     if (isNaN(amount) || amount < 0) {
-      this.log('Invalid currency amount', 'error');
+      this.log('Неверная сумма валюты', 'error');
       return;
     }
-    
+   
     try {
       gameManager.data.currency += amount;
       await gameManager.savePlayerData();
       gameManager.updateUI();
-      this.log(`Added ${amount} currency`, 'success');
+      this.log(`Добавлено ${amount} валюты`, 'success');
     } catch (error) {
-      this.log(`Error adding currency: ${error.message}`, 'error');
+      this.log(`Ошибка добавления валюты: ${error.message}`, 'error');
     }
   }
-  
+ 
   // Управление карточками
   static async giveCard() {
     const adminCardSelect = document.getElementById('adminCardSelect');
     if (!adminCardSelect) return;
     const cardIndex = adminCardSelect.value;
     if (!cardIndex) {
-      this.log('No card selected', 'error');
+      this.log('Карточка не выбрана', 'error');
       return;
     }
-    
+   
     try {
       const card = cards[parseInt(cardIndex)];
       gameManager.data.collection.push(card);
       await gameManager.savePlayerData();
       gameManager.updateUI();
-      this.log(`Gave card: ${card.name}`, 'success');
+      this.log(`Выдана карточка: ${card.name}`, 'success');
     } catch (error) {
-      this.log(`Error giving card: ${error.message}`, 'error');
+      this.log(`Ошибка выдачи карточки: ${error.message}`, 'error');
     }
   }
-  
+ 
   static async giveMultipleCards() {
     const adminCardSelect = document.getElementById('adminCardSelect');
     if (!adminCardSelect) return;
@@ -2397,12 +2324,12 @@ class AdminManager {
     const adminCardAmount = document.getElementById('adminCardAmount');
     if (!adminCardAmount) return;
     const amount = parseInt(adminCardAmount.value) || 1;
-    
+   
     if (!cardIndex) {
-      this.log('No card selected', 'error');
+      this.log('Карточка не выбрана', 'error');
       return;
     }
-    
+   
     try {
       const card = cards[parseInt(cardIndex)];
       for (let i = 0; i < amount; i++) {
@@ -2410,12 +2337,12 @@ class AdminManager {
       }
       await gameManager.savePlayerData();
       gameManager.updateUI();
-      this.log(`Gave ${amount}x ${card.name}`, 'success');
+      this.log(`Выдано ${amount} x ${card.name}`, 'success');
     } catch (error) {
-      this.log(`Error giving cards: ${error.message}`, 'error');
+      this.log(`Ошибка выдачи карточек: ${error.message}`, 'error');
     }
   }
-  
+ 
   // Поиск игроков
   static async searchPlayers(query) {
     if (!query || query.length < 2) {
@@ -2423,35 +2350,35 @@ class AdminManager {
       if (playerSearchResults) playerSearchResults.style.display = 'none';
       return;
     }
-    
+   
     try {
       const snapshot = await db.ref('players').once('value');
       const players = snapshot.val() || {};
-      
+     
       const results = Object.entries(players)
-        .filter(([id, data]) => data.playerName && 
+        .filter(([id, data]) => data.playerName &&
                 data.playerName.toLowerCase().includes(query.toLowerCase()))
         .slice(0, 10);
-      
+     
       const resultsDiv = document.getElementById('playerSearchResults');
       if (!resultsDiv) return;
       resultsDiv.innerHTML = '';
-      
+     
       results.forEach(([id, data]) => {
         const item = document.createElement('div');
         item.className = 'player-search-item';
-        item.textContent = `${data.playerName} (${data.collection?.length || 0} cards, ${data.currency || 0} coins)`;
+        item.textContent = `${data.playerName} (${data.role || 'user'}) (${data.collection?.length || 0} cards, ${data.currency || 0} coins)`;
         item.onclick = () => this.selectPlayer(id, data);
         resultsDiv.appendChild(item);
       });
-      
+     
       resultsDiv.style.display = results.length > 0 ? 'block' : 'none';
-      
+     
     } catch (error) {
-      this.log(`Error searching players: ${error.message}`, 'error');
+      this.log(`Ошибка поиска игроков: ${error.message}`, 'error');
     }
   }
-  
+ 
   static selectPlayer(id, data) {
     this.selectedPlayer = { id, data };
     const selectedPlayerName = document.getElementById('selectedPlayerName');
@@ -2462,46 +2389,48 @@ class AdminManager {
     if (playerSearchResults) playerSearchResults.style.display = 'none';
     const playerSearch = document.getElementById('playerSearch');
     if (playerSearch) playerSearch.value = data.playerName;
-    this.log(`Selected player: ${data.playerName}`, 'info');
+    const playerRoleSelect = document.getElementById('playerRoleSelect');
+    if (playerRoleSelect) playerRoleSelect.value = data.role || 'user';
+    this.log(`Выбран игрок: ${data.playerName}`, 'info');
   }
-  
+ 
   // Управление другими игроками
   static async setPlayerCurrency() {
     if (!this.selectedPlayer) {
-      this.log('No player selected', 'error');
+      this.log('Игрок не выбран', 'error');
       return;
     }
-    
+   
     const playerCurrency = document.getElementById('playerCurrency');
     if (!playerCurrency) return;
     const amount = parseInt(playerCurrency.value);
     if (isNaN(amount) || amount < 0) {
-      this.log('Invalid currency amount', 'error');
+      this.log('Неверная сумма валюты', 'error');
       return;
     }
-    
+   
     try {
       await db.ref(`players/${this.selectedPlayer.id}/currency`).set(amount);
-      this.log(`Set ${this.selectedPlayer.data.playerName}'s currency to ${amount}`, 'success');
+      this.log(`Установлена валюта ${this.selectedPlayer.data.playerName} на ${amount}`, 'success');
     } catch (error) {
-      this.log(`Error setting player currency: ${error.message}`, 'error');
+      this.log(`Ошибка установки валюты игрока: ${error.message}`, 'error');
     }
   }
-  
+ 
   static async givePlayerCard() {
     if (!this.selectedPlayer) {
-      this.log('No player selected', 'error');
+      this.log('Игрок не выбран', 'error');
       return;
     }
-    
+   
     const playerCardSelect = document.getElementById('playerCardSelect');
     if (!playerCardSelect) return;
     const cardIndex = playerCardSelect.value;
     if (!cardIndex) {
-      this.log('No card selected', 'error');
+      this.log('Карточка не выбрана', 'error');
       return;
     }
-    
+   
     try {
       const card = cards[parseInt(cardIndex)];
       const playerRef = db.ref(`players/${this.selectedPlayer.id}/collection`);
@@ -2509,166 +2438,203 @@ class AdminManager {
       const collection = snapshot.val() || [];
       collection.push(card);
       await playerRef.set(collection);
-      this.log(`Gave ${card.name} to ${this.selectedPlayer.data.playerName}`, 'success');
+      this.log(`Выдана ${card.name} игроку ${this.selectedPlayer.data.playerName}`, 'success');
     } catch (error) {
-      this.log(`Error giving card to player: ${error.message}`, 'error');
+      this.log(`Ошибка выдачи карточки игроку: ${error.message}`, 'error');
     }
   }
-  
+  static async setPlayerRole() {
+    if (!this.selectedPlayer) {
+      this.log('Игрок не выбран', 'error');
+      return;
+    }
+   
+    const playerRoleSelect = document.getElementById('playerRoleSelect');
+    if (!playerRoleSelect) return;
+    const role = playerRoleSelect.value;
+   
+    try {
+      await db.ref(`players/${this.selectedPlayer.id}/role`).set(role);
+      this.selectedPlayer.data.role = role;
+      this.log(`Установлена роль ${role} для ${this.selectedPlayer.data.playerName}`, 'success');
+      if (this.selectedPlayer.id === gameManager.playerId) {
+        gameManager.data.role = role;
+      }
+    } catch (error) {
+      this.log(`Ошибка установки роли игрока: ${error.message}`, 'error');
+    }
+  }
+  static async banPlayer() {
+    if (!this.selectedPlayer) {
+      this.log('Игрок не выбран', 'error');
+      return;
+    }
+   
+    if (confirm(`Забанить ${this.selectedPlayer.data.playerName}?`)) {
+      try {
+        await db.ref(`players/${this.selectedPlayer.id}/role`).set('banned');
+        this.log(`Забанен ${this.selectedPlayer.data.playerName}`, 'warning');
+      } catch (error) {
+        this.log(`Ошибка бана игрока: ${error.message}`, 'error');
+      }
+    }
+  }
+ 
   // Статистика сервера
   static async refreshStats() {
     try {
       const snapshot = await db.ref('players').once('value');
       const players = snapshot.val() || {};
-      
+     
       const playerCount = Object.keys(players).length;
       const onlineCount = Object.values(players)
         .filter(player => gameManager.isPlayerOnline(player.lastOnline || 0)).length;
       const totalCards = Object.values(players)
         .reduce((sum, player) => sum + (player.collection?.length || 0), 0);
-      
+     
       const totalPlayers = document.getElementById('totalPlayers');
       if (totalPlayers) totalPlayers.textContent = playerCount;
       const onlinePlayers = document.getElementById('onlinePlayers');
       if (onlinePlayers) onlinePlayers.textContent = onlineCount;
       const totalCardsElem = document.getElementById('totalCards');
       if (totalCardsElem) totalCardsElem.textContent = totalCards;
-      
-      this.log('Server stats updated', 'info');
+     
+      this.log('Статистика сервера обновлена', 'info');
     } catch (error) {
-      this.log(`Error refreshing stats: ${error.message}`, 'error');
+      this.log(`Ошибка обновления статистики: ${error.message}`, 'error');
     }
   }
-  
+ 
   // Быстрые действия
   static async resetTimer() {
     try {
       gameManager.data.lastFreePack = 0;
       await gameManager.savePlayerData();
-      this.log('Free pack timer reset', 'success');
+      this.log('Таймер пака сброшен', 'success');
     } catch (error) {
-      this.log(`Error resetting timer: ${error.message}`, 'error');
+      this.log(`Ошибка сброса таймера: ${error.message}`, 'error');
     }
   }
-  
+ 
   static async clearCollection() {
     try {
       gameManager.data.collection = [];
       await gameManager.savePlayerData();
       gameManager.updateUI();
-      this.log('Collection cleared', 'warning');
+      this.log('Коллекция очищена', 'warning');
       gameManager.showNotification('Коллекция очищена!');
     } catch (error) {
-      this.log(`Error clearing collection: ${error.message}`, 'error');
+      this.log(`Ошибка очистки коллекции: ${error.message}`, 'error');
     }
   }
-  
+ 
   static async maxEnergy() {
     try {
       gameManager.data.energy = gameManager.constants.maxEnergy;
       await gameManager.savePlayerData();
       gameManager.updateUI();
-      this.log('Energy restored to maximum', 'success');
+      this.log('Энергия восстановлена на максимум', 'success');
     } catch (error) {
-      this.log(`Error setting max energy: ${error.message}`, 'error');
+      this.log(`Ошибка установки макс энергии: ${error.message}`, 'error');
     }
   }
-  
+ 
   static async giveRandomLegendary() {
     try {
       const legendaryCards = cards.filter(card => card.rarity === 'Legendary');
       if (legendaryCards.length === 0) {
-        this.log('No legendary cards available', 'error');
+        this.log('Нет легендарных карточек', 'error');
         return;
       }
-      
+     
       const randomCard = legendaryCards[Math.floor(Math.random() * legendaryCards.length)];
       gameManager.data.collection.push(randomCard);
       await gameManager.savePlayerData();
       gameManager.updateUI();
-      this.log(`Gave random legendary: ${randomCard.name}`, 'success');
+      this.log(`Выдана случайная легендарка: ${randomCard.name}`, 'success');
     } catch (error) {
-      this.log(`Error giving legendary: ${error.message}`, 'error');
+      this.log(`Ошибка выдачи легендарки: ${error.message}`, 'error');
     }
   }
-  
+ 
   // ОПАСНАЯ ЗОНА
   static async resetAllPlayers() {
-    if (!confirm('⚠️ WARNING: This will reset ALL player accounts! Are you absolutely sure?')) {
+    if (!confirm('⚠️ ВНИМАНИЕ: Это сбросит ВСЕ аккаунты игроков! Вы абсолютно уверены?')) {
       return;
     }
-    
-    if (!confirm('This action cannot be undone! Type "RESET" to confirm:')) {
+   
+    if (!confirm('Это действие нельзя отменить! Введите "RESET" для подтверждения:')) {
       return;
     }
-    
-    const confirmation = prompt('Type "RESET ALL PLAYERS" to confirm this dangerous action:');
+   
+    const confirmation = prompt('Введите "RESET ALL PLAYERS" для подтверждения опасного действия:');
     if (confirmation !== 'RESET ALL PLAYERS') {
-      this.log('Reset cancelled - incorrect confirmation', 'warning');
+      this.log('Сброс отменен - неверное подтверждение', 'warning');
       return;
     }
-    
+   
     try {
       const snapshot = await db.ref('players').once('value');
       const players = snapshot.val() || {};
-      
+     
       const resetPromises = Object.keys(players).map(playerId => {
         return db.ref(`players/${playerId}`).set({
-          playerName: players[playerId].playerName || 'Reset Player',
+          playerName: players[playerId].playerName || 'Сброс Игрока',
           playerAvatar: gameManager.getDefaultAvatar(),
           collection: [],
           currency: 100,
           lastFreePack: 0,
           energy: 50,
-          lastOnline: Date.now()
+          lastOnline: Date.now(),
+          role: 'user'
         });
       });
-      
+     
       await Promise.all(resetPromises);
-      this.log('🔄 ALL PLAYER ACCOUNTS HAVE BEEN RESET', 'warning');
-      
+      this.log('🔄 ВСЕ АККАУНТЫ ИГРОКОВ СБРОШЕНЫ', 'warning');
+     
       // Перезагружаем данные текущего игрока
       await gameManager.loadPlayerData();
       gameManager.updateUI();
-      
+     
     } catch (error) {
-      this.log(`Error resetting all players: ${error.message}`, 'error');
+      this.log(`Ошибка сброса всех игроков: ${error.message}`, 'error');
     }
   }
-  
+ 
   static async clearAllData() {
-    if (!confirm('💥 EXTREME WARNING: This will DELETE ALL DATA from the database!')) {
+    if (!confirm('💥 ЭКСТРЕМАЛЬНОЕ ПРЕДУПРЕЖДЕНИЕ: Это УДАЛИТ ВСЕ ДАННЫЕ из базы!')) {
       return;
     }
-    
-    const confirmation = prompt('Type "DELETE EVERYTHING" to confirm complete database wipe:');
+   
+    const confirmation = prompt('Введите "DELETE EVERYTHING" для подтверждения полного стирания базы:');
     if (confirmation !== 'DELETE EVERYTHING') {
-      this.log('Database wipe cancelled', 'warning');
+      this.log('Стирание базы отменено', 'warning');
       return;
     }
-    
+   
     try {
       await db.ref('players').remove();
-      this.log('💥 DATABASE WIPED - ALL DATA DELETED', 'error');
-      
+      this.log('💥 БАЗА ДАННЫХ СТЁРТА - ВСЕ ДАННЫЕ УДАЛЕНЫ', 'error');
+     
       // Перезагружаем страницу
       setTimeout(() => {
         location.reload();
       }, 2000);
-      
+     
     } catch (error) {
-      this.log(`Error wiping database: ${error.message}`, 'error');
+      this.log(`Ошибка стирания базы: ${error.message}`, 'error');
     }
   }
-  
+ 
   static shutdownServer() {
-    this.log('🛑 MAINTENANCE MODE activated', 'warning');
-    alert('🛑 Server entering maintenance mode...');
-    
+    this.log('🛑 РЕЖИМ ОБСЛУЖИВАНИЯ активирован', 'warning');
+    alert('🛑 Сервер входит в режим обслуживания...');
+   
     // Блокируем интерфейс
     document.body.style.pointerEvents = 'none';
     document.body.style.opacity = '0.5';
-    
+   
     const overlay = document.createElement('div');
     overlay.style.cssText = `
       position: fixed;
@@ -2686,15 +2652,14 @@ class AdminManager {
       z-index: 99999;
       text-align: center;
     `;
-    overlay.innerHTML = '🛑<br>MAINTENANCE MODE<br><small>Server is temporarily offline</small>';
+    overlay.innerHTML = '🛑<br>РЕЖИМ ОБСЛУЖИВАНИЯ<br><small>Сервер временно недоступен</small>';
     document.body.appendChild(overlay);
   }
 }
-
 // МЕНЕДЖЕР МЕНЮ
 class MenuManager {
   static activeMenu = null;
-  
+ 
   static toggle(menuType) {
     if (this.activeMenu === menuType) {
       this.close(menuType);
@@ -2703,18 +2668,18 @@ class MenuManager {
       this.open(menuType);
     }
   }
-  
+ 
   static open(menuType) {
     const modal = document.getElementById(`${menuType}Modal`);
     if (modal) {
       modal.style.display = 'block';
       this.activeMenu = menuType;
-      
+     
       // Обновление активной кнопки
       document.querySelectorAll('#navbar button').forEach(btn => btn.classList.remove('active'));
       const btn = document.querySelector(`#navbar button[onclick*="${menuType}"]`);
       if (btn) btn.classList.add('active');
-      
+     
       // Специальные действия для разных меню
       if (menuType === 'profile') {
         gameManager.displayProfileCollection();
@@ -2724,18 +2689,18 @@ class MenuManager {
       }
     }
   }
-  
+ 
   static close(menuType) {
     const modal = document.getElementById(`${menuType}Modal`);
     if (modal) {
       modal.style.display = 'none';
       this.activeMenu = null;
-      
+     
       // Убираем активную кнопку
       document.querySelectorAll('#navbar button').forEach(btn => btn.classList.remove('active'));
     }
   }
-  
+ 
   static closeAll() {
     document.querySelectorAll('.menu-modal').forEach(modal => {
       modal.style.display = 'none';
@@ -2744,7 +2709,6 @@ class MenuManager {
     this.activeMenu = null;
   }
 }
-
 // МЕНЕДЖЕР ПАКОВ
 class PackManager {
   static async buyCommonPack() {
@@ -2752,7 +2716,7 @@ class PackManager {
       gameManager.showNotification('Недостаточно монет!');
       return;
     }
-    
+   
     gameManager.data.currency -= 30;
     const newCard = gameManager.generateRandomCard(0);
     gameManager.data.collection.push(newCard);
@@ -2761,13 +2725,13 @@ class PackManager {
     gameManager.displayNewCard(newCard);
     gameManager.showNotification(`Получена карточка: ${newCard.name}!`);
   }
-  
+ 
   static async buyRarePack() {
     if (gameManager.data.currency < 100) {
       gameManager.showNotification('Недостаточно монет!');
       return;
     }
-    
+   
     gameManager.data.currency -= 100;
     const newCard = gameManager.generateRandomCard(20);
     gameManager.data.collection.push(newCard);
@@ -2776,13 +2740,13 @@ class PackManager {
     gameManager.displayNewCard(newCard);
     gameManager.showNotification(`Получена карточка: ${newCard.name}!`);
   }
-  
+ 
   static async buyLegendaryPack() {
     if (gameManager.data.currency < 300) {
       gameManager.showNotification('Недостаточно монет!');
       return;
     }
-    
+   
     gameManager.data.currency -= 300;
     const newCard = gameManager.generateRandomCard(40);
     gameManager.data.collection.push(newCard);
@@ -2792,58 +2756,57 @@ class PackManager {
     gameManager.showNotification(`Получена карточка: ${newCard.name}!`);
   }
 }
-
 // МЕНЕДЖЕР КЛИКЕРА
 class ClickerManager {
   static isVideoPlaying = false;
   static videoQueue = 0;
-  
+ 
   static async earnClick() {
     if (gameManager.data.energy <= 0) {
       gameManager.showNotification('Энергия закончилась!');
       return;
     }
-    
+   
     gameManager.data.energy--;
     gameManager.data.currency += Math.floor(Math.random() * 5) + 1;
     await gameManager.savePlayerData();
     gameManager.updateUI();
-    
+   
     // Эффект клика
     const catContainer = document.querySelector('.cat-container');
     if (catContainer) {
       catContainer.classList.add('click-effect');
       setTimeout(() => catContainer.classList.remove('click-effect'), 300);
     }
-    
+   
     this.playVideo();
   }
-  
+ 
   static async playVideo() {
     const video = document.getElementById('catVideo');
-    
+   
     if (!video) return;
-    
+   
     if (this.isVideoPlaying) {
       this.videoQueue++;
       return;
     }
-    
+   
     try {
       this.isVideoPlaying = true;
-      
+     
       video.currentTime = 0;
-      
+     
       const playPromise = video.play();
-      
+     
       if (playPromise !== undefined) {
         await playPromise;
-        
+       
         setTimeout(() => {
           video.pause();
           video.currentTime = 0;
           this.isVideoPlaying = false;
-          
+         
           if (this.videoQueue > 0) {
             this.videoQueue--;
             setTimeout(() => this.playVideo(), 100);
@@ -2858,20 +2821,16 @@ class ClickerManager {
     }
   }
 }
-
 // ФУНКЦИИ ДЛЯ HTML
 function openPack() {
   gameManager.openPack('free');
 }
-
 function buyPack() {
   gameManager.openPack('paid');
 }
-
 function openProfile() {
   MenuManager.toggle('profile');
 }
-
 function showNameModal() {
   const modal = document.getElementById('nameModal');
   if (modal) modal.style.display = 'flex';
@@ -2881,17 +2840,15 @@ function showNameModal() {
     setTimeout(() => input.focus(), 100);
   }
 }
-
 function closeNameModal() {
   const modal = document.getElementById('nameModal');
   if (modal) modal.style.display = 'none';
 }
-
 async function confirmNameChange() {
   const input = document.getElementById('nameInput');
   if (!input) return;
   const newName = input.value.trim();
-  
+ 
   if (newName && newName.length > 0 && newName.length <= 20) {
     gameManager.data.playerName = newName;
     await gameManager.savePlayerData();
@@ -2902,12 +2859,10 @@ async function confirmNameChange() {
     gameManager.showNotification('Введите корректное имя (1-20 символов)!');
   }
 }
-
 function changeAvatar() {
   const avatarInput = document.getElementById('avatarInput');
   if (avatarInput) avatarInput.click();
 }
-
 async function handleAvatarUpload(event) {
   const file = event.target.files[0];
   if (file && file.type.startsWith('image/')) {
@@ -2921,103 +2876,66 @@ async function handleAvatarUpload(event) {
     reader.readAsDataURL(file);
   }
 }
-
-async function showPlayerProfile(playerId) {
-  if (playerId === gameManager.playerId) {
-    showCurrentProfile();
-    return;
-  }
-  
-  // Находим игрока в кеше лидерборда
-  const player = gameManager.leaderboardCache.find(p => p.id === playerId);
-  if (!player) {
-    gameManager.showNotification('Игрок не найден');
-    return;
-  }
-  
-  try {
-    // Загружаем актуальные данные игрока из Firebase
-    const snapshot = await db.ref(`players/${playerId}`).once('value');
-    const playerData = snapshot.val();
-    
-    if (playerData) {
-      const otherProfile = document.getElementById('otherPlayerProfile');
-      const currentPlayerProfile = document.getElementById('currentPlayerProfile');
-      if (!otherProfile || !currentPlayerProfile) return;
-      
-      // Заполняем данными другого игрока
-      const otherProfileName = document.getElementById('otherProfileName');
-      if (otherProfileName) otherProfileName.textContent = playerData.playerName || player.name;
-      const otherProfileCurrency = document.getElementById('otherProfileCurrency');
-      if (otherProfileCurrency) otherProfileCurrency.textContent = playerData.currency || 0;
-      const otherProfileCards = document.getElementById('otherProfileCards');
-      if (otherProfileCards) otherProfileCards.textContent = playerData.collection ? playerData.collection.length : 0;
-      const otherProfileAvatar = document.getElementById('otherProfileAvatar');
-      if (otherProfileAvatar) otherProfileAvatar.src = playerData.playerAvatar || gameManager.getDefaultAvatar();
-      const otherProfileLastOnline = document.getElementById('otherProfileLastOnline');
-      if (otherProfileLastOnline) otherProfileLastOnline.textContent = gameManager.getLastOnlineText(playerData.lastOnline || 0);
-      
-      // Отображаем коллекцию
-      await gameManager.displayOtherPlayerCollection({ id: playerId, ...playerData });
-      
-      // Переключаем отображение
-      currentPlayerProfile.style.display = 'none';
-      otherProfile.style.display = 'block';
-    } else {
-      gameManager.showNotification('Данные игрока не найдены');
-    }
-  } catch (error) {
-    console.error('Ошибка загрузки профиля игрока:', error);
-    gameManager.showNotification('Ошибка загрузки профиля');
+async function handleInitialAvatarUpload(event) {
+  const file = event.target.files[0];
+  if (file && file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const preview = document.getElementById('initialAvatarPreview');
+      if (preview) preview.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
   }
 }
-
-function showCurrentProfile() {
-  const otherPlayerProfile = document.getElementById('otherPlayerProfile');
-  const currentPlayerProfile = document.getElementById('currentPlayerProfile');
-  
-  if (currentPlayerProfile) currentPlayerProfile.style.display = 'block';
-  if (otherPlayerProfile) otherPlayerProfile.style.display = 'none';
-  
-  gameManager.displayProfileCollection();
-}
-
 async function completeInitialSetup() {
   const input = document.getElementById('initialNameInput');
   if (!input) return;
   const playerName = input.value.trim();
-  
+ 
   if (!playerName || playerName.length < 2) {
     gameManager.showNotification('Никнейм должен содержать минимум 2 символа!');
     return;
   }
-  
+ 
   if (playerName.length > 12) {
     gameManager.showNotification('Никнейм слишком длинный (максимум 12 символов)!');
     return;
   }
-  
+ 
   // Проверяем на недопустимые символы
   const validNameRegex = /^[a-zA-Zа-яА-Я0-9_\-]+$/;
   if (!validNameRegex.test(playerName)) {
     gameManager.showNotification('Используйте только буквы, цифры, _ и -');
     return;
   }
-  
-  await gameManager.completeInitialSetup(playerName);
+ 
+  const initialAvatarInput = document.getElementById('initialAvatarInput');
+  let avatarDataUrl = null;
+  if (initialAvatarInput && initialAvatarInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+      avatarDataUrl = e.target.result;
+      await gameManager.completeInitialSetup(playerName, avatarDataUrl);
+    };
+    reader.readAsDataURL(initialAvatarInput.files[0]);
+    return; // Ждём загрузки аватарки
+  }
+ 
+  await gameManager.completeInitialSetup(playerName, avatarDataUrl);
 }
-
 // Закрытие модальных окон по клику вне них
 document.addEventListener('click', (e) => {
   if (e.target.classList.contains('menu-modal')) {
     MenuManager.closeAll();
   }
-  
+ 
   if (e.target.id === 'nameModal') {
     closeNameModal();
   }
+  if (e.target.id === 'adminAuthModal') {
+    AdminManager.cancelAuth();
+  }
 });
-
 // Обработчики клавиатуры
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
@@ -3026,18 +2944,16 @@ document.addEventListener('keydown', (e) => {
       gameManager.closeCardModal();
     }
     closeNameModal();
+    AdminManager.cancelAuth();
   }
 });
-
 // ИНИЦИАЛИЗАЦИЯ ИГРЫ
 const gameManager = new GameManager();
-
 // Запускаем инициализацию при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
   gameManager.init();
   AdminManager.init();
 });
-
 </script>
 </body>
 </html>
