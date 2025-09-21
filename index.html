@@ -1144,6 +1144,105 @@ h2 {
 .admin-section select {
   flex: 1;
 }
+/* Add styles for upgrades modal */
+#upgradesModal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  z-index: 4000;
+  animation: fadeIn 0.3s ease-out;
+}
+#upgradesContent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  border: 3px solid #ffcc00;
+  border-radius: 20px;
+  padding: 30px;
+  width: 90vw;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 0 50px rgba(255, 204, 0, 0.3);
+  animation: slideIn 0.4s ease-out;
+}
+.upgrade-item {
+  background: rgba(255, 204, 0, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 0.3s;
+}
+.upgrade-item:hover {
+  background: rgba(255, 204, 0, 0.2);
+  transform: translateX(5px);
+}
+.upgrade-info {
+  flex: 1;
+  text-align: left;
+}
+.upgrade-title {
+  font-weight: bold;
+  color: #ffcc00;
+}
+.upgrade-description {
+  color: #ccc;
+  font-size: 14px;
+}
+.upgrade-level {
+  color: #00ff99;
+  font-size: 12px;
+}
+.upgrade-button {
+  padding: 8px 15px;
+  background: linear-gradient(45deg, #00ff99, #ffcc00);
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.upgrade-button:hover {
+  transform: scale(1.05);
+}
+.upgrade-button.disabled {
+  background: linear-gradient(45deg, #666, #999);
+  cursor: not-allowed;
+}
+/* Быстрый доступ к админ панели */
+#quickAdminBtn {
+  display: none;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(45deg, #ff3333, #ff6666);
+  border-radius: 50%;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+  z-index: 9999;
+  box-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
+  align-items: center;
+  justify-content: center;
+}
+#quickAdminBtn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(255, 51, 51, 0.7);
+}
 </style>
 </head>
 <body>
@@ -1313,6 +1412,7 @@ h2 {
   <button onclick="MenuManager.toggle('profile')">👤 Профиль</button>
   <button onclick="MenuManager.toggle('clicker')">🖱 Кликалка</button>
   <button onclick="MenuManager.toggle('packs')">🎁 Паки</button>
+  <button onclick="MenuManager.toggle('upgrades')">🔥 Улучшения</button>
   <button onclick="MenuManager.toggle('leaderboard')">🏆 Топ</button>
 </div>
 <!-- МОДАЛЬНЫЕ ОКНА МЕНЮ -->
@@ -1339,18 +1439,18 @@ h2 {
           </div>
         </div>
       </div>
-    
+   
       <div class="profile-actions">
         <button onclick="showNameModal()">✏️ Сменить имя</button>
         <button onclick="changeAvatar()">🖼️ Сменить аватар</button>
       </div>
-    
+   
       <div class="profile-collection">
         <h3>Коллекция карточек</h3>
         <div id="profileCollectionGrid" class="collection-grid"></div>
       </div>
     </div>
-  
+ 
     <!-- Профиль другого игрока -->
     <div class="other-profile-section" id="otherPlayerProfile" style="display: none;">
       <button onclick="showCurrentProfile()" style="margin-bottom: 15px;">🔙 Назад к моему профилю</button>
@@ -1371,7 +1471,7 @@ h2 {
           </div>
         </div>
       </div>
-    
+   
       <div class="profile-collection">
         <h3>Коллекция карточек</h3>
         <div id="otherProfileCollectionGrid" class="collection-grid"></div>
@@ -1406,6 +1506,15 @@ h2 {
     <button onclick="PackManager.buyLegendaryPack()" style="width: 100%; margin: 10px 0; padding: 15px;">🟨 Легендарный пак (300 монет)</button>
   </div>
 </div>
+<div id="upgradesModal" class="menu-modal">
+  <div class="menu-content" id="upgradesContent">
+    <div class="menu-header">
+      <h2 class="menu-title">🔥 Улучшения</h2>
+      <button class="close-btn" onclick="MenuManager.close('upgrades')">&times;</button>
+    </div>
+    <div id="upgradesList"></div>
+  </div>
+</div>
 <div id="leaderboardModal" class="menu-modal">
   <div class="menu-content">
     <div class="menu-header">
@@ -1415,6 +1524,8 @@ h2 {
     <div id="leaderboardContent" class="leaderboard-container"></div>
   </div>
 </div>
+<!-- Кнопка быстрого доступа к админ панели -->
+<button id="quickAdminBtn" onclick="AdminManager.openQuick()" style="display: flex;">🛡️</button>
 </div>
 <script>
 // FIREBASE КОНФИГУРАЦИЯ
@@ -1468,9 +1579,14 @@ class GameManager {
       playerAvatar: this.getDefaultAvatar(),
       energy: 50,
       lastOnline: Date.now(),
-      role: 'user'
+      role: 'user',
+      upgrades: {
+        cooldownReduction: 0,
+        clickMultiplier: 0,
+        maxEnergy: 0
+      }
     };
-  
+ 
     this.constants = {
       packCooldown: 4 * 3600 * 1000,
       maxEnergy: 50,
@@ -1479,7 +1595,7 @@ class GameManager {
     // Для админ панели
     this.adminClickSequence = [];
     this.adminSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
-  
+ 
     this.isInitialized = false;
     this.leaderboardCache = [];
   }
@@ -1487,11 +1603,11 @@ class GameManager {
     // Показываем загрузку
     const loadingScreen = document.getElementById('loadingScreen');
     if (loadingScreen) loadingScreen.style.display = 'flex';
-  
+ 
     try {
       // Проверяем, первый ли это запуск
       const savedPlayerId = localStorage.getItem('playerId');
-    
+   
       if (!savedPlayerId) {
         // Первый запуск - показываем настройку
         if (loadingScreen) loadingScreen.style.display = 'none';
@@ -1500,7 +1616,7 @@ class GameManager {
         this.setupEventListeners();
         return;
       }
-    
+   
       // Проверяем наличие данных в Firebase
       this.playerId = savedPlayerId;
       const snapshot = await db.ref(`players/${this.playerId}`).once('value');
@@ -1513,13 +1629,13 @@ class GameManager {
         this.setupEventListeners();
         return;
       }
-    
+   
       // Загружаем данные игрока
       await this.loadPlayerData();
-    
+   
       // Запускаем игру
       this.startGame();
-    
+   
     } catch (error) {
       console.error('Ошибка инициализации:', error);
       this.showNotification('Ошибка загрузки данных');
@@ -1542,26 +1658,26 @@ class GameManager {
       if (loadingScreen) loadingScreen.style.display = 'flex';
       const initialSetup = document.getElementById('initialSetup');
       if (initialSetup) initialSetup.style.display = 'none';
-    
+   
       // Генерируем уникальный ID игрока
       this.playerId = 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    
+   
       // Инициализируем данные
       this.data.playerName = playerName;
       if (avatarDataUrl) {
         this.data.playerAvatar = avatarDataUrl;
       }
       this.data.lastOnline = Date.now();
-    
+   
       // Сохраняем в localStorage
       localStorage.setItem('playerId', this.playerId);
-    
+   
       // Сохраняем в Firebase
       await this.savePlayerData();
-    
+   
       // Запускаем игру
       this.startGame();
-    
+   
     } catch (error) {
       console.error('Ошибка создания профиля:', error);
       this.showNotification('Ошибка создания профиля');
@@ -1572,17 +1688,23 @@ class GameManager {
     if (loadingScreen) loadingScreen.style.display = 'none';
     const gameContainer = document.getElementById('gameContainer');
     if (gameContainer) gameContainer.style.display = 'block';
-  
+ 
     this.isInitialized = true;
     this.setupEventListeners();
     this.updateUI();
     this.startTimer();
     this.startEnergyRegen();
     this.startOnlineStatusUpdate();
-  
+ 
     // Загружаем лидерборд
     this.loadLeaderboard();
-  
+ 
+    // Проверяем доступ к быстрой админ кнопке
+    if (localStorage.getItem('adminAccessed') === 'true') {
+      const quickBtn = document.getElementById('quickAdminBtn');
+      if (quickBtn) quickBtn.style.display = 'flex';
+    }
+ 
     console.log('🎮 Reghype Card Game загружен!');
     console.log('🆔 ID игрока:', this.playerId);
     console.log('👤 Имя игрока:', this.data.playerName);
@@ -1600,13 +1722,13 @@ class GameManager {
       if (this.adminClickSequence.length > this.adminSequence.length) {
         this.adminClickSequence.shift();
       }
-    
+   
       if (JSON.stringify(this.adminClickSequence) === JSON.stringify(this.adminSequence)) {
         AdminManager.showAuthModal();
         this.adminClickSequence = [];
       }
     });
-  
+ 
     // Обработчик для Enter в поле ввода имени
     const nameInput = document.getElementById('nameInput');
     if (nameInput) {
@@ -1616,32 +1738,32 @@ class GameManager {
         }
       });
     }
-  
+ 
     // Обработчики для первоначального ввода никнейма
     const initialNameInput = document.getElementById('initialNameInput');
     const characterCounter = document.getElementById('characterCounter');
     const startButton = document.getElementById('startGameButton');
-  
+ 
     if (initialNameInput && characterCounter && startButton) {
       // Обработчик ввода с валидацией
       initialNameInput.addEventListener('input', (e) => {
         const value = e.target.value;
         const length = value.length;
-      
+     
         // Обновляем счетчик символов
         characterCounter.textContent = `${length}/12`;
-      
+     
         // Меняем цвет если приближается к лимиту
         if (length >= 10) {
           characterCounter.classList.add('warning');
         } else {
           characterCounter.classList.remove('warning');
         }
-      
+     
         // Валидация для кнопки
         const isValid = value.trim().length >= 2 && value.trim().length <= 12;
         startButton.disabled = !isValid;
-      
+     
         // Визуальная обратная связь
         if (isValid) {
           initialNameInput.style.borderColor = '#00ff99';
@@ -1651,14 +1773,14 @@ class GameManager {
           initialNameInput.style.borderColor = 'transparent';
         }
       });
-    
+   
       // Обработчик Enter
       initialNameInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && !startButton.disabled) {
           completeInitialSetup();
         }
       });
-    
+   
       // Фокус на поле при появлении
       setTimeout(() => {
         const initialSetup = document.getElementById('initialSetup');
@@ -1666,11 +1788,11 @@ class GameManager {
           initialNameInput.focus();
         }
       }, 500);
-    
+   
       // Обработчик кнопки
       startButton.onclick = () => completeInitialSetup();
     }
-  
+ 
     // Периодическое обновление лидерборда (каждую минуту)
     setInterval(() => {
       if (MenuManager.activeMenu === 'leaderboard') {
@@ -1682,9 +1804,17 @@ class GameManager {
     try {
       const snapshot = await db.ref(`players/${this.playerId}`).once('value');
       const playerData = snapshot.val();
-    
+   
       if (playerData) {
         this.data = { ...this.data, ...playerData };
+        // Инициализируем апгрейды если отсутствуют
+        if (!this.data.upgrades) {
+          this.data.upgrades = {
+            cooldownReduction: 0,
+            clickMultiplier: 0,
+            maxEnergy: 0
+          };
+        }
       } else {
         // Если данных нет в Firebase, используем локальные данные как fallback
         const localData = {
@@ -1694,9 +1824,14 @@ class GameManager {
           playerName: localStorage.getItem('playerName'),
           playerAvatar: localStorage.getItem('playerAvatar') || this.getDefaultAvatar(),
           energy: parseInt(localStorage.getItem('energy')) || 50,
-          role: localStorage.getItem('role') || 'user'
+          role: localStorage.getItem('role') || 'user',
+          upgrades: JSON.parse(localStorage.getItem('upgrades')) || {
+            cooldownReduction: 0,
+            clickMultiplier: 0,
+            maxEnergy: 0
+          }
         };
-      
+     
         if (localData.playerName) {
           this.data = { ...this.data, ...localData };
           await this.savePlayerData();
@@ -1713,18 +1848,18 @@ class GameManager {
   }
   async savePlayerData() {
     if (!this.playerId || !this.isInitialized) return;
-  
+ 
     try {
       this.data.lastOnline = Date.now();
-    
+   
       // Сохраняем в Firebase
       await db.ref(`players/${this.playerId}`).set(this.data);
-    
+   
       // Также сохраняем локально как backup
       Object.entries(this.data).forEach(([key, value]) => {
         localStorage.setItem(key, typeof value === 'object' ? JSON.stringify(value) : value);
       });
-    
+   
     } catch (error) {
       console.error('Ошибка сохранения данных:', error);
     }
@@ -1740,7 +1875,7 @@ class GameManager {
         }
       }
     }, 15000);
-  
+ 
     // Обновляем статус при закрытии страницы
     window.addEventListener('beforeunload', async () => {
       if (this.playerId) {
@@ -1749,13 +1884,13 @@ class GameManager {
           const data = JSON.stringify({
             lastOnline: Date.now() - 60000 // Ставим время на минуту назад чтобы сразу показать офлайн
           });
-        
+       
           // Пытаемся через sendBeacon (более надежно)
           if (navigator.sendBeacon) {
             navigator.sendBeacon(`https://regcandy-74da6-default-rtdb.firebaseio.com/players/${this.playerId}/lastOnline.json`,
                                  JSON.stringify(Date.now() - 60000));
           }
-        
+       
           // Также через обычный запрос как запасной вариант
           await db.ref(`players/${this.playerId}/lastOnline`).set(Date.now() - 60000);
         } catch (error) {
@@ -1763,7 +1898,7 @@ class GameManager {
         }
       }
     });
-  
+ 
     // Отслеживаем потерю фокуса окна (переключение на другую вкладку)
     document.addEventListener('visibilitychange', async () => {
       if (this.playerId) {
@@ -1780,24 +1915,24 @@ class GameManager {
         }
       }
     });
-  
+ 
     // Отслеживаем активность пользователя
     let lastActivity = Date.now();
     const updateActivity = () => {
       lastActivity = Date.now();
     };
-  
+ 
     document.addEventListener('mousedown', updateActivity);
     document.addEventListener('mousemove', updateActivity);
     document.addEventListener('keydown', updateActivity);
     document.addEventListener('scroll', updateActivity);
     document.addEventListener('touchstart', updateActivity);
-  
+ 
     // Проверяем активность каждые 30 секунд
     setInterval(async () => {
       if (this.playerId && this.isInitialized) {
         const inactiveTime = Date.now() - lastActivity;
-      
+     
         // Если неактивен более 2 минут, помечаем как неактивного
         if (inactiveTime > 2 * 60 * 1000) {
           try {
@@ -1813,7 +1948,7 @@ class GameManager {
     try {
       const snapshot = await db.ref('players').orderByChild('currency').limitToLast(50).once('value');
       const players = snapshot.val();
-    
+   
       if (players) {
         this.leaderboardCache = Object.entries(players)
           .map(([id, data]) => ({
@@ -1832,9 +1967,9 @@ class GameManager {
             return b.currency - a.currency;
           });
       }
-    
+   
       this.displayLeaderboard();
-    
+   
     } catch (error) {
       console.error('Ошибка загрузки лидерборда:', error);
       // Показываем хотя бы текущего игрока
@@ -1851,7 +1986,6 @@ class GameManager {
       this.displayLeaderboard();
     }
   }
-
   displayLeaderboard() {
     const content = document.getElementById('leaderboardContent');
     if (!content) return;
@@ -1860,9 +1994,8 @@ class GameManager {
       const isOnline = this.isPlayerOnline(player.lastOnline);
       const lastOnlineText = this.getLastOnlineText(player.lastOnline);
       const roleBadge = player.role === 'admin' ? '👑' : player.role === 'moder' ? '🛡️' : player.role === 'banned' ? '🚫' : '';
-      const avatarHtml = player.avatar && player.avatar !== this.getDefaultAvatar() ? 
+      const avatarHtml = player.avatar && player.avatar !== this.getDefaultAvatar() ?
         `<img src="${player.avatar}" alt="${player.name}" class="leader-avatar">` : '';
-
       return `
         <div class="leader-item ${player.isCurrentPlayer ? 'current-player' : ''}">
           <div class="leader-rank">${rankEmoji}</div>
@@ -1879,7 +2012,6 @@ class GameManager {
       `;
     }).join('');
   }
-
   isPlayerOnline(lastOnline) {
     const now = Date.now();
     const diff = now - lastOnline;
@@ -1888,7 +2020,7 @@ class GameManager {
   getLastOnlineText(lastOnline) {
     const now = Date.now();
     const diff = now - lastOnline;
-  
+ 
     if (diff < 5 * 60 * 1000) return 'В сети';
     if (diff < 60 * 60 * 1000) return `${Math.floor(diff / 60000)} мин. назад`;
     if (diff < 24 * 60 * 60 * 1000) return `${Math.floor(diff / 3600000)} ч. назад`;
@@ -1897,42 +2029,56 @@ class GameManager {
   getDefaultAvatar() {
     return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMzAiIGZpbGw9IiNmZmNjMDAiLz4KPGZ0ZXh0IHg9IjMwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5CCPC90ZXh0Pgo8L3N2Zz4K";
   }
+  getPackCooldown() {
+    const baseCooldown = this.constants.packCooldown;
+    const reduction = this.data.upgrades.cooldownReduction * 1800000; // 30 мин на уровень
+    return Math.max(baseCooldown - reduction, 3600000); // Минимум 1 час
+  }
+  getClickAmount() {
+    return Math.floor(Math.random() * 5) + 1 + this.data.upgrades.clickMultiplier;
+  }
+  getMaxEnergy() {
+    return this.constants.maxEnergy + this.data.upgrades.maxEnergy * 10;
+  }
   updateUI() {
     if (!this.isInitialized) return;
-  
+ 
     const currency = document.getElementById('currency');
     if (currency) currency.textContent = `💰 Валюта: ${this.data.currency} монет`;
-  
+ 
     const profileName = document.getElementById('profileName');
     if (profileName) profileName.textContent = this.data.playerName;
-  
+ 
     const profileNameLarge = document.getElementById('profileNameLarge');
     if (profileNameLarge) profileNameLarge.textContent = this.data.playerName;
-  
+ 
     const profileCurrency = document.getElementById('profileCurrency');
     if (profileCurrency) profileCurrency.textContent = this.data.currency;
-  
+ 
     const profileCards = document.getElementById('profileCards');
     if (profileCards) profileCards.textContent = this.data.collection.length;
-  
+ 
     const energyDisplay = document.getElementById('energyDisplay');
-    if (energyDisplay) energyDisplay.textContent = `⚡ Энергия: ${this.data.energy}/${this.constants.maxEnergy}`;
-  
+    if (energyDisplay) energyDisplay.textContent = `⚡ Энергия: ${this.data.energy}/${this.getMaxEnergy()}`;
+ 
     // Обновление аватаров
     const profileAvatar = document.getElementById('profileAvatar');
     if (profileAvatar) profileAvatar.src = this.data.playerAvatar;
-  
+ 
     const profileAvatarLarge = document.getElementById('profileAvatarLarge');
     if (profileAvatarLarge) profileAvatarLarge.src = this.data.playerAvatar;
-  
+ 
     this.displayCollection();
     this.displayProfileCollection();
+    if (MenuManager.activeMenu === 'upgrades') {
+      UpgradeManager.displayUpgrades();
+    }
   }
   displayCollection() {
     const collection = document.getElementById('collection');
     if (!collection) return;
     collection.innerHTML = '';
-  
+ 
     this.data.collection.forEach((card, index) => {
       const cardDiv = document.createElement('div');
       cardDiv.className = `card rarity-${card.rarity}`;
@@ -1948,17 +2094,17 @@ class GameManager {
     const grid = document.getElementById('profileCollectionGrid');
     if (!grid) return;
     grid.innerHTML = '';
-  
+ 
     this.data.collection.forEach((card, index) => {
       const cardDiv = document.createElement('div');
       cardDiv.className = `collection-card rarity-${card.rarity}`;
       cardDiv.innerHTML = `<img src="${card.image}" alt="${card.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMzMzIi8+Cjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Карта</text+Cjwvc3ZnPgo='">`;
-    
+   
       cardDiv.addEventListener('click', (e) => {
         e.stopPropagation();
         this.showCardModal(card, index);
       });
-    
+   
       grid.appendChild(cardDiv);
     });
   }
@@ -1966,26 +2112,26 @@ class GameManager {
     const grid = document.getElementById('otherProfileCollectionGrid');
     if (!grid) return;
     grid.innerHTML = '';
-  
+ 
     try {
       // Загружаем реальную коллекцию игрока из Firebase
       const snapshot = await db.ref(`players/${player.id}/collection`).once('value');
       const playerCards = snapshot.val() || [];
-    
+   
       playerCards.forEach((card, index) => {
         const cardDiv = document.createElement('div');
         cardDiv.className = `collection-card rarity-${card.rarity}`;
         cardDiv.innerHTML = `<img src="${card.image}" alt="${card.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMzMzIi8+Cjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Карта</text+Cjwvc3ZnPgo='">`;
-      
+     
         // Для чужих карточек показываем только информацию (без продажи)
         cardDiv.addEventListener('click', (e) => {
           e.stopPropagation();
           this.showCardModal(card, -1, true); // -1 означает что карточка не может быть продана
         });
-      
+     
         grid.appendChild(cardDiv);
       });
-    
+   
     } catch (error) {
       console.error('Ошибка загрузки коллекции игрока:', error);
       grid.innerHTML = '<p>Ошибка загрузки коллекции</p>';
@@ -2002,7 +2148,7 @@ class GameManager {
     if (modalRarity) modalRarity.textContent = `Редкость: ${card.rarity}`;
     const modalType = document.getElementById('modalType');
     if (modalType) modalType.textContent = `Тип: ${card.type}`;
-  
+ 
     const sellBtn = document.getElementById('sellCardBtn');
     if (sellBtn) {
       if (isOtherPlayer || index === -1) {
@@ -2012,7 +2158,7 @@ class GameManager {
         sellBtn.onclick = () => this.sellCard(index);
       }
     }
-  
+ 
     modal.style.display = 'flex';
   }
   closeCardModal() {
@@ -2023,19 +2169,19 @@ class GameManager {
     const card = this.data.collection[index];
     const prices = { Common: 10, Rare: 30, Special: 75, Legendary: 150 };
     const price = prices[card.rarity] || 10;
-  
+ 
     this.data.currency += price;
     this.data.collection.splice(index, 1);
     await this.savePlayerData();
     this.updateUI();
     this.closeCardModal();
-  
+ 
     this.showNotification(`Продано за ${price} монет!`);
   }
   async openPack(packType = 'free') {
     if (packType === 'free') {
       const now = Date.now();
-      if (now - this.data.lastFreePack < this.constants.packCooldown) {
+      if (now - this.data.lastFreePack < this.getPackCooldown()) {
         this.showNotification('Бесплатный пак еще не готов!');
         return;
       }
@@ -2047,7 +2193,7 @@ class GameManager {
       }
       this.data.currency -= 50;
     }
-  
+ 
     const newCard = this.generateRandomCard();
     this.data.collection.push(newCard);
     await this.savePlayerData();
@@ -2061,10 +2207,10 @@ class GameManager {
       Special: 8 + rarityBonus / 2,
       Legendary: 2 + rarityBonus / 2
     };
-  
+ 
     const totalWeight = Object.values(rarityWeights).reduce((a, b) => a + b, 0);
     let random = Math.random() * totalWeight;
-  
+ 
     let selectedRarity = 'Common';
     for (const [rarity, weight] of Object.entries(rarityWeights)) {
       random -= weight;
@@ -2073,7 +2219,7 @@ class GameManager {
         break;
       }
     }
-  
+ 
     const cardsOfRarity = cards.filter(card => card.rarity === selectedRarity);
     return cardsOfRarity[Math.floor(Math.random() * cardsOfRarity.length)];
   }
@@ -2090,8 +2236,8 @@ class GameManager {
   startTimer() {
     setInterval(() => {
       const now = Date.now();
-      const timeLeft = this.constants.packCooldown - (now - this.data.lastFreePack);
-    
+      const timeLeft = this.getPackCooldown() - (now - this.data.lastFreePack);
+   
       const timer = document.getElementById('timer');
       if (!timer) return;
       if (timeLeft <= 0) {
@@ -2107,7 +2253,7 @@ class GameManager {
   }
   startEnergyRegen() {
     setInterval(async () => {
-      if (this.data.energy < this.constants.maxEnergy) {
+      if (this.data.energy < this.getMaxEnergy()) {
         this.data.energy++;
         await this.savePlayerData();
         this.updateUI();
@@ -2131,7 +2277,7 @@ class GameManager {
     `;
     notification.textContent = text;
     document.body.appendChild(notification);
-  
+ 
     setTimeout(() => {
       notification.remove();
     }, 3000);
@@ -2169,14 +2315,25 @@ class AdminManager {
     this.populateCardSelects();
     this.refreshStats();
     this.log('Админ-панель готова', 'success');
-  
+ 
   }
   static authenticate() {
     this.isAuthenticated = true;
+    localStorage.setItem('adminAccessed', 'true');
+    const quickBtn = document.getElementById('quickAdminBtn');
+    if (quickBtn) quickBtn.style.display = 'flex';
     const adminPanel = document.getElementById('adminPanel');
     if (adminPanel) adminPanel.classList.add('show');
     this.log('Админ успешно аутентифицирован', 'success');
     this.refreshStats();
+  }
+  static openQuick() {
+    if (this.isAuthenticated || localStorage.getItem('adminAccessed') === 'true') {
+      const adminPanel = document.getElementById('adminPanel');
+      if (adminPanel) adminPanel.classList.add('show');
+    } else {
+      this.showAuthModal();
+    }
   }
   static close() {
     const adminPanel = document.getElementById('adminPanel');
@@ -2201,7 +2358,7 @@ class AdminManager {
       document.getElementById('adminCardSelect'),
       document.getElementById('playerCardSelect')
     ];
-  
+ 
     selects.forEach(select => {
       if (select) {
         select.innerHTML = '<option value="">Выберите карточку...</option>';
@@ -2223,7 +2380,7 @@ class AdminManager {
       this.log('Неверная сумма валюты', 'error');
       return;
     }
-  
+ 
     try {
       gameManager.data.currency = amount;
       await gameManager.savePlayerData();
@@ -2241,7 +2398,7 @@ class AdminManager {
       this.log('Неверная сумма валюты', 'error');
       return;
     }
-  
+ 
     try {
       gameManager.data.currency += amount;
       await gameManager.savePlayerData();
@@ -2260,7 +2417,7 @@ class AdminManager {
       this.log('Карточка не выбрана', 'error');
       return;
     }
-  
+ 
     try {
       const card = cards[parseInt(cardIndex)];
       gameManager.data.collection.push(card);
@@ -2278,12 +2435,12 @@ class AdminManager {
     const adminCardAmount = document.getElementById('adminCardAmount');
     if (!adminCardAmount) return;
     const amount = parseInt(adminCardAmount.value) || 1;
-  
+ 
     if (!cardIndex) {
       this.log('Карточка не выбрана', 'error');
       return;
     }
-  
+ 
     try {
       const card = cards[parseInt(cardIndex)];
       for (let i = 0; i < amount; i++) {
@@ -2303,20 +2460,20 @@ class AdminManager {
       if (playerSearchResults) playerSearchResults.style.display = 'none';
       return;
     }
-  
+ 
     try {
       const snapshot = await db.ref('players').once('value');
       const players = snapshot.val() || {};
-    
+   
       const results = Object.entries(players)
         .filter(([id, data]) => data.playerName &&
                 data.playerName.toLowerCase().includes(query.toLowerCase()))
         .slice(0, 10);
-    
+   
       const resultsDiv = document.getElementById('playerSearchResults');
       if (!resultsDiv) return;
       resultsDiv.innerHTML = '';
-    
+   
       results.forEach(([id, data]) => {
         const item = document.createElement('div');
         item.className = 'player-search-item';
@@ -2324,9 +2481,9 @@ class AdminManager {
         item.onclick = () => this.selectPlayer(id, data);
         resultsDiv.appendChild(item);
       });
-    
+   
       resultsDiv.style.display = results.length > 0 ? 'block' : 'none';
-    
+   
     } catch (error) {
       this.log(`Ошибка поиска игроков: ${error.message}`, 'error');
     }
@@ -2351,7 +2508,7 @@ class AdminManager {
       this.log('Игрок не выбран', 'error');
       return;
     }
-  
+ 
     const playerCurrency = document.getElementById('playerCurrency');
     if (!playerCurrency) return;
     const amount = parseInt(playerCurrency.value);
@@ -2359,7 +2516,7 @@ class AdminManager {
       this.log('Неверная сумма валюты', 'error');
       return;
     }
-  
+ 
     try {
       await db.ref(`players/${this.selectedPlayer.id}/currency`).set(amount);
       this.log(`Установлена валюта ${this.selectedPlayer.data.playerName} на ${amount}`, 'success');
@@ -2372,7 +2529,7 @@ class AdminManager {
       this.log('Игрок не выбран', 'error');
       return;
     }
-  
+ 
     const playerCardSelect = document.getElementById('playerCardSelect');
     if (!playerCardSelect) return;
     const cardIndex = playerCardSelect.value;
@@ -2380,7 +2537,7 @@ class AdminManager {
       this.log('Карточка не выбрана', 'error');
       return;
     }
-  
+ 
     try {
       const card = cards[parseInt(cardIndex)];
       const playerRef = db.ref(`players/${this.selectedPlayer.id}/collection`);
@@ -2398,11 +2555,11 @@ class AdminManager {
       this.log('Игрок не выбран', 'error');
       return;
     }
-  
+ 
     const playerRoleSelect = document.getElementById('playerRoleSelect');
     if (!playerRoleSelect) return;
     const role = playerRoleSelect.value;
-  
+ 
     try {
       await db.ref(`players/${this.selectedPlayer.id}/role`).set(role);
       this.selectedPlayer.data.role = role;
@@ -2419,7 +2576,7 @@ class AdminManager {
       this.log('Игрок не выбран', 'error');
       return;
     }
-  
+ 
     if (confirm(`Забанить ${this.selectedPlayer.data.playerName}?`)) {
       try {
         await db.ref(`players/${this.selectedPlayer.id}/role`).set('banned');
@@ -2434,20 +2591,20 @@ class AdminManager {
     try {
       const snapshot = await db.ref('players').once('value');
       const players = snapshot.val() || {};
-    
+   
       const playerCount = Object.keys(players).length;
       const onlineCount = Object.values(players)
         .filter(player => gameManager.isPlayerOnline(player.lastOnline || 0)).length;
       const totalCards = Object.values(players)
         .reduce((sum, player) => sum + (player.collection?.length || 0), 0);
-    
+   
       const totalPlayers = document.getElementById('totalPlayers');
       if (totalPlayers) totalPlayers.textContent = playerCount;
       const onlinePlayers = document.getElementById('onlinePlayers');
       if (onlinePlayers) onlinePlayers.textContent = onlineCount;
       const totalCardsElem = document.getElementById('totalCards');
       if (totalCardsElem) totalCardsElem.textContent = totalCards;
-    
+   
       this.log('Статистика сервера обновлена', 'info');
     } catch (error) {
       this.log(`Ошибка обновления статистики: ${error.message}`, 'error');
@@ -2458,7 +2615,7 @@ class AdminManager {
     try {
       gameManager.data.lastFreePack = 0;
       await gameManager.savePlayerData();
-      this.log('Таймер пака сброшен', 'success');
+      this.log('Таймер сброшен', 'success');
     } catch (error) {
       this.log(`Ошибка сброса таймера: ${error.message}`, 'error');
     }
@@ -2476,7 +2633,7 @@ class AdminManager {
   }
   static async maxEnergy() {
     try {
-      gameManager.data.energy = gameManager.constants.maxEnergy;
+      gameManager.data.energy = gameManager.getMaxEnergy();
       await gameManager.savePlayerData();
       gameManager.updateUI();
       this.log('Энергия восстановлена на максимум', 'success');
@@ -2491,7 +2648,7 @@ class AdminManager {
         this.log('Нет легендарных карточек', 'error');
         return;
       }
-    
+   
       const randomCard = legendaryCards[Math.floor(Math.random() * legendaryCards.length)];
       gameManager.data.collection.push(randomCard);
       await gameManager.savePlayerData();
@@ -2506,21 +2663,21 @@ class AdminManager {
     if (!confirm('⚠️ ВНИМАНИЕ: Это сбросит ВСЕ аккаунты игроков! Вы абсолютно уверены?')) {
       return;
     }
-  
+ 
     if (!confirm('Это действие нельзя отменить! Введите "RESET" для подтверждения:')) {
       return;
     }
-  
+ 
     const confirmation = prompt('Введите "RESET ALL PLAYERS" для подтверждения опасного действия:');
     if (confirmation !== 'RESET ALL PLAYERS') {
       this.log('Сброс отменен - неверное подтверждение', 'warning');
       return;
     }
-  
+ 
     try {
       const snapshot = await db.ref('players').once('value');
       const players = snapshot.val() || {};
-    
+   
       const resetPromises = Object.keys(players).map(playerId => {
         return db.ref(`players/${playerId}`).set({
           playerName: players[playerId].playerName || 'Сброс Игрока',
@@ -2530,17 +2687,22 @@ class AdminManager {
           lastFreePack: 0,
           energy: 50,
           lastOnline: Date.now(),
-          role: 'user'
+          role: 'user',
+          upgrades: {
+            cooldownReduction: 0,
+            clickMultiplier: 0,
+            maxEnergy: 0
+          }
         });
       });
-    
+   
       await Promise.all(resetPromises);
       this.log('🔄 ВСЕ АККАУНТЫ ИГРОКОВ СБРОШЕНЫ', 'warning');
-    
+   
       // Перезагружаем данные текущего игрока
       await gameManager.loadPlayerData();
       gameManager.updateUI();
-    
+   
     } catch (error) {
       this.log(`Ошибка сброса всех игроков: ${error.message}`, 'error');
     }
@@ -2549,22 +2711,22 @@ class AdminManager {
     if (!confirm('💥 ЭКСТРЕМАЛЬНОЕ ПРЕДУПРЕЖДЕНИЕ: Это УДАЛИТ ВСЕ ДАННЫЕ из базы!')) {
       return;
     }
-  
+ 
     const confirmation = prompt('Введите "DELETE EVERYTHING" для подтверждения полного стирания базы:');
     if (confirmation !== 'DELETE EVERYTHING') {
       this.log('Стирание базы отменено', 'warning');
       return;
     }
-  
+ 
     try {
       await db.ref('players').remove();
       this.log('💥 БАЗА ДАННЫХ СТЁРТА - ВСЕ ДАННЫЕ УДАЛЕНЫ', 'error');
-    
+   
       // Перезагружаем страницу
       setTimeout(() => {
         location.reload();
       }, 2000);
-    
+   
     } catch (error) {
       this.log(`Ошибка стирания базы: ${error.message}`, 'error');
     }
@@ -2572,11 +2734,11 @@ class AdminManager {
   static shutdownServer() {
     this.log('🛑 РЕЖИМ ОБСЛУЖИВАНИЯ активирован', 'warning');
     alert('🛑 Сервер входит в режим обслуживания...');
-  
+ 
     // Блокируем интерфейс
     document.body.style.pointerEvents = 'none';
     document.body.style.opacity = '0.5';
-  
+ 
     const overlay = document.createElement('div');
     overlay.style.cssText = `
       position: fixed;
@@ -2614,18 +2776,20 @@ class MenuManager {
     if (modal) {
       modal.style.display = 'block';
       this.activeMenu = menuType;
-    
+   
       // Обновление активной кнопки
       document.querySelectorAll('#navbar button').forEach(btn => btn.classList.remove('active'));
       const btn = document.querySelector(`#navbar button[onclick*="${menuType}"]`);
       if (btn) btn.classList.add('active');
-    
+   
       // Специальные действия для разных меню
       if (menuType === 'profile') {
         gameManager.displayProfileCollection();
         showCurrentProfile();
       } else if (menuType === 'leaderboard') {
         gameManager.loadLeaderboard();
+      } else if (menuType === 'upgrades') {
+        UpgradeManager.displayUpgrades();
       }
     }
   }
@@ -2634,7 +2798,7 @@ class MenuManager {
     if (modal) {
       modal.style.display = 'none';
       this.activeMenu = null;
-    
+   
       // Убираем активную кнопку
       document.querySelectorAll('#navbar button').forEach(btn => btn.classList.remove('active'));
     }
@@ -2647,6 +2811,82 @@ class MenuManager {
     this.activeMenu = null;
   }
 }
+// МЕНЕДЖЕР УЛУЧШЕНИЙ
+class UpgradeManager {
+  static upgrades = [
+    {
+      id: 'cooldownReduction',
+      title: 'Сокращение кулдауна',
+      description: 'Уменьшает время ожидания бесплатного пака на 30 мин',
+      baseCost: 100,
+      maxLevel: 5
+    },
+    {
+      id: 'clickMultiplier',
+      title: 'Множитель кликов',
+      description: 'Увеличивает заработок с кликов на +1 монету',
+      baseCost: 150,
+      maxLevel: 10
+    },
+    {
+      id: 'maxEnergy',
+      title: 'Макс энергия',
+      description: 'Увеличивает максимум энергии на +10',
+      baseCost: 200,
+      maxLevel: 5
+    }
+  ];
+  static getCost(upgrade, level) {
+    return Math.floor(upgrade.baseCost * Math.pow(1.5, level));
+  }
+  static async buyUpgrade(id) {
+    const upgrade = this.upgrades.find(u => u.id === id);
+    if (!upgrade) return;
+ 
+    const currentLevel = gameManager.data.upgrades[id] || 0;
+    if (currentLevel >= upgrade.maxLevel) {
+      gameManager.showNotification('Максимальный уровень!');
+      return;
+    }
+ 
+    const cost = this.getCost(upgrade, currentLevel);
+    if (gameManager.data.currency < cost) {
+      gameManager.showNotification('Недостаточно монет!');
+      return;
+    }
+ 
+    gameManager.data.currency -= cost;
+    gameManager.data.upgrades[id] = currentLevel + 1;
+    await gameManager.savePlayerData();
+    gameManager.updateUI();
+    gameManager.showNotification(`${upgrade.title} улучшено до уровня ${currentLevel + 1}!`);
+  }
+  static displayUpgrades() {
+    const list = document.getElementById('upgradesList');
+    if (!list) return;
+    list.innerHTML = '';
+ 
+    this.upgrades.forEach(upgrade => {
+      const currentLevel = gameManager.data.upgrades[upgrade.id] || 0;
+      const cost = this.getCost(upgrade, currentLevel);
+      const isMax = currentLevel >= upgrade.maxLevel;
+ 
+      const item = document.createElement('div');
+      item.className = 'upgrade-item';
+      item.innerHTML = `
+        <div class="upgrade-info">
+          <div class="upgrade-title">${upgrade.title}</div>
+          <div class="upgrade-description">${upgrade.description}</div>
+          <div class="upgrade-level">Уровень: ${currentLevel}/${upgrade.maxLevel}</div>
+        </div>
+        <button class="upgrade-button ${isMax ? 'disabled' : ''}" ${isMax ? 'disabled' : ''} onclick="UpgradeManager.buyUpgrade('${upgrade.id}')">
+          Купить (${cost} монет)
+        </button>
+      `;
+      list.appendChild(item);
+    });
+  }
+}
 // МЕНЕДЖЕР ПАКОВ
 class PackManager {
   static async buyCommonPack() {
@@ -2654,7 +2894,7 @@ class PackManager {
       gameManager.showNotification('Недостаточно монет!');
       return;
     }
-  
+ 
     gameManager.data.currency -= 30;
     const newCard = gameManager.generateRandomCard(0);
     gameManager.data.collection.push(newCard);
@@ -2668,7 +2908,7 @@ class PackManager {
       gameManager.showNotification('Недостаточно монет!');
       return;
     }
-  
+ 
     gameManager.data.currency -= 100;
     const newCard = gameManager.generateRandomCard(20);
     gameManager.data.collection.push(newCard);
@@ -2682,7 +2922,7 @@ class PackManager {
       gameManager.showNotification('Недостаточно монет!');
       return;
     }
-  
+ 
     gameManager.data.currency -= 300;
     const newCard = gameManager.generateRandomCard(40);
     gameManager.data.collection.push(newCard);
@@ -2701,46 +2941,46 @@ class ClickerManager {
       gameManager.showNotification('Энергия закончилась!');
       return;
     }
-  
+ 
     gameManager.data.energy--;
-    gameManager.data.currency += Math.floor(Math.random() * 5) + 1;
+    gameManager.data.currency += gameManager.getClickAmount();
     await gameManager.savePlayerData();
     gameManager.updateUI();
-  
+ 
     // Эффект клика
     const catContainer = document.querySelector('.cat-container');
     if (catContainer) {
       catContainer.classList.add('click-effect');
       setTimeout(() => catContainer.classList.remove('click-effect'), 300);
     }
-  
+ 
     this.playVideo();
   }
   static async playVideo() {
     const video = document.getElementById('catVideo');
-  
+ 
     if (!video) return;
-  
+ 
     if (this.isVideoPlaying) {
       this.videoQueue++;
       return;
     }
-  
+ 
     try {
       this.isVideoPlaying = true;
-    
+   
       video.currentTime = 0;
-    
+   
       const playPromise = video.play();
-    
+   
       if (playPromise !== undefined) {
         await playPromise;
-      
+     
         setTimeout(() => {
           video.pause();
           video.currentTime = 0;
           this.isVideoPlaying = false;
-        
+       
           if (this.videoQueue > 0) {
             this.videoQueue--;
             setTimeout(() => this.playVideo(), 100);
@@ -2880,6 +3120,33 @@ const gameManager = new GameManager();
 document.addEventListener('DOMContentLoaded', () => {
   gameManager.init();
   AdminManager.init();
-});displayLeaderboard()</script>
+});
+
+// Add this in the script tag, preferably in GameManager's setupEventListeners or at the end
+
+let fPressCount = 0;
+let fPressTimer = null;
+
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'KeyF') {
+    fPressCount++;
+    if (fPressTimer) clearTimeout(fPressTimer);
+    fPressTimer = setTimeout(() => {
+      fPressCount = 0;
+    }, 1000); // 1 second window for presses
+
+    if (fPressCount >= 3) {
+      if (localStorage.getItem('adminAccessed') === 'true') {
+        AdminManager.openQuick();
+      }
+      fPressCount = 0;
+    }
+  } else {
+    fPressCount = 0;
+  }
+});
+
+
+</script>
 </body>
 </html>
