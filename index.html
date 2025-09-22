@@ -3220,6 +3220,7 @@ class PackManager {
 class ClickerManager {
   static isVideoPlaying = false;
   static videoQueue = 0;
+  
   static async earnClick() {
     if (gameManager.data.energy <= 0) {
       gameManager.showNotification('Энергия закончилась!');
@@ -3240,60 +3241,62 @@ class ClickerManager {
  
     this.playVideo();
   }
-static async playVideo() {
-  const video = document.getElementById('catVideo');
-  const catContainer = document.querySelector('.cat-container');
+  
+  static async playVideo() {
+    const video = document.getElementById('catVideo');
+    const catContainer = document.querySelector('.cat-container');
 
-  if (!video) return;
+    if (!video) return;
 
-  // Проверяем, загрузилось ли видео
-  if (video.readyState === 0) {
-    // Видео не загрузилось - используем фоллбек
-    if (catContainer) {
-      catContainer.classList.add('fallback');
-    }
-    return;
-  }
-
-  if (this.isVideoPlaying) {
-    this.videoQueue++;
-    return;
-  }
-
-  try {
-    this.isVideoPlaying = true;
-    
-    // Убираем фоллбек если видео работает
-    if (catContainer) {
-      catContainer.classList.remove('fallback');
+    // Проверяем, загрузилось ли видео
+    if (video.readyState === 0) {
+      // Видео не загрузилось - используем фоллбек
+      if (catContainer) {
+        catContainer.classList.add('fallback');
+      }
+      return;
     }
 
-    video.currentTime = 0;
+    if (this.isVideoPlaying) {
+      this.videoQueue++;
+      return;
+    }
 
-    const playPromise = video.play();
+    try {
+      this.isVideoPlaying = true;
+      
+      // Убираем фоллбек если видео работает
+      if (catContainer) {
+        catContainer.classList.remove('fallback');
+      }
 
-    if (playPromise !== undefined) {
-      await playPromise;
+      video.currentTime = 0;
 
-      setTimeout(() => {
-        video.pause();
-        video.currentTime = 0;
+      const playPromise = video.play();
+
+      if (playPromise !== undefined) {
+        await playPromise;
+
+        setTimeout(() => {
+          video.pause();
+          video.currentTime = 0;
+          this.isVideoPlaying = false;
+
+          if (this.videoQueue > 0) {
+            this.videoQueue--;
+            setTimeout(() => this.playVideo(), 100);
+          }
+        }, 1000);
+      } else {
         this.isVideoPlaying = false;
-
-        if (this.videoQueue > 0) {
-          this.videoQueue--;
-          setTimeout(() => this.playVideo(), 100);
-        }
-      }, 1000);
-    } else {
+      }
+    } catch (error) {
+      console.log('Видео недоступно, используем фоллбек');
       this.isVideoPlaying = false;
-    }
-  } catch (error) {
-    console.log('Видео недоступно, используем фоллбек');
-    this.isVideoPlaying = false;
-    // Включаем фоллбек с эмодзи
-    if (catContainer) {
-      catContainer.classList.add('fallback');
+      // Включаем фоллбек с эмодзи
+      if (catContainer) {
+        catContainer.classList.add('fallback');
+      }
     }
   }
 }
