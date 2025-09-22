@@ -1525,7 +1525,7 @@ h2 {
   </div>
 </div>
 <!-- Кнопка быстрого доступа к админ панели -->
-<button id="quickAdminBtn" onclick="AdminManager.openQuick()" style="display: flex;">🛡️</button>
+<button id="quickAdminBtn" onclick="AdminManager.openQuick()" style="display: none;">🛡️</button>
 </div>
 <script>
 // FIREBASE КОНФИГУРАЦИЯ
@@ -1938,48 +1938,50 @@ class GameManager {
       }
     }, 30000);
   }
-  async loadLeaderboard() {
-    try {
-      const snapshot = await db.ref('players').orderByChild('currency').limitToLast(50).once('value');
-      const players = snapshot.val();
-   
-      if (players) {
-        this.leaderboardCache = Object.entries(players)
-          .map(([id, data]) => ({
-            id,
-            name: data.playerName || 'Неизвестный игрок',
-            cards: data.collection ? data.collection.length : 0,
-            currency: data.currency || 0,
-            avatar: data.playerAvatar || this.getDefaultAvatar(),
-            lastOnline: data.lastOnline || 0,
-            role: data.role || 'user',
-            isCurrentPlayer: id === this.playerId
-          }))
-          .sort((a, b) => {
-            // Сначала по количеству карточек, потом по валюте
-            if (b.cards !== a.cards) return b.cards - a.cards;
-            return b.currency - a.currency;
-          });
-      }
-   
-      this.displayLeaderboard();
-   
-    } catch (error) {
-      console.error('Ошибка загрузки лидерборда:', error);
-      // Показываем хотя бы текущего игрока
-      this.leaderboardCache = [{
-        id: this.playerId,
-        name: this.data.playerName || 'Вы',
-        cards: this.data.collection.length,
-        currency: this.data.currency,
-        avatar: this.data.playerAvatar,
-        lastOnline: Date.now(),
-        role: this.data.role,
-        isCurrentPlayer: true
-      }];
-      this.displayLeaderboard();
+// В классе GameManager замените метод loadLeaderboard на этот:
+
+async loadLeaderboard() {
+  try {
+    const snapshot = await db.ref('players').orderByChild('currency').limitToLast(50).once('value');
+    const players = snapshot.val();
+
+    if (players) {
+      this.leaderboardCache = Object.entries(players)
+        .map(([id, data]) => ({
+          id,
+          name: data.playerName || 'Неизвестный игрок',
+          cards: data.collection ? data.collection.length : 0,
+          currency: data.currency || 0,
+          avatar: data.playerAvatar || this.getDefaultAvatar(),
+          lastOnline: data.lastOnline || 0,
+          role: data.role || 'user',
+          isCurrentPlayer: id === this.playerId
+        }))
+        .filter(player => !randomNames.includes(player.name) && player.name !== 'Неизвестный игрок' && player.name !== 'Сброс Игрока')
+        .sort((a, b) => {
+          if (b.cards !== a.cards) return b.cards - a.cards;
+          return b.currency - a.currency;
+        });
     }
+
+    this.displayLeaderboard();
+
+  } catch (error) {
+    console.error('Ошибка загрузки лидерборда:', error);
+    // Показываем хотя бы текущего игрока
+    this.leaderboardCache = [{
+      id: this.playerId,
+      name: this.data.playerName || 'Вы',
+      cards: this.data.collection.length,
+      currency: this.data.currency,
+      avatar: this.data.playerAvatar,
+      lastOnline: Date.now(),
+      role: this.data.role,
+      isCurrentPlayer: true
+    }];
+    this.displayLeaderboard();
   }
+}
   displayLeaderboard() {
     const content = document.getElementById('leaderboardContent');
     if (!content) return;
