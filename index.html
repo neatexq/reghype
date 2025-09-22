@@ -1599,53 +1599,64 @@ class GameManager {
     this.isInitialized = false;
     this.leaderboardCache = [];
   }
-  async init() {
-    // Показываем загрузку
-    const loadingScreen = document.getElementById('loadingScreen');
-    if (loadingScreen) loadingScreen.style.display = 'flex';
- 
-    try {
-      // Проверяем, первый ли это запуск
-      const savedPlayerId = localStorage.getItem('playerId');
-   
-      if (!savedPlayerId) {
-        // Первый запуск - показываем настройку
-        if (loadingScreen) loadingScreen.style.display = 'none';
-        const initialSetup = document.getElementById('initialSetup');
-        if (initialSetup) initialSetup.style.display = 'flex';
-        this.setupEventListeners();
-        return;
-      }
-   
-      // Проверяем наличие данных в Firebase
-      this.playerId = savedPlayerId;
-      const snapshot = await db.ref(`players/${this.playerId}`).once('value');
-      if (!snapshot.val()) {
-        // Данные в Firebase отсутствуют - показываем начальную настройку заново
-        localStorage.clear();
-        if (loadingScreen) loadingScreen.style.display = 'none';
-        const initialSetup = document.getElementById('initialSetup');
-        if (initialSetup) initialSetup.style.display = 'flex';
-        this.setupEventListeners();
-        return;
-      }
-   
-      // Загружаем данные игрока
-      await this.loadPlayerData();
-   
-      // Запускаем игру
-      this.startGame();
-   
-    } catch (error) {
-      console.error('Ошибка инициализации:', error);
-      this.showNotification('Ошибка загрузки данных');
-      // В случае ошибки показываем настройку
+// В классе GameManager замените метод init на этот:
+
+async init() {
+  // Показываем загрузку
+  const loadingScreen = document.getElementById('loadingScreen');
+  if (loadingScreen) loadingScreen.style.display = 'flex';
+  try {
+    // Проверяем, первый ли это запуск
+    const savedPlayerId = localStorage.getItem('playerId');
+
+    if (!savedPlayerId) {
+      // Первый запуск - показываем настройку
       if (loadingScreen) loadingScreen.style.display = 'none';
       const initialSetup = document.getElementById('initialSetup');
       if (initialSetup) initialSetup.style.display = 'flex';
       this.setupEventListeners();
+      return;
     }
+
+    // Проверяем наличие данных в Firebase
+    this.playerId = savedPlayerId;
+    const snapshot = await db.ref(`players/${this.playerId}`).once('value');
+    if (!snapshot.val()) {
+      // Данные в Firebase отсутствуют - показываем начальную настройку заново
+      localStorage.clear();
+      if (loadingScreen) loadingScreen.style.display = 'none';
+      const initialSetup = document.getElementById('initialSetup');
+      if (initialSetup) initialSetup.style.display = 'flex';
+      this.setupEventListeners();
+      return;
+    }
+
+    // Загружаем данные игрока
+    await this.loadPlayerData();
+
+    // Проверяем наличие никнейма
+    if (!this.data.playerName || this.data.playerName.trim() === '' || this.data.playerName === 'Неизвестный игрок' || randomNames.includes(this.data.playerName)) {
+      // Если никнейма нет или он дефолтный - показываем настройку
+      if (loadingScreen) loadingScreen.style.display = 'none';
+      const initialSetup = document.getElementById('initialSetup');
+      if (initialSetup) initialSetup.style.display = 'flex';
+      this.setupEventListeners();
+      return;
+    }
+
+    // Запускаем игру
+    this.startGame();
+
+  } catch (error) {
+    console.error('Ошибка инициализации:', error);
+    this.showNotification('Ошибка загрузки данных');
+    // В случае ошибки показываем настройку
+    if (loadingScreen) loadingScreen.style.display = 'none';
+    const initialSetup = document.getElementById('initialSetup');
+    if (initialSetup) initialSetup.style.display = 'flex';
+    this.setupEventListeners();
   }
+}
   cleanup() {
     // Очищаем интервалы при закрытии
     if (this.onlineInterval) {
