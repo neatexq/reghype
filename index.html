@@ -1750,23 +1750,32 @@ h2 {
       <button class="close-btn" onclick="MenuManager.close('clicker')">&times;</button>
     </div>
 <p>Нажимай на котика и зарабатывай монеты!</p>
-<div class="cat-container" onclick="playCatOnce(); ClickerManager.earnClick();">
-  <video id="catVideo" muted preload="auto" playsinline width="150" height="150">
-    <source src="cat_petting.mp4" type="video/mp4">
-    Ваш браузер не поддерживает видео.
-  </video>
+<div class="cat-container" onclick="ClickerManager.earnClick()">
+  <img src="komaru.png" alt="Котик" class="cat-img" />
 </div>
 
-<script>
-  const catVideo = document.getElementById('catVideo');
-
-  function playCatOnce() {
-    // Сбросить видео на начало
-    catVideo.currentTime = 0;
-    // Воспроизвести один раз
-    catVideo.play();
+<style>
+  .cat-container {
+    display: inline-block;
+    cursor: pointer;
   }
-</script>
+
+  .cat-img {
+    width: 150px;
+    height: 150px;
+    border: 4px solid yellow; /* рамка */
+    box-shadow: 0 0 15px yellow, 0 0 30px gold; /* светящийся эффект */
+    border-radius: 10px; /* закруглённые углы, можно убрать */
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+
+  .cat-img:active {
+    transform: scale(0.9); /* сжатие при нажатии */
+    box-shadow: 0 0 25px yellow, 0 0 50px gold; /* усиление свечения при клике */
+  }
+</style>
+
+
 
 
     <p id="energyDisplay">⚡ Энергия: 50/50</p>
