@@ -1749,13 +1749,26 @@ h2 {
       <h2 class="menu-title">🖱 Кликалка</h2>
       <button class="close-btn" onclick="MenuManager.close('clicker')">&times;</button>
     </div>
-    <p>Нажимай на котика и зарабатывай монеты!</p>
-    <div class="cat-container" onclick="ClickerManager.earnClick()">
-      <video id="catVideo" muted preload="auto">
-        <source src="cat_petting.mp4" type="video/mp4">
-        Ваш браузер не поддерживает видео.
-      </video>
-    </div>
+<p>Нажимай на котика и зарабатывай монеты!</p>
+<div class="cat-container" onclick="playCatOnce(); ClickerManager.earnClick();">
+  <video id="catVideo" muted preload="auto" playsinline width="150" height="150">
+    <source src="cat_petting.mp4" type="video/mp4">
+    Ваш браузер не поддерживает видео.
+  </video>
+</div>
+
+<script>
+  const catVideo = document.getElementById('catVideo');
+
+  function playCatOnce() {
+    // Сбросить видео на начало
+    catVideo.currentTime = 0;
+    // Воспроизвести один раз
+    catVideo.play();
+  }
+</script>
+
+
     <p id="energyDisplay">⚡ Энергия: 50/50</p>
   </div>
 </div>
