@@ -3538,6 +3538,39 @@ document.addEventListener('keydown', (e) => {
 });
 
 
+// Определяем шансы для каждой редкости
+const rarityChances = {
+  'common': 80,      // 80% шанс на выпадение
+  'rare': 10,        // 10% шанс
+  'legendary': 5,    // 5% шанс
+  'special': 5       // 5% шанс (самая редкая)
+};
+
+// Проверяем, что общая сумма шансов равна 100
+const totalChance = Object.values(rarityChances).reduce((sum, chance) => sum + chance, 0);
+if (totalChance !== 100) {
+  console.error('Сумма шансов не равна 100%. Пожалуйста, проверьте значения.');
+}
+
+// Функция для случайного выбора редкости на основе шансов
+function getRandomRarity() {
+  const rand = Math.random() * 100; // Генерируем случайное число от 0 до 100
+  let cumulativeChance = 0;
+
+  // Ищем редкость, которая соответствует сгенерированному числу
+  for (const rarity in rarityChances) {
+    cumulativeChance += rarityChances[rarity];
+    if (rand < cumulativeChance) {
+      return rarity;
+    }
+  }
+
+  // Если что-то пошло не так, вернем common
+  return 'common';
+}
+
+
 </script>
 </body>
 </html>
+
