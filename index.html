@@ -1663,37 +1663,41 @@ async init() {
       clearInterval(this.onlineInterval);
     }
   }
-  async completeInitialSetup(playerName, avatarDataUrl = null) {
-    try {
-      const loadingScreen = document.getElementById('loadingScreen');
-      if (loadingScreen) loadingScreen.style.display = 'flex';
-      const initialSetup = document.getElementById('initialSetup');
-      if (initialSetup) initialSetup.style.display = 'none';
-   
-      // Генерируем уникальный ID игрока
-      this.playerId = 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-   
-      // Инициализируем данные
-      this.data.playerName = playerName;
-      if (avatarDataUrl) {
-        this.data.playerAvatar = avatarDataUrl;
-      }
-      this.data.lastOnline = Date.now();
-   
-      // Сохраняем в localStorage
-      localStorage.setItem('playerId', this.playerId);
-   
-      // Сохраняем в Firebase
-      await this.savePlayerData();
-   
-      // Запускаем игру
-      this.startGame();
-   
-    } catch (error) {
-      console.error('Ошибка создания профиля:', error);
-      this.showNotification('Ошибка создания профиля');
+async completeInitialSetup(playerName, avatarDataUrl = null) {
+  try {
+    const loadingScreen = document.getElementById('loadingScreen');
+    if (loadingScreen) loadingScreen.style.display = 'flex';
+    const initialSetup = document.getElementById('initialSetup');
+    if (initialSetup) initialSetup.style.display = 'none';
+ 
+    // Генерируем уникальный ID игрока
+    this.playerId = 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+ 
+    // Инициализируем данные
+    this.data.playerName = playerName;
+    if (avatarDataUrl) {
+      this.data.playerAvatar = avatarDataUrl;
     }
+    this.data.lastOnline = Date.now();
+ 
+    // ВАЖНО: Сохраняем в localStorage ДО вызова savePlayerData
+    localStorage.setItem('playerId', this.playerId);
+    localStorage.setItem('playerName', playerName);
+    
+    // Помечаем как инициализированный
+    this.isInitialized = true;
+ 
+    // Сохраняем в Firebase
+    await this.savePlayerData();
+ 
+    // Запускаем игру
+    this.startGame();
+ 
+  } catch (error) {
+    console.error('Ошибка создания профиля:', error);
+    this.showNotification('Ошибка создания профиля');
   }
+}
   startGame() {
     const loadingScreen = document.getElementById('loadingScreen');
     if (loadingScreen) loadingScreen.style.display = 'none';
@@ -1851,24 +1855,32 @@ async init() {
       console.error('Ошибка загрузки данных игрока:', error);
     }
   }
-  async savePlayerData() {
-    if (!this.playerId || !this.isInitialized) return;
- 
-    try {
-      this.data.lastOnline = Date.now();
-   
-      // Сохраняем в Firebase
+async savePlayerData() {
+  if (!this.playerId) return;
+
+  try {
+    this.data.lastOnline = Date.now();
+
+    // Сохраняем в Firebase только если инициализированы
+    if (this.isInitialized) {
       await db.ref(`players/${this.playerId}`).set(this.data);
-   
-      // Также сохраняем локально как backup
-      Object.entries(this.data).forEach(([key, value]) => {
-        localStorage.setItem(key, typeof value === 'object' ? JSON.stringify(value) : value);
-      });
-   
-    } catch (error) {
-      console.error('Ошибка сохранения данных:', error);
     }
+
+    // ВСЕГДА сохраняем локально
+    localStorage.setItem('playerId', this.playerId);
+    Object.entries(this.data).forEach(([key, value]) => {
+      localStorage.setItem(key, typeof value === 'object' ? JSON.stringify(value) : value);
+    });
+
+  } catch (error) {
+    console.error('Ошибка сохранения данных:', error);
+    // Если Firebase не работает, хотя бы локально сохраним
+    localStorage.setItem('playerId', this.playerId);
+    Object.entries(this.data).forEach(([key, value]) => {
+      localStorage.setItem(key, typeof value === 'object' ? JSON.stringify(value) : value);
+    });
   }
+}
   startOnlineStatusUpdate() {
     // Обновляем статус онлайн каждые 15 секунд
     this.onlineInterval = setInterval(async () => {
@@ -1968,7 +1980,8 @@ async loadLeaderboard() {
           role: data.role || 'user',
           isCurrentPlayer: id === this.playerId
         }))
-        .filter(player => !randomNames.includes(player.name) && player.name !== 'Неизвестный игрок' && player.name !== 'Сброс Игрока')
+        // УБИРАЕМ ФИЛЬТРАЦИЮ - показываем всех игроков
+        .filter(player => player.name.trim() !== '' && player.name !== 'Неизвестный игрок')
         .sort((a, b) => {
           if (b.cards !== a.cards) return b.cards - a.cards;
           return b.currency - a.currency;
