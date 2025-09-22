@@ -1564,43 +1564,75 @@ h2 {
   transform: scale(1.1) rotate(10deg);
   box-shadow: 0 0 15px rgba(233,30,99,0.7);
 }
+
+/* Стили для настроек */
+.settings-section {
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(233,30,99,0.1);
+  border-radius: 10px;
+  border: 1px solid rgba(233,30,99,0.3);
+}
+
+.settings-section h3 {
+  color: #FFEBEE;
+  margin-bottom: 10px;
+}
+
+.settings-section select,
+.settings-section input[type="range"] {
+  width: 100%;
+  padding: 8px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid #E91E63;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.settings-section span {
+  display: block;
+  text-align: right;
+  margin-top: 5px;
+  color: #ccc;
+}
 </style>
 </head>
 <body>
 <!-- ЭКРАН ЗАГРУЗКИ -->
 <div id="loadingScreen" class="loading-screen">
   <div class="loading-spinner"></div>
-  <div class="loading-text">Загрузка Reghype...</div>
+  <div class="loading-text" data-i18n="loading">Загрузка Reghype...</div>
 </div>
 <!-- ПЕРВОНАЧАЛЬНАЯ НАСТРОЙКА -->
 <div id="initialSetup" style="display: none;">
   <div class="setup-content">
-    <h2>Добро пожаловать в Reghype!</h2>
-    <p>Придумайте уникальный никнейм для начала игры:</p>
+    <h2 data-i18n="welcome">Добро пожаловать в Reghype!</h2>
+    <p data-i18n="choose_nickname">Придумайте уникальный никнейм для начала игры:</p>
     <div class="nickname-input-container">
       <input type="text" id="initialNameInput" placeholder="Ваш никнейм" maxlength="12" autocomplete="off" spellcheck="false">
       <div class="character-counter" id="characterCounter">0/12</div>
     </div>
-    <p>Выберите аватарку (опционально):</p>
+    <p data-i18n="choose_avatar">Выберите аватарку (опционально):</p>
     <input type="file" id="initialAvatarInput" accept="image/*" onchange="handleInitialAvatarUpload(event)">
     <img id="initialAvatarPreview" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMzAiIGZpbGw9IiNmZmNjMDAiLz4KPGZ0ZXh0IHg9IjMwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5CCPC90ZXh0Pgo8L3N2Zz4K" alt="Предпросмотр аватарки" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid #ffcc00; margin: 10px 0;">
-    <button class="start-button" id="startGameButton" disabled>🚀 Начать игру</button>
+    <button class="start-button" id="startGameButton" disabled data-i18n="start_game">🚀 Начать игру</button>
   </div>
 </div>
 <!-- ОСНОВНАЯ ИГРА -->
 <div id="gameContainer">
-<h1 id="logo">Reghype</h1>
+<h1 id="logo" data-i18n="title">Reghype</h1>
 <!-- ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ -->
 <div class="profile-info">
   <img id="profileAvatar" class="profile-avatar" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMzAiIGZpbGw9IiNmZmNjMDAiLz4KPGZ0ZXh0IHg9IjMwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5CCPC90ZXh0Pgo8L3N2Zz4K" alt="Аватар" onclick="openProfile()">
-  <div class="profile-name" id="profileName" onclick="openProfile()">Игрок</div>
+  <div class="profile-name" id="profileName" onclick="openProfile()" data-i18n="player">Игрок</div>
 </div>
-<div id="currency">💰 Валюта: 100 монет</div>
-<button onclick="openPack()">🎁 Бесплатный пак</button>
-<button onclick="buyPack()">💎 Купить пак (50 монет)</button>
-<p class="timer" id="timer"></p>
+<div id="currency" data-i18n="currency">💰 Валюта: 100 монет</div>
+<button onclick="openPack()" data-i18n="free_pack">🎁 Бесплатный пак</button>
+<button onclick="buyPack()" data-i18n="buy_pack">💎 Купить пак (50 монет)</button>
+<p class="timer" id="timer" data-i18n="timer"></p>
 <div id="lastCard"></div>
-<h2>Моя коллекция</h2>
+<h2 data-i18n="collection">Моя коллекция</h2>
 <div id="collection"></div>
 <!-- СКРЫТЫЕ ЭЛЕМЕНТЫ -->
 <input type="file" id="avatarInput" accept="image/*" onchange="handleAvatarUpload(event)">
@@ -1609,101 +1641,101 @@ h2 {
 <!-- АДМИН ПАНЕЛЬ -->
 <div id="adminPanel">
   <div class="admin-header">
-    <h2>🛡️ АДМИН-ПАНЕЛЬ</h2>
+    <h2 data-i18n="admin_panel">🛡️ АДМИН-ПАНЕЛЬ</h2>
     <button class="admin-close-btn" onclick="AdminManager.close()">&times;</button>
   </div>
   <div class="admin-section">
-    <h3>💰 Управление валютой</h3>
+    <h3 data-i18n="currency_management">💰 Управление валютой</h3>
     <div class="admin-input-group">
       <input type="number" class="admin-input" id="adminCurrency" placeholder="Сумма" min="0" max="999999">
-      <button class="admin-button success" onclick="AdminManager.setCurrency()">Установить</button>
-      <button class="admin-button" onclick="AdminManager.addCurrency()">Добавить</button>
+      <button class="admin-button success" onclick="AdminManager.setCurrency()" data-i18n="set">Установить</button>
+      <button class="admin-button" onclick="AdminManager.addCurrency()" data-i18n="add">Добавить</button>
     </div>
   </div>
   <div class="admin-section">
-    <h3>🃏 Управление карточками</h3>
+    <h3 data-i18n="card_management">🃏 Управление карточками</h3>
     <div class="admin-input-group">
       <select class="admin-select" id="adminCardSelect">
-        <option value="">Выберите карточку...</option>
+        <option value="" data-i18n="choose_card">Выберите карточку...</option>
       </select>
-      <button class="admin-button success" onclick="AdminManager.giveCard()">Выдать</button>
+      <button class="admin-button success" onclick="AdminManager.giveCard()" data-i18n="give">Выдать</button>
     </div>
     <div class="admin-input-group">
       <input type="number" class="admin-input" id="adminCardAmount" placeholder="Количество" min="1" max="50" value="1">
-      <button class="admin-button" onclick="AdminManager.giveMultipleCards()">Выдать несколько</button>
+      <button class="admin-button" onclick="AdminManager.giveMultipleCards()" data-i18n="give_multiple">Выдать несколько</button>
     </div>
   </div>
   <div class="admin-section">
-    <h3>👥 Управление игроками</h3>
+    <h3 data-i18n="player_management">👥 Управление игроками</h3>
     <div class="admin-input-group">
       <input type="text" class="admin-input" id="playerSearch" placeholder="Поиск игрока..." onkeyup="AdminManager.searchPlayers(this.value)">
     </div>
     <div id="playerSearchResults" class="player-search-list" style="display: none;"></div>
     <div id="selectedPlayer" style="display: none;">
-      <p>Выбран: <span id="selectedPlayerName"></span></p>
+      <p data-i18n="selected_player">Выбран: <span id="selectedPlayerName"></span></p>
       <div class="admin-input-group">
         <input type="number" class="admin-input" id="playerCurrency" placeholder="Валюта">
-        <button class="admin-button" onclick="AdminManager.setPlayerCurrency()">Установить деньги</button>
+        <button class="admin-button" onclick="AdminManager.setPlayerCurrency()" data-i18n="set_currency">Установить деньги</button>
       </div>
       <div class="admin-input-group">
         <select class="admin-select" id="playerCardSelect">
-          <option value="">Выберите карточку...</option>
+          <option value="" data-i18n="choose_card">Выберите карточку...</option>
         </select>
-        <button class="admin-button" onclick="AdminManager.givePlayerCard()">Выдать карточку</button>
+        <button class="admin-button" onclick="AdminManager.givePlayerCard()" data-i18n="give_card">Выдать карточку</button>
       </div>
       <div class="admin-input-group">
         <select class="admin-select" id="playerRoleSelect">
-          <option value="user">Пользователь</option>
-          <option value="moder">Модератор</option>
-          <option value="admin">Администратор</option>
-          <option value="banned">Забанен</option>
+          <option value="user" data-i18n="user">Пользователь</option>
+          <option value="moder" data-i18n="moder">Модератор</option>
+          <option value="admin" data-i18n="admin">Администратор</option>
+          <option value="banned" data-i18n="banned">Забанен</option>
         </select>
-        <button class="admin-button warning" onclick="AdminManager.setPlayerRole()">Установить роль</button>
+        <button class="admin-button warning" onclick="AdminManager.setPlayerRole()" data-i18n="set_role">Установить роль</button>
       </div>
-      <button class="admin-button danger" onclick="AdminManager.banPlayer()">Забанить игрока</button>
+      <button class="admin-button danger" onclick="AdminManager.banPlayer()" data-i18n="ban_player">Забанить игрока</button>
     </div>
   </div>
   <div class="admin-section">
-    <h3>📊 Статистика сервера</h3>
+    <h3 data-i18n="server_stats">📊 Статистика сервера</h3>
     <div id="serverStats">
-      <p>Всего игроков: <span id="totalPlayers">Загрузка...</span></p>
-      <p>Онлайн игроков: <span id="onlinePlayers">Загрузка...</span></p>
-      <p>Всего карточек: <span id="totalCards">Загрузка...</span></p>
+      <p data-i18n="total_players">Всего игроков: <span id="totalPlayers">Загрузка...</span></p>
+      <p data-i18n="online_players">Онлайн игроков: <span id="onlinePlayers">Загрузка...</span></p>
+      <p data-i18n="total_cards">Всего карточек: <span id="totalCards">Загрузка...</span></p>
     </div>
-    <button class="admin-button" onclick="AdminManager.refreshStats()">Обновить статистику</button>
+    <button class="admin-button" onclick="AdminManager.refreshStats()" data-i18n="refresh_stats">Обновить статистику</button>
   </div>
   <div class="admin-section">
-    <h3>🔧 Быстрые действия</h3>
-    <button class="admin-button" onclick="AdminManager.resetTimer()">Сбросить таймер</button>
-    <button class="admin-button warning" onclick="AdminManager.clearCollection()">Очистить мои карточки</button>
-    <button class="admin-button" onclick="AdminManager.maxEnergy()">Макс энергия</button>
-    <button class="admin-button success" onclick="AdminManager.giveRandomLegendary()">Выдать легендарку</button>
+    <h3 data-i18n="quick_actions">🔧 Быстрые действия</h3>
+    <button class="admin-button" onclick="AdminManager.resetTimer()" data-i18n="reset_timer">Сбросить таймер</button>
+    <button class="admin-button warning" onclick="AdminManager.clearCollection()" data-i18n="clear_collection">Очистить мои карточки</button>
+    <button class="admin-button" onclick="AdminManager.maxEnergy()" data-i18n="max_energy">Макс энергия</button>
+    <button class="admin-button success" onclick="AdminManager.giveRandomLegendary()" data-i18n="give_legendary">Выдать легендарку</button>
   </div>
   <div class="admin-danger-zone">
-    <h3>⚠️ ОПАСНАЯ ЗОНА</h3>
-    <div class="admin-warning">
+    <h3 data-i18n="danger_zone">⚠️ ОПАСНАЯ ЗОНА</h3>
+    <div class="admin-warning" data-i18n="danger_warning">
       Эти действия необратимы и затрагивают ВСЕХ игроков!
     </div>
-    <button class="admin-button danger" onclick="AdminManager.resetAllPlayers()">🔄 СБРОСИТЬ ВСЕ АККАУНТЫ</button>
-    <button class="admin-button danger" onclick="AdminManager.clearAllData()">💥 СТЕРЕТЬ БАЗУ ДАННЫХ</button>
-    <button class="admin-button danger" onclick="AdminManager.shutdownServer()">🛑 РЕЖИМ ОБСЛУЖИВАНИЯ</button>
+    <button class="admin-button danger" onclick="AdminManager.resetAllPlayers()" data-i18n="reset_all">🔄 СБРОСИТЬ ВСЕ АККАУНТЫ</button>
+    <button class="admin-button danger" onclick="AdminManager.clearAllData()" data-i18n="clear_data">💥 СТЕРЕТЬ БАЗУ ДАННЫХ</button>
+    <button class="admin-button danger" onclick="AdminManager.shutdownServer()" data-i18n="maintenance_mode">🛑 РЕЖИМ ОБСЛУЖИВАНИЯ</button>
   </div>
   <div class="admin-section">
-    <h3>📝 Лог админа</h3>
+    <h3 data-i18n="admin_log">📝 Лог админа</h3>
     <div id="adminLog" class="admin-log">
       <div class="log-entry">Админ-панель инициализирована...</div>
     </div>
-    <button class="admin-button" onclick="AdminManager.clearLog()">Очистить лог</button>
+    <button class="admin-button" onclick="AdminManager.clearLog()" data-i18n="clear_log">Очистить лог</button>
   </div>
 </div>
 <!-- МОДАЛЬНОЕ ОКНО АУТЕНТИФИКАЦИИ АДМИНА -->
 <div id="adminAuthModal">
   <div class="admin-auth-content">
-    <h3>Админ Аутентификация</h3>
+    <h3 data-i18n="admin_auth">Админ Аутентификация</h3>
     <input type="password" id="adminPasswordInput" placeholder="Введите пароль">
     <div class="admin-auth-actions">
-      <button onclick="AdminManager.verifyPassword()">✅ Войти</button>
-      <button onclick="AdminManager.cancelAuth()" style="background: linear-gradient(45deg,#ff3333,#ff6666);">❌ Отмена</button>
+      <button onclick="AdminManager.verifyPassword()" data-i18n="login">✅ Войти</button>
+      <button onclick="AdminManager.cancelAuth()" style="background: linear-gradient(45deg,#ff3333,#ff6666);" data-i18n="cancel">❌ Отмена</button>
     </div>
   </div>
 </div>
@@ -1712,89 +1744,90 @@ h2 {
   <div id="cardContent">
     <img id="modalImage" src="">
     <h2 id="modalName"></h2>
-    <p id="modalRarity"></p>
-    <p id="modalType"></p>
-    <button id="sellCardBtn">💰 Продать карточку</button>
+    <p id="modalRarity" data-i18n="rarity"></p>
+    <p id="modalType" data-i18n="type"></p>
+    <button id="sellCardBtn" data-i18n="sell_card">💰 Продать карточку</button>
   </div>
 </div>
 <!-- МОДАЛЬНОЕ ОКНО СМЕНЫ ИМЕНИ -->
 <div id="nameModal">
   <div class="name-content">
-    <h3>Смена имени</h3>
+    <h3 data-i18n="change_name_title">Смена имени</h3>
     <input type="text" id="nameInput" placeholder="Введите новое имя" maxlength="20">
     <div class="name-actions">
-      <button onclick="confirmNameChange()">✅ Сохранить</button>
-      <button onclick="closeNameModal()" style="background: linear-gradient(45deg,#ff3333,#ff6666);">❌ Отмена</button>
+      <button onclick="confirmNameChange()" data-i18n="save">✅ Сохранить</button>
+      <button onclick="closeNameModal()" style="background: linear-gradient(45deg,#ff3333,#ff6666);" data-i18n="cancel">❌ Отмена</button>
     </div>
   </div>
 </div>
 <!-- НАВБАР -->
 <div id="navbar">
-  <button onclick="MenuManager.toggle('profile')">👤 Профиль</button>
-  <button onclick="MenuManager.toggle('clicker')">🖱 Кликалка</button>
-  <button onclick="MenuManager.toggle('packs')">🎁 Паки</button>
-  <button onclick="MenuManager.toggle('upgrades')">🔥 Улучшения</button>
-  <button onclick="MenuManager.toggle('leaderboard')">🏆 Топ</button>
+  <button onclick="MenuManager.toggle('profile')" data-i18n="profile">👤 Профиль</button>
+  <button onclick="MenuManager.toggle('clicker')" data-i18n="clicker">🖱 Кликалка</button>
+  <button onclick="MenuManager.toggle('packs')" data-i18n="packs">🎁 Паки</button>
+  <button onclick="MenuManager.toggle('upgrades')" data-i18n="upgrades">🔥 Улучшения</button>
+  <button onclick="MenuManager.toggle('leaderboard')" data-i18n="leaderboard">🏆 Топ</button>
+  <button onclick="MenuManager.toggle('settings')" data-i18n="settings">⚙️ Настройки</button>
 </div>
 <!-- МОДАЛЬНЫЕ ОКНА МЕНЮ -->
 <div id="profileModal" class="menu-modal">
   <div class="menu-content">
     <div class="menu-header">
-      <h2 class="menu-title">👤 Профиль</h2>
+      <h2 class="menu-title" data-i18n="profile">👤 Профиль</h2>
       <button class="close-btn" onclick="MenuManager.close('profile')">&times;</button>
     </div>
     <div class="profile-section" id="currentPlayerProfile">
       <div class="profile-header">
         <img id="profileAvatarLarge" class="profile-avatar-large" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMzAiIGZpbGw9IiNmZmNjMDAiLz4KPGZ0ZXh0IHg9IjMwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5CCPC90ZXh0Pgo8L3N2Zz4K" alt="Аватар" onclick="changeAvatar()">
         <div class="profile-details">
-          <h3 id="profileNameLarge">Игрок</h3>
+          <h3 id="profileNameLarge" data-i18n="player">Игрок</h3>
           <div class="profile-stats">
             <div class="stat-item">
               <span class="stat-value" id="profileCurrency">100</span>
-              <span class="stat-label">Монет</span>
+              <span class="stat-label" data-i18n="coins">Монет</span>
             </div>
             <div class="stat-item">
               <span class="stat-value" id="profileCards">0</span>
-              <span class="stat-label">Карточек</span>
+              <span class="stat-label" data-i18n="cards">Карточек</span>
             </div>
           </div>
         </div>
       </div>
    
       <div class="profile-actions">
-        <button onclick="showNameModal()">✏️ Сменить имя</button>
-        <button onclick="changeAvatar()">🖼️ Сменить аватар</button>
+        <button onclick="showNameModal()" data-i18n="change_name">✏️ Сменить имя</button>
+        <button onclick="changeAvatar()" data-i18n="change_avatar">🖼️ Сменить аватар</button>
       </div>
    
       <div class="profile-collection">
-        <h3>Коллекция карточек</h3>
+        <h3 data-i18n="card_collection">Коллекция карточек</h3>
         <div id="profileCollectionGrid" class="collection-grid"></div>
       </div>
     </div>
  
     <!-- Профиль другого игрока -->
     <div class="other-profile-section" id="otherPlayerProfile" style="display: none;">
-      <button onclick="showCurrentProfile()" style="margin-bottom: 15px;">🔙 Назад к моему профилю</button>
+      <button onclick="showCurrentProfile()" data-i18n="back_to_profile" style="margin-bottom: 15px;">🔙 Назад к моему профилю</button>
       <div class="profile-header">
         <img id="otherProfileAvatar" class="profile-avatar-large" src="" alt="Аватар">
         <div class="profile-details">
           <h3 id="otherProfileName">Игрок</h3>
-          <div class="last-online" id="otherProfileLastOnline">Был в сети недавно</div>
+          <div class="last-online" id="otherProfileLastOnline" data-i18n="last_online">Был в сети недавно</div>
           <div class="profile-stats">
             <div class="stat-item">
               <span class="stat-value" id="otherProfileCurrency">0</span>
-              <span class="stat-label">Монет</span>
+              <span class="stat-label" data-i18n="coins">Монет</span>
             </div>
             <div class="stat-item">
               <span class="stat-value" id="otherProfileCards">0</span>
-              <span class="stat-label">Карточек</span>
+              <span class="stat-label" data-i18n="cards">Карточек</span>
             </div>
           </div>
         </div>
       </div>
    
       <div class="profile-collection">
-        <h3>Коллекция карточек</h3>
+        <h3 data-i18n="card_collection">Коллекция карточек</h3>
         <div id="otherProfileCollectionGrid" class="collection-grid"></div>
       </div>
     </div>
@@ -1803,10 +1836,10 @@ h2 {
 <div id="clickerModal" class="menu-modal">
   <div class="menu-content">
     <div class="menu-header">
-      <h2 class="menu-title">🖱 Кликалка</h2>
+      <h2 class="menu-title" data-i18n="clicker">🖱 Кликалка</h2>
       <button class="close-btn" onclick="MenuManager.close('clicker')">&times;</button>
     </div>
-<p>Чеши комару и зарабатывай монетки!</p>
+<p data-i18n="clicker_description">Чеши комару и зарабатывай монетки!</p>
 <div class="cat-container" onclick="ClickerManager.earnClick()">
   <img src="komaru.png" alt="Котик" class="cat-img" />
 </div>
@@ -1835,24 +1868,24 @@ h2 {
 
 
 
-    <p id="energyDisplay">⚡ Энергия: 50/50</p>
+    <p id="energyDisplay" data-i18n="energy">⚡ Энергия: 50/50</p>
   </div>
 </div>
 <div id="packsModal" class="menu-modal">
   <div class="menu-content">
     <div class="menu-header">
-      <h2 class="menu-title">🎁 Магазин паков</h2>
+      <h2 class="menu-title" data-i18n="pack_shop">🎁 Магазин паков</h2>
       <button class="close-btn" onclick="MenuManager.close('packs')">&times;</button>
     </div>
-    <button onclick="PackManager.buyCommonPack()" style="width: 100%; margin: 10px 0; padding: 15px;">🟦 Обычный пак (30 монет)</button>
-    <button onclick="PackManager.buyRarePack()" style="width: 100%; margin: 10px 0; padding: 15px;">🟩 Редкий пак (100 монет)</button>
-    <button onclick="PackManager.buyLegendaryPack()" style="width: 100%; margin: 10px 0; padding: 15px;">🟨 Легендарный пак (300 монет)</button>
+    <button onclick="PackManager.buyCommonPack()" style="width: 100%; margin: 10px 0; padding: 15px;" data-i18n="common_pack">🟦 Обычный пак (30 монет)</button>
+    <button onclick="PackManager.buyRarePack()" style="width: 100%; margin: 10px 0; padding: 15px;" data-i18n="rare_pack">🟩 Редкий пак (100 монет)</button>
+    <button onclick="PackManager.buyLegendaryPack()" style="width: 100%; margin: 10px 0; padding: 15px;" data-i18n="legendary_pack">🟨 Легендарный пак (300 монет)</button>
   </div>
 </div>
 <div id="upgradesModal" class="menu-modal">
   <div class="menu-content" id="upgradesContent">
     <div class="menu-header">
-      <h2 class="menu-title">🔥 Улучшения</h2>
+      <h2 class="menu-title" data-i18n="upgrades">🔥 Улучшения</h2>
       <button class="close-btn" onclick="MenuManager.close('upgrades')">&times;</button>
     </div>
     <div id="upgradesList"></div>
@@ -1861,10 +1894,31 @@ h2 {
 <div id="leaderboardModal" class="menu-modal">
   <div class="menu-content">
     <div class="menu-header">
-      <h2 class="menu-title">🏆 Топ игроков</h2>
+      <h2 class="menu-title" data-i18n="leaderboard">🏆 Топ игроков</h2>
       <button class="close-btn" onclick="MenuManager.close('leaderboard')">&times;</button>
     </div>
     <div id="leaderboardContent" class="leaderboard-container"></div>
+  </div>
+</div>
+<!-- МОДАЛЬНОЕ ОКНО НАСТРОЕК -->
+<div id="settingsModal" class="menu-modal">
+  <div class="menu-content">
+    <div class="menu-header">
+      <h2 class="menu-title" data-i18n="settings">⚙️ Настройки</h2>
+      <button class="close-btn" onclick="MenuManager.close('settings')">&times;</button>
+    </div>
+    <div class="settings-section">
+      <h3 data-i18n="language">Язык</h3>
+      <select id="languageSelect" onchange="SettingsManager.changeLanguage(this.value)">
+        <option value="ru" data-i18n="russian">Русский</option>
+        <option value="en" data-i18n="english">English</option>
+      </select>
+    </div>
+    <div class="settings-section">
+      <h3 data-i18n="music_volume">Громкость музыки</h3>
+      <input type="range" id="musicVolume" min="0" max="100" value="100" onchange="SettingsManager.changeMusicVolume(this.value)">
+      <span id="musicVolumeValue">100%</span>
+    </div>
   </div>
 </div>
 <!-- Кнопка быстрого доступа к админ панели -->
@@ -1910,6 +1964,173 @@ const randomNames = [
   "ПакоМан", "КарточныйКороль", "ГрозаПаков", "МастерКарт", "ЛучшийИгрок",
   "ФантастикГеймер", "КрутойДжокер", "ПрофиПакер", "КоролевскийИгрок", "УльтраКоллектор"
 ];
+// Объект переводов
+const translations = {
+  ru: {
+    title: 'Reghype',
+    loading: 'Загрузка Reghype...',
+    welcome: 'Добро пожаловать в Reghype!',
+    choose_nickname: 'Придумайте уникальный никнейм для начала игры:',
+    choose_avatar: 'Выберите аватарку (опционально):',
+    start_game: '🚀 Начать игру',
+    player: 'Игрок',
+    currency: '💰 Валюта: {amount} монет',
+    free_pack: '🎁 Бесплатный пак',
+    buy_pack: '💎 Купить пак (50 монет)',
+    timer: 'До бесплатного пака: {time}',
+    collection: 'Моя коллекция',
+    admin_panel: '🛡️ АДМИН-ПАНЕЛЬ',
+    currency_management: '💰 Управление валютой',
+    set: 'Установить',
+    add: 'Добавить',
+    card_management: '🃏 Управление карточками',
+    choose_card: 'Выберите карточку...',
+    give: 'Выдать',
+    give_multiple: 'Выдать несколько',
+    player_management: '👥 Управление игроками',
+    selected_player: 'Выбран: ',
+    set_currency: 'Установить деньги',
+    give_card: 'Выдать карточку',
+    user: 'Пользователь',
+    moder: 'Модератор',
+    admin: 'Администратор',
+    banned: 'Забанен',
+    set_role: 'Установить роль',
+    ban_player: 'Забанить игрока',
+    server_stats: '📊 Статистика сервера',
+    total_players: 'Всего игроков: ',
+    online_players: 'Онлайн игроков: ',
+    total_cards: 'Всего карточек: ',
+    refresh_stats: 'Обновить статистику',
+    quick_actions: '🔧 Быстрые действия',
+    reset_timer: 'Сбросить таймер',
+    clear_collection: 'Очистить мои карточки',
+    max_energy: 'Макс энергия',
+    give_legendary: 'Выдать легендарку',
+    danger_zone: '⚠️ ОПАСНАЯ ЗОНА',
+    danger_warning: 'Эти действия необратимы и затрагивают ВСЕХ игроков!',
+    reset_all: '🔄 СБРОСИТЬ ВСЕ АККАУНТЫ',
+    clear_data: '💥 СТЕРЕТЬ БАЗУ ДАННЫХ',
+    maintenance_mode: '🛑 РЕЖИМ ОБСЛУЖИВАНИЯ',
+    admin_log: '📝 Лог админа',
+    clear_log: 'Очистить лог',
+    admin_auth: 'Админ Аутентификация',
+    login: '✅ Войти',
+    cancel: '❌ Отмена',
+    rarity: 'Редкость: ',
+    type: 'Тип: ',
+    sell_card: '💰 Продать карточку',
+    profile: '👤 Профиль',
+    clicker: '🖱 Кликалка',
+    packs: '🎁 Паки',
+    upgrades: '🔥 Улучшения',
+    leaderboard: '🏆 Топ',
+    settings: '⚙️ Настройки',
+    change_name_title: 'Смена имени',
+    save: '✅ Сохранить',
+    coins: 'Монет',
+    cards: 'Карточек',
+    change_name: '✏️ Сменить имя',
+    change_avatar: '🖼️ Сменить аватар',
+    card_collection: 'Коллекция карточек',
+    back_to_profile: '🔙 Назад к моему профилю',
+    last_online: 'Был в сети недавно',
+    clicker_description: 'Чеши комару и зарабатывай монетки!',
+    energy: '⚡ Энергия: {current}/{max}',
+    pack_shop: '🎁 Магазин паков',
+    common_pack: '🟦 Обычный пак (30 монет)',
+    rare_pack: '🟩 Редкий пак (100 монет)',
+    legendary_pack: '🟨 Легендарный пак (300 монет)',
+    language: 'Язык',
+    russian: 'Русский',
+    english: 'English',
+    sound_volume: 'Громкость звуков',
+    music_volume: 'Громкость музыки'
+    // Добавьте больше по мере необходимости
+  },
+  en: {
+    title: 'Reghype',
+    loading: 'Loading Reghype...',
+    welcome: 'Welcome to Reghype!',
+    choose_nickname: 'Come up with a unique nickname to start the game:',
+    choose_avatar: 'Choose an avatar (optional):',
+    start_game: '🚀 Start Game',
+    player: 'Player',
+    currency: '💰 Currency: {amount} coins',
+    free_pack: '🎁 Free Pack',
+    buy_pack: '💎 Buy Pack (50 coins)',
+    timer: 'Time until free pack: {time}',
+    collection: 'My Collection',
+    admin_panel: '🛡️ ADMIN PANEL',
+    currency_management: '💰 Currency Management',
+    set: 'Set',
+    add: 'Add',
+    card_management: '🃏 Card Management',
+    choose_card: 'Choose a card...',
+    give: 'Give',
+    give_multiple: 'Give multiple',
+    player_management: '👥 Player Management',
+    selected_player: 'Selected: ',
+    set_currency: 'Set money',
+    give_card: 'Give card',
+    user: 'User',
+    moder: 'Moderator',
+    admin: 'Administrator',
+    banned: 'Banned',
+    set_role: 'Set role',
+    ban_player: 'Ban player',
+    server_stats: '📊 Server Statistics',
+    total_players: 'Total players: ',
+    online_players: 'Online players: ',
+    total_cards: 'Total cards: ',
+    refresh_stats: 'Refresh statistics',
+    quick_actions: '🔧 Quick Actions',
+    reset_timer: 'Reset timer',
+    clear_collection: 'Clear my cards',
+    max_energy: 'Max energy',
+    give_legendary: 'Give legendary',
+    danger_zone: '⚠️ DANGER ZONE',
+    danger_warning: 'These actions are irreversible and affect ALL players!',
+    reset_all: '🔄 RESET ALL ACCOUNTS',
+    clear_data: '💥 WIPE DATABASE',
+    maintenance_mode: '🛑 MAINTENANCE MODE',
+    admin_log: '📝 Admin Log',
+    clear_log: 'Clear log',
+    admin_auth: 'Admin Authentication',
+    login: '✅ Login',
+    cancel: '❌ Cancel',
+    rarity: 'Rarity: ',
+    type: 'Type: ',
+    sell_card: '💰 Sell card',
+    profile: '👤 Profile',
+    clicker: '🖱 Clicker',
+    packs: '🎁 Packs',
+    upgrades: '🔥 Upgrades',
+    leaderboard: '🏆 Top',
+    settings: '⚙️ Settings',
+    change_name_title: 'Change Name',
+    save: '✅ Save',
+    coins: 'Coins',
+    cards: 'Cards',
+    change_name: '✏️ Change Name',
+    change_avatar: '🖼️ Change Avatar',
+    card_collection: 'Card Collection',
+    back_to_profile: '🔙 Back to my profile',
+    last_online: 'Was online recently',
+    clicker_description: 'Scratch the Komaru and earn coins!',
+    energy: '⚡ Energy: {current}/{max}',
+    pack_shop: '🎁 Pack Shop',
+    common_pack: '🟦 Common Pack (30 coins)',
+    rare_pack: '🟩 Rare Pack (100 coins)',
+    legendary_pack: '🟨 Legendary Pack (300 coins)',
+    language: 'Language',
+    russian: 'Russian',
+    english: 'English',
+    sound_volume: 'Sound Volume',
+    music_volume: 'Music Volume'
+    // Добавьте больше по мере необходимости
+  }
+};
 // ОСНОВНОЙ МЕНЕДЖЕР ИГРЫ
 class GameManager {
   constructor() {
@@ -2381,13 +2602,14 @@ async loadLeaderboard() {
     return diff < 45 * 1000; // Онлайн если был активен меньше 45 секунд назад
   }
   getLastOnlineText(lastOnline) {
+    const lang = localStorage.getItem('language') || 'ru';
     const now = Date.now();
     const diff = now - lastOnline;
  
-    if (diff < 5 * 60 * 1000) return 'В сети';
-    if (diff < 60 * 60 * 1000) return `${Math.floor(diff / 60000)} мин. назад`;
-    if (diff < 24 * 60 * 60 * 1000) return `${Math.floor(diff / 3600000)} ч. назад`;
-    return `${Math.floor(diff / 86400000)} дн. назад`;
+    if (diff < 5 * 60 * 1000) return translations[lang].online || 'В сети';
+    if (diff < 60 * 60 * 1000) return `${Math.floor(diff / 60000)} ${translations[lang].min_ago || 'мин. назад'}`;
+    if (diff < 24 * 60 * 60 * 1000) return `${Math.floor(diff / 3600000)} ${translations[lang].hours_ago || 'ч. назад'}`;
+    return `${Math.floor(diff / 86400000)} ${translations[lang].days_ago || 'дн. назад'}`;
   }
   getDefaultAvatar() {
     return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMzAiIGZpbGw9IiNmZmNjMDAiLz4KPGZ0ZXh0IHg9IjMwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5CCPC90ZXh0Pgo8L3N2Zz4K";
@@ -2406,8 +2628,13 @@ async loadLeaderboard() {
   updateUI() {
     if (!this.isInitialized) return;
  
+    const lang = localStorage.getItem('language') || 'ru';
+ 
     const currency = document.getElementById('currency');
-    if (currency) currency.textContent = `💰 Валюта: ${this.data.currency} монет`;
+    if (currency) {
+      const template = translations[lang].currency || '💰 Currency: {amount} coins';
+      currency.textContent = template.replace('{amount}', this.data.currency);
+    }
  
     const profileName = document.getElementById('profileName');
     if (profileName) profileName.textContent = this.data.playerName;
@@ -2422,7 +2649,10 @@ async loadLeaderboard() {
     if (profileCards) profileCards.textContent = this.data.collection.length;
  
     const energyDisplay = document.getElementById('energyDisplay');
-    if (energyDisplay) energyDisplay.textContent = `⚡ Энергия: ${this.data.energy}/${this.getMaxEnergy()}`;
+    if (energyDisplay) {
+      const template = translations[lang].energy || '⚡ Energy: {current}/{max}';
+      energyDisplay.textContent = template.replace('{current}', this.data.energy).replace('{max}', this.getMaxEnergy());
+    }
  
     // Обновление аватаров
     const profileAvatar = document.getElementById('profileAvatar');
@@ -2501,6 +2731,7 @@ async loadLeaderboard() {
     }
   }
   showCardModal(card, index, isOtherPlayer = false) {
+    const lang = localStorage.getItem('language') || 'ru';
     const modal = document.getElementById('cardModal');
     if (!modal) return;
     const modalImage = document.getElementById('modalImage');
@@ -2508,9 +2739,9 @@ async loadLeaderboard() {
     const modalName = document.getElementById('modalName');
     if (modalName) modalName.textContent = card.name;
     const modalRarity = document.getElementById('modalRarity');
-    if (modalRarity) modalRarity.textContent = `Редкость: ${card.rarity}`;
+    if (modalRarity) modalRarity.textContent = `${translations[lang].rarity || 'Rarity:'} ${card.rarity}`;
     const modalType = document.getElementById('modalType');
-    if (modalType) modalType.textContent = `Тип: ${card.type}`;
+    if (modalType) modalType.textContent = `${translations[lang].type || 'Type:'} ${card.type}`;
  
     const sellBtn = document.getElementById('sellCardBtn');
     if (sellBtn) {
@@ -2598,19 +2829,20 @@ async loadLeaderboard() {
   }
   startTimer() {
     setInterval(() => {
+      const lang = localStorage.getItem('language') || 'ru';
       const now = Date.now();
       const timeLeft = this.getPackCooldown() - (now - this.data.lastFreePack);
    
       const timer = document.getElementById('timer');
       if (!timer) return;
       if (timeLeft <= 0) {
-        timer.textContent = 'Бесплатный пак готов!';
+        timer.textContent = translations[lang].pack_ready || 'Бесплатный пак готов!';
       } else {
         const hours = Math.floor(timeLeft / 3600000);
         const minutes = Math.floor((timeLeft % 3600000) / 60000);
         const seconds = Math.floor((timeLeft % 60000) / 1000);
-        timer.textContent =
-          `До бесплатного пака: ${hours}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+        const template = translations[lang].timer || 'До бесплатного пака: {time}';
+        timer.textContent = template.replace('{time}', `${hours}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`);
       }
     }, 1000);
   }
@@ -3379,6 +3611,71 @@ class ClickerManager {
     }
   }
 }
+// МЕНЕДЖЕР НАСТРОЕК
+class SettingsManager {
+  static init() {
+    // Загружаем сохраненные настройки
+    const savedLang = localStorage.getItem('language') || 'ru';
+    const savedSound = localStorage.getItem('soundVolume') || 100;
+    const savedMusic = localStorage.getItem('musicVolume') || 100;
+    
+    // Применяем
+    this.changeLanguage(savedLang);
+    this.changeSoundVolume(savedSound);
+    this.changeMusicVolume(savedMusic);
+    
+    // Обновляем UI
+    const langSelect = document.getElementById('languageSelect');
+    if (langSelect) langSelect.value = savedLang;
+    
+    const soundSlider = document.getElementById('soundVolume');
+    if (soundSlider) soundSlider.value = savedSound;
+    const soundValue = document.getElementById('soundVolumeValue');
+    if (soundValue) soundValue.textContent = `${savedSound}%`;
+    
+    const musicSlider = document.getElementById('musicVolume');
+    if (musicSlider) musicSlider.value = savedMusic;
+    const musicValue = document.getElementById('musicVolumeValue');
+    if (musicValue) musicValue.textContent = `${savedMusic}%`;
+  }
+  
+  static changeLanguage(lang) {
+    localStorage.setItem('language', lang);
+    document.documentElement.lang = lang;
+  
+    // Переводим все элементы
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      let key = el.getAttribute('data-i18n');
+      let text = translations[lang][key] || key;
+    
+      // Если есть плейсхолдеры вроде {amount}, не трогаем, обновление в updateUI
+      if (!text.includes('{')) {
+        el.textContent = text;
+      }
+    });
+  
+    // Обновляем динамические элементы
+    gameManager.updateUI();
+    gameManager.startTimer(); // Чтобы обновить таймер с новым языком
+    gameManager.showNotification(`Language changed to ${lang === 'ru' ? 'Русский' : 'English'}`);
+  }
+  
+  static changeSoundVolume(value) {
+    localStorage.setItem('soundVolume', value);
+    const soundValue = document.getElementById('soundVolumeValue');
+    if (soundValue) soundValue.textContent = `${value}%`;
+    // TODO: Применить громкость к звукам (если есть audio элементы)
+    gameManager.showNotification(`Громкость звуков: ${value}%`);
+  }
+  
+  static changeMusicVolume(value) {
+    localStorage.setItem('musicVolume', value);
+    const musicValue = document.getElementById('musicVolumeValue');
+    if (musicValue) musicValue.textContent = `${value}%`;
+    // TODO: Применить громкость к музыке
+    gameManager.showNotification(`Громкость музыки: ${value}%`);
+  }
+}
 // ФУНКЦИИ ДЛЯ HTML
 function openPack() {
   gameManager.openPack('free');
@@ -3504,9 +3801,8 @@ const gameManager = new GameManager();
 document.addEventListener('DOMContentLoaded', () => {
   gameManager.init();
   AdminManager.init();
+  SettingsManager.init();
 });
-
-// Add this in the script tag, preferably in GameManager's setupEventListeners or at the end
 
 let fPressCount = 0;
 let fPressTimer = null;
@@ -3570,7 +3866,21 @@ function getRandomRarity() {
 }
 
 
+document.getElementById("startGameButton").addEventListener("click", () => {
+  const bgMusic = document.getElementById("bgMusic");
+  bgMusic.volume = 0.3; // громкость от 0.0 до 1.0
+  bgMusic.play().catch(err => console.log("Автовоспроизведение заблокировано:", err));
+});
+
+
+
+
+
 </script>
 </body>
-</html>
 
+
+<audio id="bgMusic" src="music/background.mp3" loop></audio>
+
+
+</html>
