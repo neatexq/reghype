@@ -564,6 +564,270 @@ h2 {
   border: 3px solid #ffcc00;
   box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
   object-fit: cover;
+  /* Добавляем поддержку для мобильных устройств */
+  -webkit-playsinline: true;
+  playsinline: true;
+}
+
+/* Фоллбек для мобильных устройств если видео не загружается */
+.cat-container::after {
+  content: '🐱';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 80px;
+  display: none;
+}
+
+/* Показываем эмодзи если видео не работает */
+.cat-container.fallback::after {
+  display: block;
+}
+
+
+/* МОБИЛЬНАЯ АДАПТАЦИЯ */
+@media screen and (max-width: 768px) {
+  /* Основные элементы */
+  body {
+    font-size: 14px;
+    padding-bottom: 90px; /* Увеличиваем отступ для навбара */
+  }
+
+  h1 {
+    font-size: 24px;
+    margin: 10px 0;
+  }
+
+  h2 {
+    font-size: 20px;
+    margin: 20px 0 15px 0;
+  }
+
+  /* Кнопки */
+  button {
+    padding: 10px 15px;
+    font-size: 14px;
+    margin: 5px;
+  }
+
+  /* Профиль */
+  .profile-info {
+    flex-direction: column;
+    gap: 10px;
+    margin: 15px 0;
+  }
+
+  .profile-avatar {
+    width: 50px;
+    height: 50px;
+  }
+
+  .profile-name {
+    font-size: 18px;
+  }
+
+  #currency {
+    font-size: 18px;
+    margin: 15px 0;
+  }
+
+  /* Карточки */
+  .card {
+    margin: 5px;
+  }
+
+  .card img {
+    max-width: 120px;
+  }
+
+  #collection {
+    margin-bottom: 100px;
+    padding: 0 10px;
+  }
+
+  /* Навбар */
+  #navbar {
+    padding: 10px 5px;
+    flex-wrap: wrap;
+    height: auto;
+  }
+
+  #navbar button {
+    flex: 1;
+    min-width: calc(50% - 10px);
+    margin: 2px;
+    padding: 8px 5px;
+    font-size: 12px;
+  }
+
+  /* Модальные окна */
+  .menu-content {
+    width: 95vw;
+    max-width: none;
+    margin: 10px;
+    padding: 20px;
+    max-height: 85vh;
+  }
+
+  .menu-title {
+    font-size: 22px;
+  }
+
+  /* Кликалка */
+  #catVideo {
+    width: 150px;
+    height: 150px;
+  }
+
+  .cat-container::after {
+    font-size: 60px;
+  }
+
+  /* Профиль */
+  .profile-section {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+
+  .profile-avatar-large {
+    width: 80px;
+    height: 80px;
+  }
+
+  .profile-stats {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .stat-item {
+    padding: 10px;
+  }
+
+  .stat-value {
+    font-size: 20px;
+  }
+
+  /* Лидерборд */
+  .leader-item {
+    padding: 10px;
+    margin: 5px 0;
+  }
+
+  .leader-rank {
+    font-size: 20px;
+    margin-right: 8px;
+  }
+
+  .leader-name {
+    font-size: 14px;
+  }
+
+  .leader-stats {
+    font-size: 12px;
+  }
+
+  /* Админ панель */
+  #adminPanel {
+    width: 100vw;
+    right: -100vw;
+  }
+
+  #adminPanel.show {
+    right: 0;
+  }
+
+  .admin-input {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+
+  .admin-button {
+    font-size: 10px;
+    padding: 8px 12px;
+  }
+
+  /* Первоначальная настройка */
+  .setup-content {
+    width: 95%;
+    padding: 30px 20px;
+  }
+
+  .setup-content h2 {
+    font-size: 24px;
+  }
+
+  .nickname-input-container input {
+    max-width: 280px;
+    font-size: 16px;
+    padding: 15px 20px;
+  }
+
+  .start-button {
+    padding: 15px 30px;
+    font-size: 16px;
+  }
+
+  /* Коллекция в профиле */
+  .collection-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+  }
+
+  /* Улучшения */
+  .upgrade-item {
+    padding: 10px;
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .upgrade-info {
+    text-align: center;
+  }
+
+  .upgrade-button {
+    width: 100%;
+  }
+}
+
+/* Очень маленькие экраны */
+@media screen and (max-width: 480px) {
+  #navbar button {
+    font-size: 11px;
+    padding: 6px 3px;
+  }
+
+  .menu-title {
+    font-size: 18px;
+  }
+
+  .setup-content h2 {
+    font-size: 20px;
+  }
+
+  .nickname-input-container input {
+    max-width: 240px;
+  }
+
+  #catVideo {
+    width: 120px;
+    height: 120px;
+  }
+
+  .cat-container::after {
+    font-size: 50px;
+  }
+}
+
+.cat-container.fallback #catVideo {
+  opacity: 0;
 }
 .click-effect {
   animation: clickPulse 0.3s ease-out;
@@ -2337,22 +2601,24 @@ class AdminManager {
     this.log('Админ-панель готова', 'success');
  
   }
-  static authenticate() {
-    this.isAuthenticated = true;
-    localStorage.setItem('adminAccessed', 'true');
+static authenticate() {
+  this.isAuthenticated = true;
+  // НЕ сохраняем в localStorage - только для текущей сессии
+  const adminPanel = document.getElementById('adminPanel');
+  if (adminPanel) adminPanel.classList.add('show');
+  this.log('Админ успешно аутентифицирован', 'success');
+  this.refreshStats();
+}
+static openQuick() {
+  // Проверяем, был ли уже введен пароль в этой сессии
+  if (this.isAuthenticated) {
     const adminPanel = document.getElementById('adminPanel');
     if (adminPanel) adminPanel.classList.add('show');
-    this.log('Админ успешно аутентифицирован', 'success');
-    this.refreshStats();
+  } else {
+    // Если пароль еще не вводился - показываем окно аутентификации
+    this.showAuthModal();
   }
-  static openQuick() {
-    if (this.isAuthenticated || localStorage.getItem('adminAccessed') === 'true') {
-      const adminPanel = document.getElementById('adminPanel');
-      if (adminPanel) adminPanel.classList.add('show');
-    } else {
-      this.showAuthModal();
-    }
-  }
+}
   static close() {
     const adminPanel = document.getElementById('adminPanel');
     if (adminPanel) adminPanel.classList.remove('show');
@@ -2974,42 +3240,60 @@ class ClickerManager {
  
     this.playVideo();
   }
-  static async playVideo() {
-    const video = document.getElementById('catVideo');
- 
-    if (!video) return;
- 
-    if (this.isVideoPlaying) {
-      this.videoQueue++;
-      return;
+static async playVideo() {
+  const video = document.getElementById('catVideo');
+  const catContainer = document.querySelector('.cat-container');
+
+  if (!video) return;
+
+  // Проверяем, загрузилось ли видео
+  if (video.readyState === 0) {
+    // Видео не загрузилось - используем фоллбек
+    if (catContainer) {
+      catContainer.classList.add('fallback');
     }
- 
-    try {
-      this.isVideoPlaying = true;
-   
-      video.currentTime = 0;
-   
-      const playPromise = video.play();
-   
-      if (playPromise !== undefined) {
-        await playPromise;
-     
-        setTimeout(() => {
-          video.pause();
-          video.currentTime = 0;
-          this.isVideoPlaying = false;
-       
-          if (this.videoQueue > 0) {
-            this.videoQueue--;
-            setTimeout(() => this.playVideo(), 100);
-          }
-        }, 1000);
-      } else {
+    return;
+  }
+
+  if (this.isVideoPlaying) {
+    this.videoQueue++;
+    return;
+  }
+
+  try {
+    this.isVideoPlaying = true;
+    
+    // Убираем фоллбек если видео работает
+    if (catContainer) {
+      catContainer.classList.remove('fallback');
+    }
+
+    video.currentTime = 0;
+
+    const playPromise = video.play();
+
+    if (playPromise !== undefined) {
+      await playPromise;
+
+      setTimeout(() => {
+        video.pause();
+        video.currentTime = 0;
         this.isVideoPlaying = false;
-      }
-    } catch (error) {
-      console.log('Ошибка воспроизведения видео:', error);
+
+        if (this.videoQueue > 0) {
+          this.videoQueue--;
+          setTimeout(() => this.playVideo(), 100);
+        }
+      }, 1000);
+    } else {
       this.isVideoPlaying = false;
+    }
+  } catch (error) {
+    console.log('Видео недоступно, используем фоллбек');
+    this.isVideoPlaying = false;
+    // Включаем фоллбек с эмодзи
+    if (catContainer) {
+      catContainer.classList.add('fallback');
     }
   }
 }
@@ -3158,6 +3442,12 @@ document.addEventListener('keydown', (e) => {
       if (quickBtn) {
         quickBtn.style.display = 'flex';
       }
+      
+      // Сразу проверяем аутентификацию при появлении кнопки
+      if (!AdminManager.isAuthenticated) {
+        AdminManager.showAuthModal();
+      }
+      
       fPressCount = 0;
     }
   } else {
