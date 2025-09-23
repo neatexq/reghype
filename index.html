@@ -3960,9 +3960,9 @@ function filterCollection() {
   document.body.appendChild(btn);
 })();
 
-// === МОДАЛЬНОЕ ОКНО ТРЕЙДА С ОНЛАЙН-СПИСКОМ ===
+// === МОДАЛЬНОЕ ОКНО ТРЕЙДА С ОНЛАЙН-СПИСКОМ, РЕАЛТАЙМ И ПЕРСИСТЕНТНО ===
 class TradeUI {
-  static openTrade() {
+  static openTrade(tradeIdRestore=null) {
     if(document.getElementById('tradeDialog')) return;
     let modal = document.createElement('div');
     modal.id = 'tradeDialog';
@@ -3972,7 +3972,7 @@ class TradeUI {
     `;
     modal.innerHTML = `
       <div style="background:#23182d;color:#fff;padding:30px 30px 22px 30px;border-radius:24px;min-width:350px;max-width:97vw;box-shadow:0 6px 32px #000a;position:relative;">
-        <button onclick="document.getElementById('tradeDialog').remove()" style="background:transparent;border:none;color:#E91E63;font-size:1.7em;position:absolute;top:18px;right:18px;cursor:pointer">&times;</button>
+        <button onclick="TradeUI.closeTradeDialog()" style="background:transparent;border:none;color:#E91E63;font-size:1.7em;position:absolute;top:18px;right:18px;cursor:pointer">&times;</button>
         <h3 style="margin-bottom:17px;">Обмен карточками</h3>
         <div id="tradeStep1">
           <div style="margin-bottom:15px;font-size:1.08em;">Выберите онлайн-игрока для обмена:</div>
@@ -4003,7 +4003,19 @@ class TradeUI {
       </div>
     `;
     document.body.appendChild(modal);
+
+    // Если tradeIdRestore передан — сразу открываем с listenTrade
+    if(tradeIdRestore) {
+      TradeUI.restoreListenTrade(tradeIdRestore);
+      return;
+    }
     TradeUI.renderOnlinePlayers();
+  }
+
+  static closeTradeDialog() {
+    let el = document.getElementById('tradeDialog');
+    if(el) el.remove();
+    localStorage.removeItem('trade_active_id');
   }
 
   static async renderOnlinePlayers() {
@@ -4019,7 +4031,6 @@ class TradeUI {
         now-(d.lastOnline||0)<60000 // онлайн ~1 мин
       )
       .map(([id, d])=>({id, ...d}));
-    // UI
     if(players.length === 0){
       list.innerHTML = '';
       noPlayers.style.display = '';
@@ -4043,7 +4054,6 @@ class TradeUI {
   static async invite(id) {
     let player = TradeUI._onlinePlayers.find(p=>p.id===id);
     if(!player) return;
-    // Создаём трейд-запрос
     let tradeId = 'trade_' + Date.now() + '_' + Math.random().toString(36).slice(2);
     await db.ref('trades/'+tradeId).set({
       users: [gameManager.playerId, player.id],
@@ -4056,7 +4066,7 @@ class TradeUI {
       invitee: player.id,
       inviter: gameManager.playerId
     });
-    // Показываем "ждём подтверждения"
+    localStorage.setItem('trade_active_id', tradeId);
     TradeUI.awaitAccept(tradeId, player);
     document.getElementById('tradeStep1').style.display='none';
     document.getElementById('tradeStep2').style.display='';
@@ -4066,22 +4076,25 @@ class TradeUI {
 
   static awaitAccept(tradeId, player) {
     document.getElementById('tradeStatus').innerHTML = `<span style="color:#ffbb44">Ожидание отклика игрока...</span>`;
-    // Следим за трейдом, если state=active, подключаемся к listenTrade
     db.ref('trades/'+tradeId).on('value', snap=>{
       let t = snap.val();
-      if(!t) { try{document.getElementById('tradeDialog').remove();}catch{} return; }
+      if(!t) { try{TradeUI.closeTradeDialog();}catch{} return; }
       if(t.state==='active') {
         TradeUI.listenTrade(tradeId, player.id, player.playerName, true);
       }
     });
   }
 
-  // Для приглашённого — обработка входящего трейда
   static checkIncomingTrade() {
     db.ref('trades').on('child_added', snap=>{
       let t = snap.val();
-      if(t && Array.isArray(t.users) && t.state==='pending' && t.invitee===gameManager.playerId) {
-        // Если уже есть трейд — не показывать повторно
+      if(
+        t &&
+        Array.isArray(t.users) &&
+        t.state==='pending' &&
+        t.invitee===gameManager.playerId &&
+        !localStorage.getItem('trade_active_id')
+      ) {
         if(document.getElementById('tradeIncomingDialog')) return;
         let modal = document.createElement('div');
         modal.id = 'tradeIncomingDialog';
@@ -4095,7 +4108,7 @@ class TradeUI {
             <div style="background:#23182d;color:#fff;padding:28px 28px 18px 28px;border-radius:20px;min-width:320px;max-width:96vw;text-align:center;box-shadow:0 6px 32px #000a;">
               <img src="${inviter.playerAvatar||''}" style="width:54px;height:54px;border-radius:50%;border:2px solid #E91E63;object-fit:cover;box-shadow:0 0 7px #E91E6340;margin-bottom:10px;">
               <div style="font-size:1.07em;font-weight:bold;margin-bottom:7px;">${inviter.playerName} приглашает вас к обмену</div>
-              <button onclick="TradeUI.acceptTrade('${snap.key}','${inviter.playerName}')" style="background:#43e97b;border:none;border-radius:7px;color:#fff;font-size:1em;padding:8px 18px;margin:12px 7px 0 7px;">Принять</button>
+              <button onclick="TradeUI.acceptTrade('${snap.key}','${inviter.playerName}','${t.inviter}')" style="background:#43e97b;border:none;border-radius:7px;color:#fff;font-size:1em;padding:8px 18px;margin:12px 7px 0 7px;">Принять</button>
               <button onclick="document.getElementById('tradeIncomingDialog').remove()" style="background:#E91E63;border:none;border-radius:7px;color:#fff;font-size:1em;padding:8px 18px;margin:12px 7px 0 7px;">Отклонить</button>
             </div>
           `;
@@ -4105,25 +4118,39 @@ class TradeUI {
     });
   }
 
-  static async acceptTrade(tradeId, inviterName) {
-    // Переводим трейд в active
+  static async acceptTrade(tradeId, inviterName, inviterId) {
     await db.ref('trades/'+tradeId+'/state').set('active');
     document.getElementById('tradeIncomingDialog').remove();
-    // Открыть трейд-меню
-    TradeUI.openTrade();
-    // Переход к шагу 2
-    document.getElementById('tradeStep1').style.display='none';
-    document.getElementById('tradeStep2').style.display='';
-    document.getElementById('tradeWithName').textContent = inviterName;
-    document.getElementById('otherNameField').textContent = inviterName;
-    // слушаем трейд
-    let snap = await db.ref('trades/'+tradeId).once('value');
-    let t = snap.val();
-    let otherId = t.users.find(u=>u!==gameManager.playerId);
-    TradeUI.listenTrade(tradeId, otherId, inviterName, false);
+    localStorage.setItem('trade_active_id', tradeId);
+    TradeUI.openTrade(tradeId);
+    setTimeout(()=>{
+      document.getElementById('tradeStep1').style.display='none';
+      document.getElementById('tradeStep2').style.display='';
+      document.getElementById('tradeWithName').textContent = inviterName;
+      document.getElementById('otherNameField').textContent = inviterName;
+    }, 100);
   }
 
-  // LIVE синхронизация и обмен (аналогично прошлым версиям)
+  // Восстановление трейда после обновления страницы
+  static restoreListenTrade(tradeId){
+    db.ref('trades/'+tradeId).once('value').then(snap=>{
+      let t = snap.val();
+      if(!t) { localStorage.removeItem('trade_active_id'); TradeUI.closeTradeDialog(); return; }
+      let otherId = t.users.find(u=>u!==gameManager.playerId);
+      db.ref('players/'+otherId).once('value').then(snap2=>{
+        let otherName = (snap2.val()||{}).playerName||"Игрок";
+        setTimeout(()=>{
+          document.getElementById('tradeStep1').style.display='none';
+          document.getElementById('tradeStep2').style.display='';
+          document.getElementById('tradeWithName').textContent = otherName;
+          document.getElementById('otherNameField').textContent = otherName;
+          TradeUI.listenTrade(tradeId, otherId, otherName, t.inviter===gameManager.playerId);
+        },200);
+      });
+    });
+  }
+
+  // LIVE синхронизация и обмен
   static listenTrade(tradeId, otherId, otherName, iAmAuthor) {
     let mySide = iAmAuthor ? 'my' : 'their', theirSide = iAmAuthor ? 'their' : 'my';
     let myCards = [], theirCards = [];
@@ -4167,20 +4194,19 @@ class TradeUI {
     };
     document.getElementById('tradeConfirmBtn').onclick = async ()=>{
       if(myReady && theirReady && myCards.length>0 && theirCards.length>0) {
-        // Совершаем обмен!
-        // Удаляем свои карты, даём чужие
         let myColl = gameManager.data.collection.filter(c=>!myCards.some(mc=>mc.name===c.name)).concat(theirCards);
         gameManager.data.collection = myColl;
         await gameManager.savePlayerData();
         db.ref('trades/'+tradeId).remove();
-        document.getElementById('tradeDialog').remove();
+        TradeUI.closeTradeDialog();
+        localStorage.removeItem('trade_active_id');
         gameManager.showNotification('Обмен успешно завершён!');
       }
     };
     // LIVE синхронизация
     db.ref('trades/'+tradeId).on('value', snap=>{
       let t = snap.val();
-      if(!t) { try{document.getElementById('tradeDialog').remove();}catch{} return; }
+      if(!t) { try{TradeUI.closeTradeDialog();}catch{} localStorage.removeItem('trade_active_id'); return; }
       myCards = t[mySide+'Cards']||[]; theirCards = t[theirSide+'Cards']||[];
       myReady = t[mySide+'Ready']||false; theirReady = t[theirSide+'Ready']||false;
       document.getElementById('myReadyBox').checked = myReady;
@@ -4194,12 +4220,18 @@ class TradeUI {
       }
       document.getElementById('tradeStatus').textContent = (myReady && theirReady) ? "Готовы к обмену!" : "";
     });
-    db.ref('trades/'+tradeId).on('child_removed',()=>{try{document.getElementById('tradeDialog').remove();}catch{}});
+    db.ref('trades/'+tradeId).on('child_removed',()=>{try{TradeUI.closeTradeDialog();}catch{} localStorage.removeItem('trade_active_id');});
   }
 }
 
-// Входящие трейды
+// Входящие трейды (уведомления)
 TradeUI.checkIncomingTrade();
+
+// Открытие трейда после обновления страницы
+(function(){
+  let tid = localStorage.getItem('trade_active_id');
+  if(tid) setTimeout(()=>TradeUI.openTrade(tid), 400);
+})();
 
 </script>
 </body>
