@@ -1767,7 +1767,6 @@ h2 {
   <button onclick="MenuManager.toggle('packs')" data-i18n="packs">🎁 Паки</button>
   <button onclick="MenuManager.toggle('upgrades')" data-i18n="upgrades">🔥 Улучшения</button>
   <button onclick="MenuManager.toggle('leaderboard')" data-i18n="leaderboard">🏆 Топ</button>
-  <button onclick="MenuManager.toggle('settings')" data-i18n="settings">⚙️ Настройки</button>
 </div>
 <!-- МОДАЛЬНЫЕ ОКНА МЕНЮ -->
 <div id="profileModal" class="menu-modal">
@@ -1872,15 +1871,16 @@ h2 {
   </div>
 </div>
 <div id="packsModal" class="menu-modal">
-  <div class="menu-content">
-    <div class="menu-header">
-      <h2 class="menu-title" data-i18n="pack_shop">🎁 Магазин паков</h2>
-      <button class="close-btn" onclick="MenuManager.close('packs')">&times;</button>
+    <div class="menu-content">
+        <div class="menu-header">
+            <h2 class="menu-title" data-i18n="pack_shop">🎁 Магазин паков</h2>
+            <button class="close-btn" onclick="MenuManager.close('packs')">&times;</button>
+        </div>
+        <button onclick="PackManager.buyCommonPack()" style="width: 100%; margin: 10px 0; padding: 15px;" data-i18n="common_pack">🟦 Обычный пак (10 монет)</button>
+        <button onclick="PackManager.buyRarePack()" style="width: 100%; margin: 10px 0; padding: 15px;" data-i18n="rare_pack">🟩 Редкий пак (30 монет)</button>
+        <button onclick="PackManager.buyLegendaryPack()" style="width: 100%; margin: 10px 0; padding: 15px;" data-i18n="legendary_pack">🟨 Легендарный пак (300 монет)</button>
     </div>
-    <button onclick="PackManager.buyCommonPack()" style="width: 100%; margin: 10px 0; padding: 15px;" data-i18n="common_pack">🟦 Обычный пак (30 монет)</button>
-    <button onclick="PackManager.buyRarePack()" style="width: 100%; margin: 10px 0; padding: 15px;" data-i18n="rare_pack">🟩 Редкий пак (100 монет)</button>
-    <button onclick="PackManager.buyLegendaryPack()" style="width: 100%; margin: 10px 0; padding: 15px;" data-i18n="legendary_pack">🟨 Легендарный пак (300 монет)</button>
-  </div>
+</div>
 </div>
 <div id="upgradesModal" class="menu-modal">
   <div class="menu-content" id="upgradesContent">
@@ -1913,11 +1913,6 @@ h2 {
         <option value="ru" data-i18n="russian">Русский</option>
         <option value="en" data-i18n="english">English</option>
       </select>
-    </div>
-    <div class="settings-section">
-      <h3 data-i18n="music_volume">Громкость музыки</h3>
-      <input type="range" id="musicVolume" min="0" max="100" value="100" onchange="SettingsManager.changeMusicVolume(this.value)">
-      <span id="musicVolumeValue">100%</span>
     </div>
   </div>
 </div>
@@ -2044,8 +2039,6 @@ const translations = {
     language: 'Язык',
     russian: 'Русский',
     english: 'English',
-    sound_volume: 'Громкость звуков',
-    music_volume: 'Громкость музыки'
     // Добавьте больше по мере необходимости
   },
   en: {
@@ -3657,7 +3650,6 @@ class SettingsManager {
     // Обновляем динамические элементы
     gameManager.updateUI();
     gameManager.startTimer(); // Чтобы обновить таймер с новым языком
-    gameManager.showNotification(`Language changed to ${lang === 'ru' ? 'Русский' : 'English'}`);
   }
   
   static changeSoundVolume(value) {
@@ -3665,7 +3657,6 @@ class SettingsManager {
     const soundValue = document.getElementById('soundVolumeValue');
     if (soundValue) soundValue.textContent = `${value}%`;
     // TODO: Применить громкость к звукам (если есть audio элементы)
-    gameManager.showNotification(`Громкость звуков: ${value}%`);
   }
   
   static changeMusicVolume(value) {
@@ -3673,7 +3664,6 @@ class SettingsManager {
     const musicValue = document.getElementById('musicVolumeValue');
     if (musicValue) musicValue.textContent = `${value}%`;
     // TODO: Применить громкость к музыке
-    gameManager.showNotification(`Громкость музыки: ${value}%`);
   }
 }
 // ФУНКЦИИ ДЛЯ HTML
@@ -3865,22 +3855,211 @@ function getRandomRarity() {
   return 'common';
 }
 
+// ===== СТИЛЬНЫЙ ФИЛЬТР/СОРТИРОВКА КОЛЛЕКЦИИ (без кнопки крафта, в твоём фирменном стиле) =====
+(function(){
+  if(document.getElementById('collectionFilterBar')) return;
+  let f = document.createElement('div');
+  f.id = 'collectionFilterBar';
+  f.style = `
+    position:sticky;top:10px;z-index:99;
+    background:linear-gradient(135deg, #4A148C 60%, #880E4F 100%);
+    padding:12px 18px 12px 22px;
+    border-radius:16px;
+    margin-bottom:22px;
+    display:flex;gap:13px;align-items:center;
+    box-shadow:0 3px 18px #E91E6340, 0 1.5px 8px #AB47BC50;
+    border:2px solid #E91E63;
+    max-width:700px;
+    margin-left:auto;margin-right:auto;
+  `;
+  f.innerHTML = `
+    <input id="filterName" placeholder="Поиск по имени..." 
+      style="padding:8px 14px;border-radius:10px;border:2px solid #E91E63;background:#1c1024;color:#fff;font-size:1em;min-width:155px;box-shadow:0 0 7px #E91E6340;">
+    <select id="filterRarity" style="padding:8px 14px;border-radius:10px;border:2px solid #E91E63;background:#1c1024;color:#fff;font-size:1em;">
+      <option value="">Все редкости</option>
+      <option>Common</option>
+      <option>Rare</option>
+      <option>Special</option>
+      <option>Legendary</option>
+    </select>
+    <select id="filterSort" style="padding:8px 14px;border-radius:10px;border:2px solid #E91E63;background:#1c1024;color:#fff;font-size:1em;">
+      <option value="dateDesc">Сначала новые</option>
+      <option value="dateAsc">Сначала старые</option>
+      <option value="az">А-Я</option>
+      <option value="za">Я-А</option>
+      <option value="rarityDesc">По редкости ↓</option>
+      <option value="rarityAsc">По редкости ↑</option>
+    </select>
+  `;
+  let coll = document.getElementById('collection');
+  coll && coll.parentNode.insertBefore(f, coll);
 
-document.getElementById("startGameButton").addEventListener("click", () => {
-  const bgMusic = document.getElementById("bgMusic");
-  bgMusic.volume = 0.3; // громкость от 0.0 до 1.0
-  bgMusic.play().catch(err => console.log("Автовоспроизведение заблокировано:", err));
-});
+  ['filterName','filterRarity','filterSort'].forEach(id=>{
+    document.getElementById(id).addEventListener('input', filterCollection);
+    document.getElementById(id).addEventListener('change', filterCollection);
+  });
+})();
+
+function rarityToNum(r) {return {Common:0,Rare:1,Special:2,Legendary:3}[r]||0;}
+
+function filterCollection() {
+  if(!gameManager||!gameManager.data||!gameManager.data.collection) return;
+  let name = (document.getElementById('filterName')||{}).value?.toLowerCase()||"";
+  let rarity = (document.getElementById('filterRarity')||{}).value;
+  let sort = (document.getElementById('filterSort')||{}).value || "dateDesc";
+  let arr = gameManager.data.collection
+    .filter(c=>(!rarity||c.rarity===rarity)&&(!name||c.name.toLowerCase().includes(name)));
+
+  arr = [...arr];
+  if(sort==="az") arr.sort((a,b)=>a.name.localeCompare(b.name));
+  else if(sort==="za") arr.sort((a,b)=>b.name.localeCompare(a.name));
+  else if(sort==="rarityDesc") arr.sort((a,b)=>rarityToNum(b.rarity)-rarityToNum(a.rarity));
+  else if(sort==="rarityAsc") arr.sort((a,b)=>rarityToNum(a.rarity)-rarityToNum(b.rarity));
+  else if(sort==="dateAsc") arr.reverse();
+
+  let collection = document.getElementById('collection');
+  collection.innerHTML = '';
+  arr.forEach((card, index) => {
+    let cardDiv = document.createElement('div');
+    cardDiv.className = `card rarity-${card.rarity}`;
+    cardDiv.style = 'display:inline-block;margin:7px;cursor:pointer;background:#fff1;border-radius:10px;box-shadow:0 2px 10px #0001;padding:5px 8px 2px 8px;transition:.16s;';
+    cardDiv.innerHTML = `<img src="${card.image}" alt="${card.name}" style="width:94px;border-radius:7px;"><div style="font-size:1em;font-weight:bold">${card.name}</div>`;
+    cardDiv.onclick = () => gameManager.showCardModal(card, gameManager.data.collection.indexOf(card));
+    collection.appendChild(cardDiv);
+  });
+}
+// Чтобы всегда после любого обновления коллекции фильтр работал:
+(function(){
+  let origUpdateUI = gameManager.updateUI.bind(gameManager);
+  gameManager.updateUI = function() {
+    origUpdateUI();
+    filterCollection();
+  };
+})();
 
 
 
 
+// === КНОПКА ТРЕЙДА В ЛЕВОМ ВЕРХУ ===
+(function(){
+  if(document.getElementById('btnTradeTopLeft')) return;
+  let btn = document.createElement('button');
+  btn.id = 'btnTradeTopLeft';
+  btn.textContent = 'Обмен';
+  btn.style = `
+    position:fixed;top:20px;left:20px;z-index:9999;
+    background:linear-gradient(135deg,#AB47BC,#E91E63 85%);
+    color:#fff;font-weight:bold;font-size:1.08em;
+    border:none;border-radius:10px;box-shadow:0 2px 14px #ab47bc55;
+    padding:12px 26px;cursor:pointer;transition:0.18s;
+    letter-spacing:1px;
+  `;
+  btn.onmouseenter = () => btn.style.transform='scale(1.07)';
+  btn.onmouseleave = () => btn.style.transform='scale(1)';
+  btn.onclick = () => TradeUI.openTrade();
+  document.body.appendChild(btn);
+})();
+
+// === МОДАЛЬНОЕ ОКНО ТРЕЙДА С ОНЛАЙН-СПИСКОМ ===
+class TradeUI {
+  static openTrade() {
+    if(document.getElementById('tradeDialog')) return;
+    let modal = document.createElement('div');
+    modal.id = 'tradeDialog';
+    modal.style = `
+      position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:10001;
+      background:rgba(0,0,0,0.82);display:flex;align-items:center;justify-content:center;
+    `;
+    modal.innerHTML = `
+      <div style="background:#23182d;color:#fff;padding:30px 30px 22px 30px;border-radius:24px;min-width:350px;max-width:97vw;box-shadow:0 6px 32px #000a;position:relative;">
+        <button onclick="document.getElementById('tradeDialog').remove()" style="background:transparent;border:none;color:#E91E63;font-size:1.7em;position:absolute;top:18px;right:18px;cursor:pointer">&times;</button>
+        <h3 style="margin-bottom:17px;">Обмен карточками</h3>
+        <div id="tradeStep1">
+          <div style="margin-bottom:15px;font-size:1.08em;">Выберите онлайн-игрока для обмена:</div>
+          <div id="onlinePlayerList" style="min-height:64px;max-height:260px;overflow:auto;"></div>
+          <div id="tradeNoPlayers" style="color:#e57373;display:none;margin:14px 0 2px 0;">Сейчас нет игроков онлайн 😔</div>
+        </div>
+        <div id="tradeStep2" style="display:none;">
+          <div style="font-size:1.1em;margin-bottom:12px">
+            <b>Обмен с <span id="tradeWithName"></span></b>
+            <span id="tradeStatus" style="margin-left:10px;font-size:.9em;color:#a6b;"></span>
+          </div>
+          <div style="display:flex;gap:20px;justify-content:center;">
+            <div style="min-width:160px;">
+              <div style="font-weight:bold;margin-bottom:4px;text-align:center;">Вы</div>
+              <div id="myTradeCards" style="min-height:75px;min-width:130px;background:rgba(255,255,255,0.03);border-radius:9px;padding:7px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center"></div>
+              <button id="addMyCardBtn" style="margin:8px auto 0 auto;display:block;background:#ab47bc;border:none;border-radius:6px;color:#fff;font-size:0.99em;padding:6px 14px;">+ Добавить</button>
+              <div style="text-align:center;margin-top:7px;"><label><input type="checkbox" id="myReadyBox"> Готов</label></div>
+            </div>
+            <div style="font-size:32px;align-self:center;">⇄</div>
+            <div style="min-width:160px;">
+              <div style="font-weight:bold;margin-bottom:4px;text-align:center;" id="otherNameField">Игрок</div>
+              <div id="theirTradeCards" style="min-height:75px;min-width:130px;background:rgba(255,255,255,0.03);border-radius:9px;padding:7px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center"></div>
+              <div style="text-align:center;margin-top:24px;"><label><input type="checkbox" id="theirReadyBox" disabled> Готов</label></div>
+            </div>
+          </div>
+          <button id="tradeConfirmBtn" style="margin:18px auto 0 auto;display:block;background:#43e97b;border:none;border-radius:9px;color:#fff;font-size:1.08em;padding:10px 30px;font-weight:bold;opacity:.5;cursor:not-allowed;">Подтвердить обмен</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    TradeUI.renderOnlinePlayers();
+  }
+
+  static async renderOnlinePlayers() {
+    let list = document.getElementById('onlinePlayerList');
+    let noPlayers = document.getElementById('tradeNoPlayers');
+    list.innerHTML = '<div style="color:#aab;">Загрузка...</div>';
+    let snap = await db.ref('players').once('value');
+    let now = Date.now();
+    let players = Object.entries(snap.val() || {})
+      .filter(([id, d]) =>
+        id !== gameManager.playerId &&
+        d.playerName &&
+        now-(d.lastOnline||0)<60000 // онлайн ~1 мин
+      )
+      .map(([id, d])=>({id, ...d}));
+    // Получить топ (по количеству карт)
+    let topSorted = players.slice().sort((a,b)=>((b.collection?.length||0)-(a.collection?.length||0)));
+    players = players.map(p => ({...p, top: 1+topSorted.findIndex(tp=>tp.id===p.id)}));
+    // UI
+    if(players.length === 0){
+      list.innerHTML = '';
+      noPlayers.style.display = '';
+      return;
+    }
+    noPlayers.style.display = 'none';
+    list.innerHTML = players.map(p=>`
+      <div style="display:flex;align-items:center;gap:14px;padding:10px 7px;border-radius:9px;cursor:pointer;background:rgba(255,255,255,0.03);margin-bottom:4px;transition:.15s;"
+        onmouseover="this.style.background='#4A148C44'" onmouseout="this.style.background='rgba(255,255,255,0.03)'"
+        onclick="TradeUI.invite('${p.id}')">
+        <img src="${p.playerAvatar||''}" style="width:40px;height:40px;border-radius:50%;border:2px solid #E91E63;object-fit:cover;box-shadow:0 0 7px #E91E6340;">
+        <div>
+          <div style="font-weight:bold;font-size:1.08em;color:#FFEBEE">${p.playerName}</div>
+          <div style="font-size:.98em;color:#ab47bc;margin-top:1px;">#${p.top} в топе • ${p.collection?.length||0} карт</div>
+        </div>
+      </div>
+    `).join('');
+    TradeUI._onlinePlayers = players;
+  }
+
+  static async invite(id) {
+    let player = TradeUI._onlinePlayers.find(p=>p.id===id);
+    if(!player) return;
+    // Переход к трейду (оставшаяся логика один-в-один как выше)
+    let modal = document.getElementById('tradeDialog');
+    document.getElementById('tradeStep1').style.display='none';
+    document.getElementById('tradeStep2').style.display='';
+    document.getElementById('tradeWithName').textContent = player.playerName;
+    document.getElementById('otherNameField').textContent = player.playerName;
+    TradeUI.listenTradeWith(player);
+  }
+
+  // Остальной код трейда (можно взять из предыдущего ответа: listenTrade, removeMyCard, addMyCardBtn/onchange, sync с realtime db...)
+  // Для краткости сюда вставь полный TradeUI.listenTrade и всё что нужно из предыдущего блока, не забудь заменить playerId → player.id
+  // ... (см. предыдущий фрагмент listenTrade)
+}
 
 </script>
 </body>
-
-
-<audio id="bgMusic" src="music/background.mp3" loop></audio>
-
-
 </html>
