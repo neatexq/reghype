@@ -1622,6 +1622,38 @@ h2 {
 <!-- ОСНОВНАЯ ИГРА -->
 <div id="gameContainer">
 <h1 id="logo" data-i18n="title">Reghype</h1>
+<div id="packOpenModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:8000;background:rgba(0,0,0,0.85);justify-content:center;align-items:center;">
+  <div id="packOpenContent" style="background:linear-gradient(135deg,#4A148C,#880E4F);padding:32px 24px 24px 24px;border-radius:18px;box-shadow:0 0 50px #E91E63cc;text-align:center;max-width:95vw;animation:popPackOpen .7s cubic-bezier(.4,2,.3,1)">
+    <div id="packOpenAnimation" style="margin-bottom:18px;font-size:40px;animation:spinPack 1.2s infinite linear;">🎁</div>
+    <div id="packOpenCardImage"></div>
+    <div id="packOpenCardName" style="font-size:26px;color:#FFD700;margin-top:12px;font-weight:bold;"></div>
+    <div id="packOpenCardDesc" style="font-size:18px;margin:12px 0 2px;color:#fff;text-shadow:0 0 7px #AB47BC;"></div>
+    <button onclick="closePackOpenModal()" style="margin-top:20px;padding:10px 44px;background:#E91E63;border-radius:9px;color:#fff;font-size:17px;font-weight:bold;border:none;box-shadow:0 3px 25px #E91E6350;cursor:pointer;">OK</button>
+  </div>
+</div>
+<style>
+@keyframes popPackOpen {
+  0% { transform: scale(0.7) rotate(-25deg); opacity: 0;}
+  100% { transform: scale(1) rotate(0deg); opacity: 1;}
+}
+@keyframes spinPack {
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
+}
+#packOpenCardImage img {
+  width: 120px; height: 150px;
+  border-radius: 12px;
+  box-shadow: 0 0 30px #FFD70090, 0 3px 30px #AB47BC50;
+  margin: 12px 0 2px 0;
+  animation: cardAppearFromPack .4s cubic-bezier(.4,1.6,.4,1) forwards;
+  opacity: 0;
+}
+@keyframes cardAppearFromPack {
+  0% { transform: scale(0.5) rotateY(-180deg); opacity:0; }
+  70% { transform: scale(1.15) rotateY(0deg); opacity:1; }
+  100% { transform: scale(1) rotateY(0deg); opacity:1; }
+}
+</style>
 <!-- ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ -->
 <div class="profile-info">
   <img id="profileAvatar" class="profile-avatar" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMzAiIGZpbGw9IiNmZmNjMDAiLz4KPGZ0ZXh0IHg9IjMwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5CCPC90ZXh0Pgo8L3N2Zz4K" alt="Аватар" onclick="openProfile()">
@@ -2963,7 +2995,25 @@ async function buyPackById(packId) {
   await gameManager.savePlayerData();
   gameManager.updateUI();
   gameManager.displayNewCard(newCard);
-  gameManager.showNotification(`Получена карточка: ${newCard.name}!`);
+  showPackOpenModal(newCard);
+}
+
+function showPackOpenModal(card) {
+  const modal = document.getElementById('packOpenModal');
+  const imgDiv = document.getElementById('packOpenCardImage');
+  const nameDiv = document.getElementById('packOpenCardName');
+  const descDiv = document.getElementById('packOpenCardDesc');
+  if (!modal || !imgDiv || !nameDiv || !descDiv) return;
+
+  imgDiv.innerHTML = `<img src="${card.image}" alt="${card.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI1IiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDEyNSAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjUiIGhlaWdodD0iMTUwIiBmaWxsPSIjMzMzIi8+Cjx0ZXh0IHg9IjYyIiB5PSI3NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE2IiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5QYWNrPC90ZXh0Pgo8L3N2Zz4K'">`;
+  nameDiv.textContent = `Тебе выпала: ${card.name}`;
+  descDiv.textContent = card.rarity ? `Редкость: ${card.rarity}` : '';
+  modal.style.display = 'flex';
+}
+
+function closePackOpenModal() {
+  const modal = document.getElementById('packOpenModal');
+  if (modal) modal.style.display = 'none';
 }
 
 function getRandomCardFromPack(pack) {
@@ -4146,3 +4196,4 @@ function selectCardsFromCollection({title, collection, already=[], max=10}) {
 </script>
 </body>
 </html>
+
