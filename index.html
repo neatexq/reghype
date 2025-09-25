@@ -1124,6 +1124,53 @@ h2 {
   margin: 20px auto;
   max-width: 500px;
 }
+
+#collectionFilterBar {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  background: linear-gradient(135deg, #4A148C 60%, #880E4F 100%);
+  padding: 12px 18px;
+  border-radius: 16px;
+  margin-bottom: 22px;
+  box-shadow: 0 3px 18px #E91E6340, 0 1.5px 8px #AB47BC50;
+  border: 2px solid #E91E63;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  flex-wrap: wrap;
+}
+
+#collectionFilterBar input,
+#collectionFilterBar select {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 2px solid #E91E63;
+  background: #1c1024;
+  color: #fff;
+  font-size: 1em;
+  min-width: 0;
+  width: 170px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 550px) {
+  #collectionFilterBar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 7px;
+    padding: 10px 6px;
+    margin-bottom: 12px;
+  }
+  #collectionFilterBar input,
+  #collectionFilterBar select {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    font-size: 1em;
+  }
+}
+
 /* ПЕРВОНАЧАЛЬНАЯ НАСТРОЙКА */
 #initialSetup {
   position: fixed;
@@ -4058,37 +4105,24 @@ function getRandomRarity() {
   if(document.getElementById('collectionFilterBar')) return;
   let f = document.createElement('div');
   f.id = 'collectionFilterBar';
-  f.style = `
-    position:sticky;top:10px;z-index:99;
-    background:linear-gradient(135deg, #4A148C 60%, #880E4F 100%);
-    padding:12px 18px 12px 22px;
-    border-radius:16px;
-    margin-bottom:22px;
-    display:flex;gap:13px;align-items:center;
-    box-shadow:0 3px 18px #E91E6340, 0 1.5px 8px #AB47BC50;
-    border:2px solid #E91E63;
-    max-width:700px;
-    margin-left:auto;margin-right:auto;
-  `;
-  f.innerHTML = `
-    <input id="filterName" placeholder="Поиск по имени..." 
-      style="padding:8px 14px;border-radius:10px;border:2px solid #E91E63;background:#1c1024;color:#fff;font-size:1em;min-width:155px;box-shadow:0 0 7px #E91E6340;">
-    <select id="filterRarity" style="padding:8px 14px;border-radius:10px;border:2px solid #E91E63;background:#1c1024;color:#fff;font-size:1em;">
-      <option value="">Все редкости</option>
-      <option>Common</option>
-      <option>Rare</option>
-      <option>Special</option>
-      <option>Legendary</option>
-    </select>
-    <select id="filterSort" style="padding:8px 14px;border-radius:10px;border:2px solid #E91E63;background:#1c1024;color:#fff;font-size:1em;">
-      <option value="dateDesc">Сначала новые</option>
-      <option value="dateAsc">Сначала старые</option>
-      <option value="az">А-Я</option>
-      <option value="za">Я-А</option>
-      <option value="rarityDesc">По редкости ↓</option>
-      <option value="rarityAsc">По редкости ↑</option>
-    </select>
-  `;
+f.innerHTML = `
+  <input id="filterName" placeholder="Поиск по имени...">
+  <select id="filterRarity">
+    <option value="">Все редкости</option>
+    <option>Common</option>
+    <option>Rare</option>
+    <option>Special</option>
+    <option>Legendary</option>
+  </select>
+  <select id="filterSort">
+    <option value="dateDesc">Сначала новые</option>
+    <option value="dateAsc">Сначала старые</option>
+    <option value="az">А-Я</option>
+    <option value="za">Я-А</option>
+    <option value="rarityDesc">По редкости ↓</option>
+    <option value="rarityAsc">По редкости ↑</option>
+  </select>
+`;
   let coll = document.getElementById('collection');
   coll && coll.parentNode.insertBefore(f, coll);
 
