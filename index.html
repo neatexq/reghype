@@ -1651,6 +1651,7 @@ h2 {
       <button class="admin-button success" onclick="AdminManager.setCurrency()" data-i18n="set">Установить</button>
       <button class="admin-button" onclick="AdminManager.addCurrency()" data-i18n="add">Добавить</button>
     </div>
+
   </div>
   <div class="admin-section">
     <h3 data-i18n="card_management">🃏 Управление карточками</h3>
@@ -1876,9 +1877,10 @@ h2 {
             <h2 class="menu-title" data-i18n="pack_shop">🎁 Магазин паков</h2>
             <button class="close-btn" onclick="MenuManager.close('packs')">&times;</button>
         </div>
-        <button onclick="PackManager.buyCommonPack()" style="width: 100%; margin: 10px 0; padding: 15px;" data-i18n="common_pack">🟦 Обычный пак (10 монет)</button>
-        <button onclick="PackManager.buyRarePack()" style="width: 100%; margin: 10px 0; padding: 15px;" data-i18n="rare_pack">🟩 Редкий пак (30 монет)</button>
-        <button onclick="PackManager.buyLegendaryPack()" style="width: 100%; margin: 10px 0; padding: 15px;" data-i18n="legendary_pack">🟨 Легендарный пак (300 монет)</button>
+        <button onclick="buyPackById('common')" style="width: 100%; margin: 10px 0; padding: 15px;" data-i18n="common_pack">🟦 Обычный пак (30 монет)</button>
+        <button onclick="buyPackById('rare')" style="width: 100%; margin: 10px 0; padding: 15px;" data-i18n="rare_pack">🟩 Редкий пак (75 монет)</button>
+        <button onclick="buyPackById('legendary')" style="width: 100%; margin: 10px 0; padding: 15px;" data-i18n="legendary_pack">🟨 Легендарный пак (300 монет)</button>
+<button onclick="buyPackById('regcandy')" style="width: 100%; margin: 10px 0; padding: 15px; background: linear-gradient(45deg, #E91E63, #AB47BC); border: 2px solid #FFEBEE;">💎 Regcandy пак (500 монет)</button>
     </div>
 </div>
 </div>
@@ -1932,9 +1934,9 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-// КАРТОЧКИ
+// КАРТОЧКИ (обновленный массив) список
 const cards=[
-  {name:"Reghype",rarity:"Special",type:"Twitch",image:"cards/Regcandy.png", tgLink:"https://t.me/reghypearchive/2"},
+  {name:"Regcandy",rarity:"Special",type:"Twitch",image:"cards/Regcandy.png", tgLink:"https://t.me/reghypearchive/2"},
   {name:"DistrsAI",rarity:"Special",type:"Twitch",image:"cards/DistrsAI.png", tgLink:"https://t.me/reghypearchive/3"},
   {name:"Demogorgon",rarity:"Legendary",type:"Moder",image:"cards/Demogorgon.png", tgLink:"https://t.me/reghypearchive/4"},
   {name:"Apelsinka",rarity:"Legendary",type:"Moder",image:"cards/Apelsinka.png", tgLink:"https://t.me/reghypearchive/5"},
@@ -1953,6 +1955,77 @@ const cards=[
   {name:"Freddy Skin",rarity:"Special",type:"Skin",image:"cards/Freddy-Skin.png", tgLink:"https://t.me/reghypearchive/18"},
   {name:"X06R",rarity:"Common",type:"Chaters",image:"cards/X06R.png", tgLink:"https://t.me/reghypearchive/19"}
 ];
+
+// ЭКСКЛЮЗИВНЫЕ REGCANDY КАРТОЧКИ (только для Regcandy пака)
+const regcandyCards = [
+  {name:"Regcandy & AmNyam",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandyamnyam.jpg", exclusive: true},
+  {name:"Regcandy & Dark Bloom",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandybloom.jpg", exclusive: true},
+  {name:"Regcandy & Freddy",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandyfreddy.jpg", exclusive: true},
+  {name:"Regcandy & Labubu",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandylabuba.jpg", exclusive: true},
+  {name:"Regcandy & Minecraft",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandypickaxe.jpg", exclusive: true},
+  {name:"Regcandy & Sailor Moon",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandyseilor.jpg", exclusive: true},
+  {name:"Regcandy & Shadow",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandyshadow.jpg", exclusive: true},
+  // Добавляем основную карточку Regcandy в Regcandy пак тоже
+  {name:"Regcandy",rarity:"Special",type:"Twitch",image:"cards/Regcandy.png", tgLink:"https://t.me/reghypearchive/2", exclusive: true}
+];
+
+
+// список паков
+// Ты САМ выбираешь любые карточки и любые шансы — прямо руками!
+const packs = [
+  {
+    id: "common",
+    name: "Обычный пак",
+    cost: 30,
+    drops: [
+      { card: cards[7], chance: 20 },       // Andrew  
+      { card: cards[8], chance: 20 },       // Andrew    
+      { card: cards[11], chance: 20 },       // Andrew  
+      { card: cards[12], chance: 20 },       // Andrew  
+      { card: cards[17], chance: 20 },       // Andrew  
+  ]
+  },
+  {
+    id: "regcandy",
+    name: "Regcandy пак",
+    cost: 500,
+    drops: [
+      { card: regcandyCards[0], chance: 12.5 },
+      { card: regcandyCards[1], chance: 12.5 },
+      { card: regcandyCards[2], chance: 12.5 },
+      { card: regcandyCards[3], chance: 12.5 },
+      { card: regcandyCards[4], chance: 12.5 },
+      { card: regcandyCards[5], chance: 12.5 },
+      { card: regcandyCards[6], chance: 12.5 },
+      { card: regcandyCards[7], chance: 12.5 }
+    ]
+  },
+  {
+id: "rare",
+    name: "Редкий пак",
+    cost: 75,
+    drops: [
+      { card: cards[4], chance: 16 },       // Andrew  
+      { card: cards[5], chance: 16 },       // Andrew    
+      { card: cards[6], chance: 16 },       // Andrew  
+      { card: cards[9], chance: 16 },       // Andrew  
+      { card: cards[10], chance: 16 },       // Andrew  
+      { card: cards[13], chance: 16 },       // Andrew  
+  ]
+  },
+  {
+id: "legendary",
+    name: "Легендарный пак",
+    cost: 300,
+    drops: [
+      { card: cards[2], chance: 50 },       // Andrew  
+      { card: cards[3], chance: 50 },       // Andrew    
+  ]
+  },
+
+];
+
+
 // СЛУЧАЙНЫЕ ИМЕНА ДЛЯ НПС
 const randomNames = [
   "КрутойИгрок", "МегаГеймер", "ЛегендаПаков", "КартоРыцарь", "СуперКоллектор",
@@ -2787,29 +2860,36 @@ async loadLeaderboard() {
     this.displayNewCard(newCard);
     this.updateUI();
   }
-  generateRandomCard(rarityBonus = 0) {
-    const rarityWeights = {
-      Common: 60 - rarityBonus,
-      Rare: 30,
-      Special: 8 + rarityBonus / 2,
-      Legendary: 2 + rarityBonus / 2
-    };
- 
-    const totalWeight = Object.values(rarityWeights).reduce((a, b) => a + b, 0);
-    let random = Math.random() * totalWeight;
- 
-    let selectedRarity = 'Common';
-    for (const [rarity, weight] of Object.entries(rarityWeights)) {
-      random -= weight;
-      if (random <= 0) {
-        selectedRarity = rarity;
-        break;
-      }
+
+
+
+
+generateRandomCard(rarityBonus = 0, isRegcandyPack = false) {
+  // Выбираем массив карточек в зависимости от типа пака
+  const cardPool = isRegcandyPack ? regcandyCards : cards;
+  
+  const rarityWeights = {
+    Common: 70,
+    Rare: 20,
+    Legendary: 7,
+    Special: 3
+  };
+
+  const totalWeight = Object.values(rarityWeights).reduce((a, b) => a + b, 0);
+  let random = Math.random() * totalWeight;
+
+  let selectedRarity = 'Common';
+  for (const [rarity, weight] of Object.entries(rarityWeights)) {
+    random -= weight;
+    if (random <= 0) {
+      selectedRarity = rarity;
+      break;
     }
- 
-    const cardsOfRarity = cards.filter(card => card.rarity === selectedRarity);
-    return cardsOfRarity[Math.floor(Math.random() * cardsOfRarity.length)];
   }
+
+  const cardsOfRarity = cardPool.filter(card => card.rarity === selectedRarity);
+  return cardsOfRarity[Math.floor(Math.random() * cardsOfRarity.length)];
+}
   displayNewCard(card) {
     const lastCard = document.getElementById('lastCard');
     if (!lastCard) return;
@@ -2871,6 +2951,35 @@ async loadLeaderboard() {
     }, 3000);
   }
 }
+
+
+async function buyPackById(packId) {
+  const pack = packs.find(p => p.id === packId);
+  if (!pack) return gameManager.showNotification('Пак не найден!');
+  if (gameManager.data.currency < pack.cost) return gameManager.showNotification('Недостаточно монет!');
+  gameManager.data.currency -= pack.cost;
+  const newCard = getRandomCardFromPack(pack);
+  gameManager.data.collection.push(newCard);
+  await gameManager.savePlayerData();
+  gameManager.updateUI();
+  gameManager.displayNewCard(newCard);
+  gameManager.showNotification(`Получена карточка: ${newCard.name}!`);
+}
+
+function getRandomCardFromPack(pack) {
+  const rand = Math.random() * 100;
+  let cumulative = 0;
+  for (const drop of pack.drops) {
+    cumulative += drop.chance;
+    if (rand < cumulative) {
+      return { ...drop.card };
+    }
+  }
+  // fallback
+  return { ...pack.drops[0].card };
+}
+
+
 // АДМИН МЕНЕДЖЕР
 class AdminManager {
   static selectedPlayer = null;
@@ -2941,24 +3050,34 @@ static openQuick() {
     const logDiv = document.getElementById('adminLog');
     if (logDiv) logDiv.innerHTML = '<div class="log-entry">Лог очищен...</div>';
   }
-  static populateCardSelects() {
-    const selects = [
-      document.getElementById('adminCardSelect'),
-      document.getElementById('playerCardSelect')
-    ];
- 
-    selects.forEach(select => {
-      if (select) {
-        select.innerHTML = '<option value="">Выберите карточку...</option>';
-        cards.forEach((card, index) => {
-          const option = document.createElement('option');
-          option.value = index;
-          option.textContent = `${card.name} (${card.rarity})`;
-          select.appendChild(option);
-        });
-      }
-    });
-  }
+ static populateCardSelects() {
+  const selects = [
+    document.getElementById('adminCardSelect'),
+    document.getElementById('playerCardSelect')
+  ];
+
+  selects.forEach(select => {
+    if (select) {
+      select.innerHTML = '<option value="">Выберите карточку...</option>';
+      
+      // Добавляем обычные карточки
+      cards.forEach((card, index) => {
+        const option = document.createElement('option');
+        option.value = `normal_${index}`;
+        option.textContent = `${card.name} (${card.rarity})`;
+        select.appendChild(option);
+      });
+      
+      // Добавляем Regcandy карточки
+      regcandyCards.forEach((card, index) => {
+        const option = document.createElement('option');
+        option.value = `regcandy_${index}`;
+        option.textContent = `${card.name} (${card.rarity}) [Regcandy]`;
+        select.appendChild(option);
+      });
+    }
+  });
+}
   // Управление валютой
   static async setCurrency() {
     const adminCurrency = document.getElementById('adminCurrency');
@@ -2998,24 +3117,32 @@ static openQuick() {
   }
   // Управление карточками
   static async giveCard() {
-    const adminCardSelect = document.getElementById('adminCardSelect');
-    if (!adminCardSelect) return;
-    const cardIndex = adminCardSelect.value;
-    if (!cardIndex) {
-      this.log('Карточка не выбрана', 'error');
-      return;
-    }
- 
-    try {
-      const card = cards[parseInt(cardIndex)];
-      gameManager.data.collection.push(card);
-      await gameManager.savePlayerData();
-      gameManager.updateUI();
-      this.log(`Выдана карточка: ${card.name}`, 'success');
-    } catch (error) {
-      this.log(`Ошибка выдачи карточки: ${error.message}`, 'error');
-    }
+  const adminCardSelect = document.getElementById('adminCardSelect');
+  if (!adminCardSelect) return;
+  const cardValue = adminCardSelect.value;
+  if (!cardValue) {
+    this.log('Карточка не выбрана', 'error');
+    return;
   }
+
+  try {
+    let card;
+    if (cardValue.startsWith('regcandy_')) {
+      const index = parseInt(cardValue.replace('regcandy_', ''));
+      card = regcandyCards[index];
+    } else {
+      const index = parseInt(cardValue.replace('normal_', ''));
+      card = cards[index];
+    }
+    
+    gameManager.data.collection.push(card);
+    await gameManager.savePlayerData();
+    gameManager.updateUI();
+    this.log(`Выдана карточка: ${card.name}`, 'success');
+  } catch (error) {
+    this.log(`Ошибка выдачи карточки: ${error.message}`, 'error');
+  }
+}
   static async giveMultipleCards() {
     const adminCardSelect = document.getElementById('adminCardSelect');
     if (!adminCardSelect) return;
@@ -3112,32 +3239,40 @@ static openQuick() {
       this.log(`Ошибка установки валюты игрока: ${error.message}`, 'error');
     }
   }
-  static async givePlayerCard() {
-    if (!this.selectedPlayer) {
-      this.log('Игрок не выбран', 'error');
-      return;
-    }
- 
-    const playerCardSelect = document.getElementById('playerCardSelect');
-    if (!playerCardSelect) return;
-    const cardIndex = playerCardSelect.value;
-    if (!cardIndex) {
-      this.log('Карточка не выбрана', 'error');
-      return;
-    }
- 
-    try {
-      const card = cards[parseInt(cardIndex)];
-      const playerRef = db.ref(`players/${this.selectedPlayer.id}/collection`);
-      const snapshot = await playerRef.once('value');
-      const collection = snapshot.val() || [];
-      collection.push(card);
-      await playerRef.set(collection);
-      this.log(`Выдана ${card.name} игроку ${this.selectedPlayer.data.playerName}`, 'success');
-    } catch (error) {
-      this.log(`Ошибка выдачи карточки игроку: ${error.message}`, 'error');
-    }
+ static async givePlayerCard() {
+  if (!this.selectedPlayer) {
+    this.log('Игрок не выбран', 'error');
+    return;
   }
+
+  const playerCardSelect = document.getElementById('playerCardSelect');
+  if (!playerCardSelect) return;
+  const cardValue = playerCardSelect.value;
+  if (!cardValue) {
+    this.log('Карточка не выбрана', 'error');
+    return;
+  }
+
+  try {
+    let card;
+    if (cardValue.startsWith('regcandy_')) {
+      const index = parseInt(cardValue.replace('regcandy_', ''));
+      card = regcandyCards[index];
+    } else {
+      const index = parseInt(cardValue.replace('normal_', ''));
+      card = cards[index];
+    }
+    
+    const playerRef = db.ref(`players/${this.selectedPlayer.id}/collection`);
+    const snapshot = await playerRef.once('value');
+    const collection = snapshot.val() || [];
+    collection.push(card);
+    await playerRef.set(collection);
+    this.log(`Выдана ${card.name} игроку ${this.selectedPlayer.data.playerName}`, 'success');
+  } catch (error) {
+    this.log(`Ошибка выдачи карточки игроку: ${error.message}`, 'error');
+  }
+}
   static async setPlayerRole() {
     if (!this.selectedPlayer) {
       this.log('Игрок не выбран', 'error');
@@ -3519,6 +3654,20 @@ class PackManager {
     gameManager.displayNewCard(newCard);
     gameManager.showNotification(`Получена карточка: ${newCard.name}!`);
   }
+static async buyRegcandyPack() {
+  if (gameManager.data.currency < 500) {
+    gameManager.showNotification('Недостаточно монет!');
+    return;
+  }
+
+  gameManager.data.currency -= 500;
+  const newCard = gameManager.generateRandomCard(50, true); // true означает Regcandy пак
+  gameManager.data.collection.push(newCard);
+  await gameManager.savePlayerData();
+  gameManager.updateUI();
+  gameManager.displayNewCard(newCard);
+  gameManager.showNotification(`Получена эксклюзивная карточка: ${newCard.name}!`);
+ }
 }
 // МЕНЕДЖЕР КЛИКЕРА
 class ClickerManager {
@@ -3940,26 +4089,6 @@ function filterCollection() {
 
 
 
-// ========== Кнопка трейда ================
-(function(){
-  if(document.getElementById('btnTradeTopLeft')) return;
-  let btn = document.createElement('button');
-  btn.id = 'btnTradeTopLeft';
-  btn.textContent = 'Обмен';
-  btn.style = `
-    position:fixed;top:20px;left:20px;z-index:9999;
-    background:linear-gradient(135deg,#AB47BC,#E91E63 85%);
-    color:#fff;font-weight:bold;font-size:1.08em;
-    border:none;border-radius:10px;box-shadow:0 2px 14px #ab47bc55;
-    padding:12px 26px;cursor:pointer;transition:0.18s;
-    letter-spacing:1px;
-  `;
-  btn.onmouseenter = () => btn.style.transform='scale(1.07)';
-  btn.onmouseleave = () => btn.style.transform='scale(1)';
-  btn.onclick = () => TradeUI.openTrade();
-  document.body.appendChild(btn);
-})();
-
 // ========== Выбор карт (мультивыбор, без дубликатов) ===========
 function selectCardsFromCollection({title, collection, already=[], max=10}) {
   return new Promise(resolve => {
@@ -4013,289 +4142,6 @@ function selectCardsFromCollection({title, collection, already=[], max=10}) {
     updateList();
   });
 }
-
-// ========== Основной трейд UI ============
-class TradeUI {
-  static openTrade(tradeIdRestore=null) {
-    if(document.getElementById('tradeDialog')) return;
-    let modal = document.createElement('div');
-    modal.id = 'tradeDialog';
-    modal.style = `
-      position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:10001;
-      background:rgba(0,0,0,0.82);display:flex;align-items:center;justify-content:center;
-    `;
-    modal.innerHTML = `
-      <div style="background:#23182d;color:#fff;padding:30px 30px 22px 30px;border-radius:24px;min-width:350px;max-width:97vw;box-shadow:0 6px 32px #000a;position:relative;">
-        <button onclick="TradeUI.closeTradeDialog()" style="background:transparent;border:none;color:#E91E63;font-size:1.7em;position:absolute;top:18px;right:18px;cursor:pointer">&times;</button>
-        <h3 style="margin-bottom:17px;">Обмен карточками</h3>
-        <div id="tradeStep1">
-          <div style="margin-bottom:15px;font-size:1.08em;">Выберите онлайн-игрока для обмена:</div>
-          <div id="onlinePlayerList" style="min-height:64px;max-height:260px;overflow:auto;"></div>
-          <div id="tradeNoPlayers" style="color:#e57373;display:none;margin:14px 0 2px 0;">Сейчас нет игроков онлайн 😔</div>
-        </div>
-        <div id="tradeStep2" style="display:none;">
-          <div style="font-size:1.1em;margin-bottom:12px">
-            <b>Обмен с <span id="tradeWithName"></span></b>
-            <span id="tradeStatus" style="margin-left:10px;font-size:.9em;color:#a6b;"></span>
-          </div>
-          <div style="display:flex;gap:20px;justify-content:center;">
-            <div style="min-width:160px;">
-              <div style="font-weight:bold;margin-bottom:4px;text-align:center;">Вы</div>
-              <div id="myTradeCards" style="min-height:75px;min-width:130px;background:rgba(255,255,255,0.03);border-radius:9px;padding:7px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center"></div>
-              <button id="addMyCardBtn" style="margin:8px auto 0 auto;display:block;background:#ab47bc;border:none;border-radius:6px;color:#fff;font-size:0.99em;padding:6px 14px;">+ Добавить</button>
-              <div style="text-align:center;margin-top:7px;"><label><input type="checkbox" id="myReadyBox"> Готов</label></div>
-            </div>
-            <div style="font-size:32px;align-self:center;">⇄</div>
-            <div style="min-width:160px;">
-              <div style="font-weight:bold;margin-bottom:4px;text-align:center;" id="otherNameField">Игрок</div>
-              <div id="theirTradeCards" style="min-height:75px;min-width:130px;background:rgba(255,255,255,0.03);border-radius:9px;padding:7px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center"></div>
-              <div style="text-align:center;margin-top:24px;"><label><input type="checkbox" id="theirReadyBox" disabled> Готов</label></div>
-            </div>
-          </div>
-          <button id="tradeConfirmBtn" style="margin:18px auto 0 auto;display:block;background:#43e97b;border:none;border-radius:9px;color:#fff;font-size:1.08em;padding:10px 30px;font-weight:bold;opacity:.5;cursor:not-allowed;">Подтвердить обмен</button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modal);
-
-    if(tradeIdRestore) {
-      TradeUI.restoreListenTrade(tradeIdRestore);
-      return;
-    }
-    TradeUI.renderOnlinePlayers();
-  }
-
-  static closeTradeDialog() {
-    let el = document.getElementById('tradeDialog');
-    if(el) el.remove();
-    let tid = localStorage.getItem('trade_active_id');
-    if(tid) db.ref('trades/'+tid+'/state').set('declined');
-    localStorage.removeItem('trade_active_id');
-  }
-
-  static async renderOnlinePlayers() {
-    let list = document.getElementById('onlinePlayerList');
-    let noPlayers = document.getElementById('tradeNoPlayers');
-    list.innerHTML = '<div style="color:#aab;">Загрузка...</div>';
-    let snap = await db.ref('players').once('value');
-    let now = Date.now();
-    let players = Object.entries(snap.val() || {})
-      .filter(([id, d]) =>
-        id !== gameManager.playerId &&
-        d.playerName &&
-        now-(d.lastOnline||0)<60000 // онлайн ~1 мин
-      )
-      .map(([id, d])=>({id, ...d}));
-    if(players.length === 0){
-      list.innerHTML = '';
-      noPlayers.style.display = '';
-      return;
-    }
-    noPlayers.style.display = 'none';
-    list.innerHTML = players.map(p=>`
-      <div style="display:flex;align-items:center;gap:14px;padding:10px 7px;border-radius:9px;cursor:pointer;background:rgba(255,255,255,0.03);margin-bottom:4px;transition:.15s;"
-        onmouseover="this.style.background='#4A148C44'" onmouseout="this.style.background='rgba(255,255,255,0.03)'"
-        onclick="TradeUI.invite('${p.id}')">
-        <img src="${p.playerAvatar||''}" style="width:40px;height:40px;border-radius:50%;border:2px solid #E91E63;object-fit:cover;box-shadow:0 0 7px #E91E6340;">
-        <div>
-          <div style="font-weight:bold;font-size:1.08em;color:#FFEBEE">${p.playerName}</div>
-          <div style="font-size:.98em;color:#ab47bc;margin-top:1px;">${p.collection?.length||0} карт</div>
-        </div>
-      </div>
-    `).join('');
-    TradeUI._onlinePlayers = players;
-  }
-
-  static async invite(id) {
-    let player = TradeUI._onlinePlayers.find(p=>p.id===id);
-    if(!player) return;
-    let tradeId = 'trade_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-    await db.ref('trades/'+tradeId).set({
-      users: [gameManager.playerId, player.id],
-      state: 'pending',
-      myCards: [],
-      theirCards: [],
-      myReady: false,
-      theirReady: false,
-      created: Date.now(),
-      invitee: player.id,
-      inviter: gameManager.playerId
-    });
-    localStorage.setItem('trade_active_id', tradeId);
-    TradeUI.awaitAccept(tradeId, player);
-    document.getElementById('tradeStep1').style.display='none';
-    document.getElementById('tradeStep2').style.display='';
-    document.getElementById('tradeWithName').textContent = player.playerName;
-    document.getElementById('otherNameField').textContent = player.playerName;
-  }
-
-  static awaitAccept(tradeId, player) {
-    document.getElementById('tradeStatus').innerHTML = `<span style="color:#ffbb44">Ожидание отклика игрока...</span>`;
-    // Только один listener на трейд
-    if (TradeUI._acceptListener) db.ref('trades/'+tradeId).off('value', TradeUI._acceptListener);
-    TradeUI._acceptListener = db.ref('trades/'+tradeId).on('value', snap=>{
-      let t = snap.val();
-      // Закрыть если отклонили или трейд удалён
-      if(!t || t.state==='declined') { TradeUI.closeTradeDialog(); localStorage.removeItem('trade_active_id'); return; }
-      if(t.state==='active') {
-        db.ref('trades/'+tradeId).off('value', TradeUI._acceptListener);
-        TradeUI.listenTrade(tradeId, player.id, player.playerName, true);
-      }
-    });
-  }
-
-  static checkIncomingTrade() {
-    db.ref('trades').on('child_added', snap=>{
-      let t = snap.val();
-      if(
-        t &&
-        Array.isArray(t.users) &&
-        t.state==='pending' &&
-        t.invitee===gameManager.playerId &&
-        !localStorage.getItem('trade_active_id')
-      ) {
-        if(document.getElementById('tradeIncomingDialog')) return;
-        let modal = document.createElement('div');
-        modal.id = 'tradeIncomingDialog';
-        modal.style = `
-          position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:10005;
-          background:rgba(0,0,0,0.82);display:flex;align-items:center;justify-content:center;
-        `;
-        db.ref('players/'+t.inviter).once('value').then(snap2=>{
-          let inviter = snap2.val();
-          modal.innerHTML = `
-            <div style="background:#23182d;color:#fff;padding:28px 28px 18px 28px;border-radius:20px;min-width:320px;max-width:96vw;text-align:center;box-shadow:0 6px 32px #000a;">
-              <img src="${inviter.playerAvatar||''}" style="width:54px;height:54px;border-radius:50%;border:2px solid #E91E63;object-fit:cover;box-shadow:0 0 7px #E91E6340;margin-bottom:10px;">
-              <div style="font-size:1.07em;font-weight:bold;margin-bottom:7px;">${inviter.playerName} приглашает вас к обмену</div>
-              <button onclick="TradeUI.acceptTrade('${snap.key}','${inviter.playerName}','${t.inviter}')" style="background:#43e97b;border:none;border-radius:7px;color:#fff;font-size:1em;padding:8px 18px;margin:12px 7px 0 7px;">Принять</button>
-              <button onclick="TradeUI.declineTrade('${snap.key}')" style="background:#E91E63;border:none;border-radius:7px;color:#fff;font-size:1em;padding:8px 18px;margin:12px 7px 0 7px;">Отклонить</button>
-            </div>
-          `;
-          document.body.appendChild(modal);
-        });
-      }
-    });
-  }
-
-  static async acceptTrade(tradeId, inviterName, inviterId) {
-    await db.ref('trades/'+tradeId+'/state').set('active');
-    document.getElementById('tradeIncomingDialog').remove();
-    localStorage.setItem('trade_active_id', tradeId);
-    TradeUI.openTrade(tradeId);
-    setTimeout(()=>{
-      document.getElementById('tradeStep1').style.display='none';
-      document.getElementById('tradeStep2').style.display='';
-      document.getElementById('tradeWithName').textContent = inviterName;
-      document.getElementById('otherNameField').textContent = inviterName;
-    }, 100);
-  }
-
-  static async declineTrade(tradeId) {
-    await db.ref('trades/'+tradeId+'/state').set('declined');
-    document.getElementById('tradeIncomingDialog').remove();
-  }
-
-  static restoreListenTrade(tradeId){
-    db.ref('trades/'+tradeId).once('value').then(snap=>{
-      let t = snap.val();
-      if(!t || t.state==='declined') { localStorage.removeItem('trade_active_id'); TradeUI.closeTradeDialog(); return; }
-      let otherId = t.users.find(u=>u!==gameManager.playerId);
-      db.ref('players/'+otherId).once('value').then(snap2=>{
-        let otherName = (snap2.val()||{}).playerName||"Игрок";
-        setTimeout(()=>{
-          document.getElementById('tradeStep1').style.display='none';
-          document.getElementById('tradeStep2').style.display='';
-          document.getElementById('tradeWithName').textContent = otherName;
-          document.getElementById('otherNameField').textContent = otherName;
-          TradeUI.listenTrade(tradeId, otherId, otherName, t.inviter===gameManager.playerId);
-        },200);
-      });
-    });
-  }
-
-  static listenTrade(tradeId, otherId, otherName, iAmAuthor) {
-    let mySide = iAmAuthor ? 'my' : 'their', theirSide = iAmAuthor ? 'their' : 'my';
-    let myCards = [], theirCards = [];
-    let myReady = false, theirReady = false;
-    const updateCards = ()=>{
-      let myDiv = document.getElementById('myTradeCards');
-      let theirDiv = document.getElementById('theirTradeCards');
-      myDiv.innerHTML = myCards.map((c,i)=>`
-        <div style="display:inline-block;position:relative;">
-          <img src="${c.image}" style="width:46px;height:56px;border-radius:7px;border:2px solid #E91E63;box-shadow:0 2px 10px #e91e6330;cursor:pointer;" 
-            title="Убрать" onclick="TradeUI.removeMyCard(${i})">
-          <span style="position:absolute;top:-9px;right:-8px;font-size:18px;font-weight:bold;color:#f77a77;cursor:pointer;" onclick="TradeUI.removeMyCard(${i})">&times;</span>
-        </div>
-      `).join('');
-      theirDiv.innerHTML = theirCards.map(c=>`
-        <img src="${c.image}" style="width:46px;height:56px;border-radius:7px;border:2px solid #43e97b;box-shadow:0 2px 10px #43e97b30;">
-      `).join('');
-    };
-    window.TradeUI.removeMyCard = function(idx){
-      myCards.splice(idx,1); myReady=false;
-      document.getElementById('myReadyBox').checked=false;
-      db.ref('trades/'+tradeId+'/'+mySide+'Cards').set(myCards);
-      db.ref('trades/'+tradeId+'/'+mySide+'Ready').set(false);
-    };
-    document.getElementById('addMyCardBtn').onclick = async ()=>{
-      let available = gameManager.data.collection.filter(c=>!myCards.some(mc=>mc.name===c.name));
-      let picked = await selectCardsFromCollection({
-        title: 'Выберите карты для трейда',
-        collection: available,
-        already: myCards,
-        max: 10
-      });
-      myCards = picked;
-      myReady=false;
-      document.getElementById('myReadyBox').checked=false;
-      db.ref('trades/'+tradeId+'/'+mySide+'Cards').set(myCards);
-      db.ref('trades/'+tradeId+'/'+mySide+'Ready').set(false);
-      updateCards();
-    };
-    document.getElementById('myReadyBox').onchange = function(){
-      myReady = this.checked;
-      db.ref('trades/'+tradeId+'/'+mySide+'Ready').set(myReady);
-    };
-    document.getElementById('tradeConfirmBtn').onclick = async ()=>{
-      if(myReady && theirReady && myCards.length>0 && theirCards.length>0) {
-        let myColl = gameManager.data.collection.filter(c=>!myCards.some(mc=>mc.name===c.name)).concat(theirCards);
-        gameManager.data.collection = myColl;
-        await gameManager.savePlayerData();
-        db.ref('trades/'+tradeId).remove();
-        TradeUI.closeTradeDialog();
-        localStorage.removeItem('trade_active_id');
-        gameManager.showNotification('Обмен успешно завершён!');
-      }
-    };
-    // LIVE синхронизация
-    if (TradeUI._tradeListener) db.ref('trades/'+tradeId).off('value', TradeUI._tradeListener);
-    TradeUI._tradeListener = db.ref('trades/'+tradeId).on('value', snap=>{
-      let t = snap.val();
-      if(!t || t.state==='declined') { try{TradeUI.closeTradeDialog();}catch{} localStorage.removeItem('trade_active_id'); return; }
-      myCards = t[mySide+'Cards']||[]; theirCards = t[theirSide+'Cards']||[];
-      myReady = t[mySide+'Ready']||false; theirReady = t[theirSide+'Ready']||false;
-      document.getElementById('myReadyBox').checked = myReady;
-      document.getElementById('theirReadyBox').checked = theirReady;
-      updateCards();
-      let btn = document.getElementById('tradeConfirmBtn');
-      if(myReady && theirReady && myCards.length && theirCards.length) {
-        btn.style.opacity=1; btn.style.cursor='pointer'; btn.disabled=false;
-      } else {
-        btn.style.opacity=0.5; btn.style.cursor='not-allowed'; btn.disabled=true;
-      }
-      document.getElementById('tradeStatus').textContent = (myReady && theirReady) ? "Готовы к обмену!" : "";
-    });
-  }
-}
-
-// Входящие трейды (уведомления)
-TradeUI.checkIncomingTrade();
-
-// Открытие трейда после обновления страницы
-(function(){
-  let tid = localStorage.getItem('trade_active_id');
-  if(tid) setTimeout(()=>TradeUI.openTrade(tid), 400);
-})();
 
 </script>
 </body>
