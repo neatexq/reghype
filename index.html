@@ -4482,12 +4482,32 @@ class ChatManager {
 
 static toggle() {
   this.panelOpen = !this.panelOpen;
-  document.getElementById('chatPanel').style.right = this.panelOpen ? '0' : (window.innerWidth <= 480 ? '-100vw' : '-370px');
-  document.getElementById('chatOpenBtn').style.display = this.panelOpen ? 'none' : 'flex';
-  // Скрываем/показываем кнопку подарка
-  document.getElementById('giftOpenBtn').style.display = this.panelOpen ? 'none' : 'flex';
-  if (this.panelOpen) this.open();
-  else this.close();
+  const chatPanel = document.getElementById('chatPanel');
+  if (!chatPanel) return;
+
+  if (this.panelOpen) {
+    // Открываем чат
+    chatPanel.style.right = "0";
+    if (window.innerWidth <= 480) {
+      chatPanel.style.width = "100vw";
+    } else {
+      chatPanel.style.width = "360px";
+    }
+    document.getElementById('chatOpenBtn').style.display = 'none';
+    document.getElementById('giftOpenBtn').style.display = 'none';
+    this.open();
+  } else {
+    // Закрываем чат
+    chatPanel.style.right = (window.innerWidth <= 480) ? "-100vw" : "-370px";
+    if (window.innerWidth <= 480) {
+      chatPanel.style.width = "100vw";
+    } else {
+      chatPanel.style.width = "360px";
+    }
+    document.getElementById('chatOpenBtn').style.display = 'flex';
+    document.getElementById('giftOpenBtn').style.display = 'flex';
+    this.close();
+  }
 }
 
   static open() {
@@ -4686,3 +4706,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
 </script>
 </body>
 </html>
+
+
+
