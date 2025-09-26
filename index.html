@@ -1708,7 +1708,14 @@ h2 {
 @media (max-width: 480px) {
   #chatPanel {
     width: 100vw !important;
-    right: -100vw !important;
+    height: 48vh !important;
+    bottom: 0 !important;
+    top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    border-radius: 18px 18px 0 0;
+    transition: bottom 0.35s cubic-bezier(.4,1.6,.4,1);
+    box-shadow: 0 -6px 24px #E91E6340;
   }
 }
 
@@ -4486,23 +4493,28 @@ static toggle() {
   if (!chatPanel) return;
 
   if (this.panelOpen) {
-    // Открываем чат
-    chatPanel.style.right = "0";
     if (window.innerWidth <= 480) {
+      // На телефоне — открываем снизу
+      chatPanel.style.bottom = "0";
+      chatPanel.style.right = "0";
       chatPanel.style.width = "100vw";
+      chatPanel.style.height = "48vh"; // чуть меньше половины
     } else {
+      // Десктоп — по старому
+      chatPanel.style.right = "0";
       chatPanel.style.width = "360px";
+      chatPanel.style.height = "100vh";
+      chatPanel.style.bottom = "";
     }
     document.getElementById('chatOpenBtn').style.display = 'none';
     document.getElementById('giftOpenBtn').style.display = 'none';
     this.open();
   } else {
-    // Закрываем чат
-    chatPanel.style.right = (window.innerWidth <= 480) ? "-100vw" : "-370px";
     if (window.innerWidth <= 480) {
-      chatPanel.style.width = "100vw";
+      chatPanel.style.bottom = "-55vh";
+      // Можно добавить transition для плавности
     } else {
-      chatPanel.style.width = "360px";
+      chatPanel.style.right = "-370px";
     }
     document.getElementById('chatOpenBtn').style.display = 'flex';
     document.getElementById('giftOpenBtn').style.display = 'flex';
