@@ -1710,6 +1710,7 @@ h2 {
 <p class="timer" id="timer" data-i18n="timer"></p>
 <div id="lastCard"></div>
 <h2 data-i18n="collection">Моя коллекция</h2>
+<button onclick="MenuManager.toggle('index')" style="margin-bottom:10px;">📖 Альбом</button>
 <div id="collection"></div>
 <!-- СКРЫТЫЕ ЭЛЕМЕНТЫ -->
 <input type="file" id="avatarInput" accept="image/*" onchange="handleAvatarUpload(event)">
@@ -1797,6 +1798,11 @@ h2 {
     <button class="admin-button danger" onclick="AdminManager.resetAllPlayers()" data-i18n="reset_all">🔄 СБРОСИТЬ ВСЕ АККАУНТЫ</button>
     <button class="admin-button danger" onclick="AdminManager.clearAllData()" data-i18n="clear_data">💥 СТЕРЕТЬ БАЗУ ДАННЫХ</button>
     <button class="admin-button danger" onclick="AdminManager.shutdownServer()" data-i18n="maintenance_mode">🛑 РЕЖИМ ОБСЛУЖИВАНИЯ</button>
+<div class="admin-section">
+  <h3>🗑️ Удалить свой аккаунт</h3>
+  <button class="admin-button danger" onclick="AdminManager.deleteSelf()">Удалить мой аккаунт из базы</button>
+  <div id="deleteSelfStatus" style="margin-top:10px;color:#E91E63;"></div>
+</div>
   </div>
   <div class="admin-section">
     <h3 data-i18n="admin_log">📝 Лог админа</h3>
@@ -1979,6 +1985,21 @@ h2 {
     <div id="leaderboardContent" class="leaderboard-container"></div>
   </div>
 </div>
+
+
+<!-- ...МОДАЛЬНОЕ ОКНО ИНДЕКСА -->
+<div id="indexModal" class="menu-modal">
+  <div class="menu-content">
+    <div class="menu-header">
+      <h2 class="menu-title">📖 Альбом</h2>
+      <button class="close-btn" onclick="MenuManager.close('index')">&times;</button>
+    </div>
+    <div id="indexContent"></div>
+    <div id="indexBonus" style="margin-top:18px;font-weight:bold;color:#FFEBEE;"></div>
+  </div>
+</div>
+
+
 <!-- МОДАЛЬНОЕ ОКНО НАСТРОЕК -->
 <div id="settingsModal" class="menu-modal">
   <div class="menu-content">
@@ -2844,6 +2865,60 @@ async loadLeaderboard() {
       grid.appendChild(cardDiv);
     });
   }
+
+displayIndex() {
+  const indexContent = document.getElementById('indexContent');
+  if (!indexContent) return;
+  // группируем по редкости
+  const allCards = [...cards, ...regcandyCards];
+  const grouped = {};
+  allCards.forEach(card => {
+    if (!grouped[card.rarity]) grouped[card.rarity] = [];
+    grouped[card.rarity].push(card);
+  });
+  let collectedCount = 0, totalCount = allCards.length;
+  indexContent.innerHTML = Object.keys(grouped).map(rarity=>{
+    const group = grouped[rarity];
+    return `
+      <div style="margin-bottom:15px;">
+        <h3 style="color:#AB47BC;">${rarity}</h3>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;">
+          ${group.map(card=>{
+            const owned = this.data.collection.some(c=>c.name===card.name);
+            if (owned) collectedCount++;
+            return `
+              <div style="width:74px;text-align:center;">
+                <img src="${owned?card.image:'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzQiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgNzQgMTAwIiBmaWxsPSIjMzMzMzMzIi8+'}" 
+                     style="width:64px;height:80px;${owned?'':'filter:brightness(0.25) grayscale(1);'}border-radius:8px;border:2px solid #AB47BC;">
+                <div style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;color:#fff;">
+                  ${owned?card.name:'???'}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // бонус за 50%
+  const percent = Math.floor(100 * collectedCount / totalCount);
+  const indexBonus = document.getElementById('indexBonus');
+  if (indexBonus) {
+    if (percent>=50 && !localStorage.getItem('indexBonusGiven')) {
+      this.data.currency += 100; // бонус (пример)
+      this.savePlayerData();
+      localStorage.setItem('indexBonusGiven', '1');
+      indexBonus.textContent = "Поздравляем! Вы собрали 50% коллекции и получили бонус 100 монет!";
+    } else if (percent>=50) {
+      indexBonus.textContent = "Бонус за 50% уже получен!";
+    } else {
+      indexBonus.textContent = `Собрано: ${collectedCount}/${totalCount} (${percent}%)`;
+    }
+  }
+}
+
+
   async displayOtherPlayerCollection(player) {
     const grid = document.getElementById('otherProfileCollectionGrid');
     if (!grid) return;
@@ -2886,15 +2961,17 @@ async loadLeaderboard() {
     const modalType = document.getElementById('modalType');
     if (modalType) modalType.textContent = `${translations[lang].type || 'Type:'} ${card.type}`;
  
-    const sellBtn = document.getElementById('sellCardBtn');
-    if (sellBtn) {
-      if (isOtherPlayer || index === -1) {
-        sellBtn.style.display = 'none';
-      } else {
-        sellBtn.style.display = 'block';
-        sellBtn.onclick = () => this.sellCard(index);
-      }
-    }
+const sellBtn = document.getElementById('sellCardBtn');
+const price = {Common:10, Rare:30, Special:150, Legendary:100}[card.rarity]||10;
+if (sellBtn) {
+  if (isOtherPlayer || index === -1) {
+    sellBtn.style.display = 'none';
+  } else {
+    sellBtn.style.display = 'block';
+    sellBtn.innerText = `💰 Продать карточку (${price} монет)`; // <-- измените текст
+    sellBtn.onclick = () => this.sellCard(index);
+  }
+}
  
     modal.style.display = 'flex';
   }
@@ -3578,6 +3655,8 @@ static openQuick() {
     document.body.appendChild(overlay);
   }
 }
+
+
 // МЕНЕДЖЕР МЕНЮ
 class MenuManager {
   static activeMenu = null;
@@ -3601,6 +3680,9 @@ class MenuManager {
       if (btn) btn.classList.add('active');
    
       // Специальные действия для разных меню
+      if (menuType === 'index') {
+        gameManager.displayIndex();
+      }
       if (menuType === 'profile') {
         gameManager.displayProfileCollection();
         showCurrentProfile();
@@ -4228,5 +4310,3 @@ function selectCardsFromCollection({title, collection, already=[], max=10}) {
 </script>
 </body>
 </html>
-
-
