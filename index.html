@@ -1443,6 +1443,12 @@ h2 {
   animation: spin 1s linear infinite;
   margin-bottom: 20px;
 }
+
+#chatMessages {
+  word-break: break-word;
+  white-space: pre-line;
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -1698,7 +1704,106 @@ h2 {
   70% { transform: scale(1.15) rotateY(0deg); opacity:1; }
   100% { transform: scale(1) rotateY(0deg); opacity:1; }
 }
+
+@media (max-width: 480px) {
+  #chatPanel {
+    width: 100vw !important;
+    right: -100vw !important;
+  }
+}
+
 </style>
+
+<!-- Кнопка открытия подарков -->
+<button id="giftOpenBtn" onclick="GiftManager.openGlobalGiftModal()" style="
+  position: fixed;
+  right: 24px;
+  bottom: 150px; /* чуть выше кнопки чата (chatOpenBtn - 85px, giftOpenBtn - 150px) */
+  z-index: 5002;
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(45deg, #43e97b, #38f9d7);
+  border-radius: 50%;
+  border: none;
+  color: #fff;
+  font-size: 28px;
+  box-shadow: 0 4px 18px #43e97b88;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+">
+  🎁
+</button>
+
+<!-- Кнопка открытия чата -->
+<button id="chatOpenBtn" onclick="ChatManager.toggle()" style="
+  position: fixed;
+  right: 24px; 
+  bottom: 85px; 
+  z-index: 5001;
+  width: 52px; 
+  height: 52px; 
+  background: linear-gradient(45deg, #E91E63, #AB47BC); 
+  border-radius: 50%; 
+  border: none; 
+  color: #fff; 
+  font-size: 28px; 
+  box-shadow: 0 4px 18px #E91E6350;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+">
+  💬
+</button>
+
+<!-- Выезжающий чат -->
+<div id="chatPanel" style="
+  position: fixed;
+  top: 0; 
+  right: -370px; 
+  width: 360px; 
+  height: 100vh; 
+  background: linear-gradient(135deg, #4A148C, #880E4F); 
+  box-shadow: -8px 0 30px #E91E6340;
+  z-index: 5000;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.35s cubic-bezier(.4,1.6,.4,1);
+  border-left: 2px solid #E91E63;
+">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 16px 12px 20px;border-bottom:1px solid #ab47bc33;">
+    <span style="font-family:'Orbitron',sans-serif;font-size:20px;color:#FFEBEE;text-shadow:0 0 6px #AB47BC;">💬 Чат</span>
+    <button onclick="ChatManager.toggle()" style="background:none;border:none;color:#E91E63;font-size:32px;cursor:pointer;">&times;</button>
+  </div>
+  <div id="chatMessages" style="flex:1;overflow-y:auto;padding:15px 16px 8px 14px;"></div>
+  <div style="padding:14px 10px 16px 10px;border-top:1px solid #ab47bc22;">
+    <form onsubmit="ChatManager.sendMessage();return false;" style="display:flex;gap:7px;">
+      <input id="chatInput" type="text" maxlength="240" autocomplete="off" placeholder="Ваше сообщение..." style="flex:1;padding:10px 12px;border-radius:10px;border:1.5px solid #E91E63;background:#fff1;color:#fff;font-size:15px;">
+      <button type="submit" style="padding:10px 18px;background:linear-gradient(45deg,#AB47BC,#E91E63);border:none;border-radius:8px;color:#fff;font-size:18px;cursor:pointer;">➤</button>
+    </form>
+  </div>
+</div>
+
+
+<div id="giftModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9500;background:rgba(0,0,0,0.8);justify-content:center;align-items:center;">
+  <div style="background:linear-gradient(135deg,#4A148C,#880E4F);padding:28px 24px 24px 24px;border-radius:18px;box-shadow:0 0 50px #E91E63cc;text-align:center;max-width:95vw;min-width:320px;">
+    <h2 style="color:#FFEBEE;">🎁 Подарок игроку</h2>
+    <div style="margin-bottom:12px;">
+      <div style="color:#ddd;font-size:16px;margin-bottom:8px;">Выберите игрока:</div>
+      <div id="giftRecipientList" style="background:#fff1;border-radius:7px;max-height:260px;overflow-y:auto;text-align:left;min-width:250px;">
+        <!-- Сюда будет подгружаться список игроков -->
+      </div>
+    </div>
+    <div id="giftOptions"></div>
+    <button onclick="GiftManager.closeGiftModal()" style="margin-top:18px;padding:8px 29px;background:#E91E63;border-radius:8px;color:#fff;font-size:17px;font-weight:bold;border:none;box-shadow:0 3px 25px #E91E6350;cursor:pointer;">Отмена</button>
+  </div>
+</div>
+
+
+
+
 <!-- ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ -->
 <div class="profile-info">
   <img id="profileAvatar" class="profile-avatar" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMzAiIGZpbGw9IiNmZmNjMDAiLz4KPGZ0ZXh0IHg9IjMwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjI0IiBmaWxsPSIjMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5CCPC90ZXh0Pgo8L3N2Zz4K" alt="Аватар" onclick="openProfile()">
@@ -1789,6 +1894,7 @@ h2 {
     <button class="admin-button warning" onclick="AdminManager.clearCollection()" data-i18n="clear_collection">Очистить мои карточки</button>
     <button class="admin-button" onclick="AdminManager.maxEnergy()" data-i18n="max_energy">Макс энергия</button>
     <button class="admin-button success" onclick="AdminManager.giveRandomLegendary()" data-i18n="give_legendary">Выдать легендарку</button>
+<button class="admin-button" onclick="AdminManager.resetGiftTimer()" data-i18n="reset_gift_timer">Сбросить таймер подарка</button>
   </div>
   <div class="admin-danger-zone">
     <h3 data-i18n="danger_zone">⚠️ ОПАСНАЯ ЗОНА</h3>
@@ -2051,21 +2157,31 @@ const cards=[
   {name:"Foxy Skin",rarity:"Special",type:"Skin",image:"cards/Foxy-Skin.png", tgLink:"https://t.me/reghypearchive/16"},
   {name:"Demogorgon Skin",rarity:"Special",type:"Skin",image:"cards/Demogorgon-Skin.png", tgLink:"https://t.me/reghypearchive/17"},
   {name:"Freddy Skin",rarity:"Special",type:"Skin",image:"cards/Freddy-Skin.png", tgLink:"https://t.me/reghypearchive/18"},
-  {name:"X06R",rarity:"Common",type:"Chaters",image:"cards/X06R.png", tgLink:"https://t.me/reghypearchive/19"}
+  {name:"X06R",rarity:"Common",type:"Chaters",image:"cards/X06R.png", tgLink:"https://t.me/reghypearchive/19"},
+  {name:"Minion",rarity:"Special",type:"Skin",image:"cards/minion.png"},
+  {name:"Bonnie",rarity:"Special",type:"Skin",image:"cards/bonnieskin.png"}
+
 ];
 
 // ЭКСКЛЮЗИВНЫЕ REGCANDY КАРТОЧКИ (только для Regcandy пака)
 const regcandyCards = [
-  {name:"Regcandy & AmNyam",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandyamnyam.jpg", exclusive: true},
-  {name:"Regcandy & Dark Bloom",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandybloom.jpg", exclusive: true},
+  {name:"Regcandy & AmNyam",rarity:"Legendary",type:"Skin",image:"cards/regcandy/regcandyamnyam.jpg", exclusive: true},
   {name:"Regcandy & Freddy",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandyfreddy.jpg", exclusive: true},
   {name:"Regcandy & Labubu",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandylabuba.jpg", exclusive: true},
   {name:"Regcandy & Minecraft",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandypickaxe.jpg", exclusive: true},
   {name:"Regcandy & Sailor Moon",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandyseilor.jpg", exclusive: true},
-  {name:"Regcandy & Shadow",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandyshadow.jpg", exclusive: true},
+  {name:"Regcandy & Shadow",rarity:"Legendary",type:"Skin",image:"cards/regcandy/regcandyshadow.jpg", exclusive: true},
+  {name:"Regcandy & Scorpion",rarity:"Special",type:"Skin",image:"cards/regcandyscorpion.jpg", exclusive: true},
   // Добавляем основную карточку Regcandy в Regcandy пак тоже
   {name:"Regcandy",rarity:"Special",type:"Twitch",image:"cards/Regcandy.png", tgLink:"https://t.me/reghypearchive/2", exclusive: true}
 ];
+
+const secretCard = {
+  name: "Regcandy & Dark Bloom",
+  rarity: "Secret",
+  type: "Skin",
+  image: "cards/secret_regcandy_darkbloom.png" // путь к картинке, поменяй на свой
+};
 
 
 // список паков
@@ -2088,14 +2204,15 @@ const packs = [
     name: "Regcandy пак",
     cost: 500,
     drops: [
-      { card: regcandyCards[0], chance: 12.5 },
-      { card: regcandyCards[1], chance: 12.5 },
-      { card: regcandyCards[2], chance: 12.5 },
-      { card: regcandyCards[3], chance: 12.5 },
-      { card: regcandyCards[4], chance: 12.5 },
-      { card: regcandyCards[5], chance: 12.5 },
-      { card: regcandyCards[6], chance: 12.5 },
-      { card: regcandyCards[7], chance: 12.5 }
+      { card: regcandyCards[0], chance: 11.1 },
+      { card: regcandyCards[1], chance: 11.1 },
+      { card: regcandyCards[2], chance: 11.1 },
+      { card: regcandyCards[3], chance: 11.1 },
+      { card: regcandyCards[4], chance: 11.1 },
+      { card: regcandyCards[5], chance: 11.1 },
+      { card: regcandyCards[6], chance: 11.1 },
+      { card: regcandyCards[7], chance: 11.1 },
+      { card: regcandyCards[8], chance: 11.1 }
     ]
   },
   {
@@ -2869,29 +2986,48 @@ async loadLeaderboard() {
 displayIndex() {
   const indexContent = document.getElementById('indexContent');
   if (!indexContent) return;
-  // группируем по редкости
+
+  // Собираем все обычные и regcandy карты, убираем дубликаты по имени
   const allCards = [...cards, ...regcandyCards];
+  const uniqueCards = allCards.filter(
+    (card, idx, arr) => arr.findIndex(c => c.name === card.name) === idx
+  );
+
+  // Скрываем секретные карты из индекса, если их нет в коллекции игрока
+  const filteredCards = uniqueCards.filter(card =>
+    card.rarity !== "Secret" || this.data.collection.some(c => c.name === card.name)
+  );
+
+  // Группируем по редкости
   const grouped = {};
-  allCards.forEach(card => {
+  filteredCards.forEach(card => {
     if (!grouped[card.rarity]) grouped[card.rarity] = [];
     grouped[card.rarity].push(card);
   });
-  let collectedCount = 0, totalCount = allCards.length;
-  indexContent.innerHTML = Object.keys(grouped).map(rarity=>{
+
+  let collectedCount = 0, totalCount = filteredCards.length;
+
+  // Сортировка редкостей: Special > Legendary > Rare > Common > остальные
+  const rarityOrder = { Special: 4, Legendary: 3, Rare: 2, Common: 1 };
+  const sortedRarities = Object.keys(grouped).sort((a, b) =>
+    (rarityOrder[b] || 0) - (rarityOrder[a] || 0)
+  );
+
+  indexContent.innerHTML = sortedRarities.map(rarity => {
     const group = grouped[rarity];
     return `
       <div style="margin-bottom:15px;">
         <h3 style="color:#AB47BC;">${rarity}</h3>
         <div style="display:flex;gap:7px;flex-wrap:wrap;">
-          ${group.map(card=>{
-            const owned = this.data.collection.some(c=>c.name===card.name);
+          ${group.map(card => {
+            const owned = this.data.collection.some(c => c.name === card.name);
             if (owned) collectedCount++;
             return `
               <div style="width:74px;text-align:center;">
-                <img src="${owned?card.image:'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzQiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgNzQgMTAwIiBmaWxsPSIjMzMzMzMzIi8+'}" 
-                     style="width:64px;height:80px;${owned?'':'filter:brightness(0.25) grayscale(1);'}border-radius:8px;border:2px solid #AB47BC;">
+                <img src="${owned ? card.image : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzQiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgNzQgMTAwIiBmaWxsPSIjMzMzMzMzIi8+'}" 
+                     style="width:64px;height:80px;${owned ? '' : 'filter:brightness(0.25) grayscale(1);'}border-radius:8px;border:${owned ? '2px solid #AB47BC;' : '2px solid #444;'}">
                 <div style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;color:#fff;">
-                  ${owned?card.name:'???'}
+                  ${owned ? card.name : '???'}
                 </div>
               </div>
             `;
@@ -2901,20 +3037,18 @@ displayIndex() {
     `;
   }).join('');
 
-  // бонус за 50%
+  // Показываем прогресс коллекции всегда (и после получения бонуса)
   const percent = Math.floor(100 * collectedCount / totalCount);
   const indexBonus = document.getElementById('indexBonus');
   if (indexBonus) {
-    if (percent>=50 && !localStorage.getItem('indexBonusGiven')) {
+    if (percent >= 50 && !localStorage.getItem('indexBonusGiven')) {
       this.data.currency += 100; // бонус (пример)
       this.savePlayerData();
       localStorage.setItem('indexBonusGiven', '1');
       indexBonus.textContent = "Поздравляем! Вы собрали 50% коллекции и получили бонус 100 монет!";
-    } else if (percent>=50) {
-      indexBonus.textContent = "Бонус за 50% уже получен!";
-    } else {
-      indexBonus.textContent = `Собрано: ${collectedCount}/${totalCount} (${percent}%)`;
     }
+    // Всегда показываем прогресс, даже если бонус уже получен
+    indexBonus.textContent = `Собрано: ${collectedCount}/${totalCount} (${percent}%)`;
   }
 }
 
@@ -2992,28 +3126,40 @@ if (sellBtn) {
  
     this.showNotification(`Продано за ${price} монет!`);
   }
-  async openPack(packType = 'free') {
-    if (packType === 'free') {
-      const now = Date.now();
-      if (now - this.data.lastFreePack < this.getPackCooldown()) {
-        this.showNotification('Бесплатный пак еще не готов!');
-        return;
-      }
-      this.data.lastFreePack = now;
-    } else if (packType === 'paid') {
-      if (this.data.currency < 50) {
-        this.showNotification('Недостаточно монет!');
-        return;
-      }
-      this.data.currency -= 50;
+
+async openPack(packType = 'free') {
+  if (packType === 'free') {
+    const now = Date.now();
+    if (now - this.data.lastFreePack < this.getPackCooldown()) {
+      this.showNotification('Бесплатный пак еще не готов!');
+      return;
     }
- 
-    const newCard = this.generateRandomCard();
-    this.data.collection.push(newCard);
-    await this.savePlayerData();
-    this.displayNewCard(newCard);
-    this.updateUI();
+    this.data.lastFreePack = now;
+  } else if (packType === 'paid') {
+    if (this.data.currency < 50) {
+      this.showNotification('Недостаточно монет!');
+      return;
+    }
+    this.data.currency -= 50;
+
+    // Вот тут добавь шанс на секретку!
+    if (Math.random() < 0.0001) { // 0.01%
+      this.data.collection.push(secretCard);
+      await this.savePlayerData();
+      this.displayNewCard(secretCard);
+      this.updateUI();
+      this.showNotification('Ты выбил секретную карту: Regcandy & Dark Bloom!');
+      return; // выходим, обычная карта не выпадает
+    }
   }
+
+  // Обычная выдача карты
+  const newCard = this.generateRandomCard();
+  this.data.collection.push(newCard);
+  await this.savePlayerData();
+  this.displayNewCard(newCard);
+  this.updateUI();
+}
 
 
 
@@ -3341,54 +3487,62 @@ static openQuick() {
     }
   }
   // Поиск игроков
-  static async searchPlayers(query) {
-    if (!query || query.length < 2) {
-      const playerSearchResults = document.getElementById('playerSearchResults');
-      if (playerSearchResults) playerSearchResults.style.display = 'none';
-      return;
-    }
- 
-    try {
-      const snapshot = await db.ref('players').once('value');
-      const players = snapshot.val() || {};
-   
-      const results = Object.entries(players)
-        .filter(([id, data]) => data.playerName &&
-                data.playerName.toLowerCase().includes(query.toLowerCase()))
-        .slice(0, 10);
-   
-      const resultsDiv = document.getElementById('playerSearchResults');
-      if (!resultsDiv) return;
-      resultsDiv.innerHTML = '';
-   
-      results.forEach(([id, data]) => {
-        const item = document.createElement('div');
-        item.className = 'player-search-item';
-        item.textContent = `${data.playerName} (${data.role || 'user'}) (${data.collection?.length || 0} cards, ${data.currency || 0} coins)`;
-        item.onclick = () => this.selectPlayer(id, data);
-        resultsDiv.appendChild(item);
-      });
-   
-      resultsDiv.style.display = results.length > 0 ? 'block' : 'none';
-   
-    } catch (error) {
-      this.log(`Ошибка поиска игроков: ${error.message}`, 'error');
-    }
-  }
-  static selectPlayer(id, data) {
-    this.selectedPlayer = { id, data };
-    const selectedPlayerName = document.getElementById('selectedPlayerName');
-    if (selectedPlayerName) selectedPlayerName.textContent = data.playerName;
-    const selectedPlayer = document.getElementById('selectedPlayer');
-    if (selectedPlayer) selectedPlayer.style.display = 'block';
+ static async searchPlayers(query) {
+  if (!query || query.length < 2) {
     const playerSearchResults = document.getElementById('playerSearchResults');
     if (playerSearchResults) playerSearchResults.style.display = 'none';
-    const playerSearch = document.getElementById('playerSearch');
-    if (playerSearch) playerSearch.value = data.playerName;
-    const playerRoleSelect = document.getElementById('playerRoleSelect');
-    if (playerRoleSelect) playerRoleSelect.value = data.role || 'user';
-    this.log(`Выбран игрок: ${data.playerName}`, 'info');
+    return;
   }
+
+  try {
+    const snapshot = await db.ref('players').once('value');
+    const players = snapshot.val() || {};
+
+    // Ищем по playerName по-русски и по-английски (и по id для удобства)
+    const results = Object.entries(players)
+      .filter(([id, data]) =>
+        data.playerName &&
+        (
+          data.playerName.toLowerCase().includes(query.toLowerCase()) ||
+          id.toLowerCase().includes(query.toLowerCase())
+        )
+      )
+      .slice(0, 10);
+
+    const resultsDiv = document.getElementById('playerSearchResults');
+    if (!resultsDiv) return;
+    resultsDiv.innerHTML = '';
+
+    results.forEach(([id, data]) => {
+      const item = document.createElement('div');
+      item.className = 'player-search-item';
+      item.textContent = `${data.playerName} (${data.role || 'user'}) (${data.collection?.length || 0} cards, ${data.currency || 0} coins)`;
+      item.onclick = () => this.selectPlayer(id, data);
+      resultsDiv.appendChild(item);
+    });
+
+    resultsDiv.style.display = results.length > 0 ? 'block' : 'none';
+
+  } catch (error) {
+    this.log(`Ошибка поиска игроков: ${error.message}`, 'error');
+  }
+}
+
+static selectPlayer(id, data) {
+  this.selectedPlayer = { id, data };
+  const selectedPlayerName = document.getElementById('selectedPlayerName');
+  if (selectedPlayerName) selectedPlayerName.textContent = data.playerName;
+  const selectedPlayer = document.getElementById('selectedPlayer');
+  if (selectedPlayer) selectedPlayer.style.display = 'block';
+  const playerSearchResults = document.getElementById('playerSearchResults');
+  if (playerSearchResults) playerSearchResults.style.display = 'none';
+  const playerSearch = document.getElementById('playerSearch');
+  if (playerSearch) playerSearch.value = data.playerName;
+  const playerRoleSelect = document.getElementById('playerRoleSelect');
+  if (playerRoleSelect) playerRoleSelect.value = data.role || 'user';
+  this.log(`Выбран игрок: ${data.playerName}`, 'info');
+}
+
   // Управление другими игроками
   static async setPlayerCurrency() {
     if (!this.selectedPlayer) {
@@ -3544,26 +3698,37 @@ static openQuick() {
         return;
       }
    
-      const randomCard = legendaryCards[Math.floor(Math.random() * legendaryCards.length)];
-      gameManager.data.collection.push(randomCard);
-      await gameManager.savePlayerData();
-      gameManager.updateUI();
-      this.log(`Выдана случайная легендарка: ${randomCard.name}`, 'success');
-    } catch (error) {
-      this.log(`Ошибка выдачи легендарки: ${error.message}`, 'error');
-    }
+const randomCard = legendaryCards[Math.floor(Math.random() * legendaryCards.length)];
+gameManager.data.collection.push(randomCard);
+await gameManager.savePlayerData();
+gameManager.updateUI();
+this.log(`Выдана случайная легендарка: ${randomCard.name}`, 'success');
+} catch (error) {
+  this.log(`Ошибка выдачи легендарки: ${error.message}`, 'error');
+}
+}
+
+static async resetGiftTimer() {
+  try {
+    gameManager.data.lastGiftTimestamp = 0;
+    await gameManager.savePlayerData();
+    this.log('Таймер подарка сброшен', 'success');
+    gameManager.showNotification('Таймер отправки подарка сброшен!');
+  } catch (error) {
+    this.log(`Ошибка сброса таймера подарка: ${error.message}`, 'error');
   }
-  // ОПАСНАЯ ЗОНА
-  static async resetAllPlayers() {
-    if (!confirm('⚠️ ВНИМАНИЕ: Это сбросит ВСЕ аккаунты игроков! Вы абсолютно уверены?')) {
-      return;
-    }
- 
-    if (!confirm('Это действие нельзя отменить! Введите "RESET" для подтверждения:')) {
-      return;
-    }
- 
-    const confirmation = prompt('Введите "RESET ALL PLAYERS" для подтверждения опасного действия:');
+}
+// ОПАСНАЯ ЗОНА
+static async resetAllPlayers() {
+  if (!confirm('⚠️ ВНИМАНИЕ: Это сбросит ВСЕ аккаунты игроков! Вы абсолютно уверены?')) {
+    return;
+  }
+
+  if (!confirm('Это действие нельзя отменить! Введите "RESET" для подтверждения:')) {
+    return;
+  }
+
+  const confirmation = prompt('Введите "RESET ALL PLAYERS" для подтверждения опасного действия:');
     if (confirmation !== 'RESET ALL PLAYERS') {
       this.log('Сброс отменен - неверное подтверждение', 'warning');
       return;
@@ -4213,7 +4378,9 @@ f.innerHTML = `
   });
 })();
 
-function rarityToNum(r) {return {Common:0,Rare:1,Special:2,Legendary:3}[r]||0;}
+function rarityToNum(r) {
+  return { Common: 0, Rare: 1, Legendary: 2, Special: 3 }[r] || 0;
+}
 
 function filterCollection() {
   if(!gameManager||!gameManager.data||!gameManager.data.collection) return;
@@ -4306,6 +4473,215 @@ function selectCardsFromCollection({title, collection, already=[], max=10}) {
     updateList();
   });
 }
+
+
+class ChatManager {
+  static panelOpen = false;
+  static chatRef = db.ref('chats/global');
+  static listener = null;
+
+static toggle() {
+  this.panelOpen = !this.panelOpen;
+  document.getElementById('chatPanel').style.right = this.panelOpen ? '0' : (window.innerWidth <= 480 ? '-100vw' : '-370px');
+  document.getElementById('chatOpenBtn').style.display = this.panelOpen ? 'none' : 'flex';
+  // Скрываем/показываем кнопку подарка
+  document.getElementById('giftOpenBtn').style.display = this.panelOpen ? 'none' : 'flex';
+  if (this.panelOpen) this.open();
+  else this.close();
+}
+
+  static open() {
+    if (!this.listener) {
+      this.listener = this.chatRef.limitToLast(60).on('value', snapshot => {
+        const messages = snapshot.val() || {};
+        ChatManager.displayMessages(Object.values(messages));
+      });
+    }
+    setTimeout(() => {
+      const el = document.getElementById('chatInput');
+      if (el) el.focus();
+    }, 100);
+  }
+
+  static close() {
+    if (this.listener) {
+      this.chatRef.off('value', this.listener);
+      this.listener = null;
+    }
+  }
+
+  static displayMessages(messages) {
+    const container = document.getElementById('chatMessages');
+    if (!container) return;
+    container.innerHTML = messages
+      .sort((a,b)=>a.timestamp-b.timestamp)
+      .map(msg => `
+        <div style="margin-bottom:8px;">
+          <span style="color:#AB47BC;font-weight:bold;">${msg.authorName}:</span>
+          <span style="color:#fff;">${msg.text}</span>
+          <span style="float:right;font-size:10px;color:#888;">${new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span>
+        </div>
+      `).join('');
+    container.scrollTop = container.scrollHeight;
+  }
+
+  static async sendMessage() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+    if (text.length > 240) return;
+    const playerName = (gameManager.data?.playerName) || 'Аноним';
+    const authorId = gameManager.playerId || '';
+    await this.chatRef.push({
+      authorId,
+      authorName: playerName,
+      text,
+      timestamp: Date.now()
+    });
+    input.value = '';
+  }
+}
+
+
+class GiftManager {
+  // Открыть универсальное окно
+ // Открыть окно подарка — теперь всегда показываем список игроков
+static async openGlobalGiftModal() {
+  this.selectedRecipient = null;
+  document.getElementById('giftRecipientList').style.display = 'block';
+  document.getElementById('giftModal').style.display = 'flex';
+  await this.showRecipientList();
+  this.renderGiftOptions();
+}
+
+// Показываем список всех игроков
+static async showRecipientList() {
+  const listDiv = document.getElementById('giftRecipientList');
+  listDiv.innerHTML = '<div style="color:#999;padding:15px;">Загрузка игроков...</div>';
+  const snap = await db.ref('players').once('value');
+  const players = snap.val() || {};
+  const arr = Object.entries(players)
+    .filter(([id, data]) =>
+      id !== gameManager.playerId &&
+      data.playerName && data.playerName.trim() !== ""
+    )
+    .sort((a, b) => (b[1].currency || 0) - (a[1].currency || 0));
+
+  listDiv.innerHTML = arr.map(([id, data]) => {
+    const avatar = data.playerAvatar;
+    // Не показывать рамку если аватарки нет или она дефолтная
+    let showBorder = false;
+    if (avatar && avatar !== "" && avatar !== gameManager.getDefaultAvatar()) showBorder = true;
+
+    return `
+      <div onclick="GiftManager.selectRecipient('${id}','${(data.playerName||'').replace(/'/g,'')}')" 
+        style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:8px 10px;border-bottom:1px solid #ab47bc11;transition:.15s;">
+        <img src="${avatar ? avatar : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzgiIGhlaWdodD0iMzgiIHZpZXdCb3g9IjAgMCAzOCAzOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxOSIgY3k9IjE5IiByPSIxOSIgZmlsbD0iIzNjMzMzMyIvPjwvc3ZnPg=='}"
+          style="width:38px;height:38px;object-fit:cover;border-radius:50%;${showBorder ? 'border:2px solid #AB47BC;' : ''}">
+        <div style="flex:1;">
+          <div style="color:#fff;font-weight:bold;font-size:16px;">${data.playerName}</div>
+          <div style="color:#AB47BC;font-size:13px;">${data.currency||0} монет, ${data.collection?.length||0} карт</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// Выбор игрока из списка
+static selectRecipient(id, name) {
+  this.selectedRecipient = { id, name };
+  document.getElementById('giftRecipientList').style.display = 'none';
+  this.renderGiftOptions();
+}
+
+  // Закрыть модалку
+  static closeGiftModal() {
+    document.getElementById('giftModal').style.display = 'none';
+  }
+
+  // Рендер опций подарка
+  static renderGiftOptions() {
+    const wrap = document.getElementById('giftOptions');
+    if (!wrap) return;
+    // Если не выбран получатель:
+    if (!this.selectedRecipient) {
+      wrap.innerHTML = '<div style="color:#ccc;">Сначала выберите получателя</div>';
+      return;
+    }
+    // Лимит 1 час
+    const now = Date.now();
+    const lastGift = gameManager.data.lastGiftTimestamp || 0;
+    if (now - lastGift < 3600_000) {
+      const mins = Math.ceil((3600_000 - (now - lastGift))/60000);
+      wrap.innerHTML = `<div style="color:#FFEBEE;margin-bottom:14px;">Подарок можно отправить через ${mins} мин.</div>`;
+      return;
+    }
+    // Ввод суммы монет и карточки
+    let html = `<div style="margin-bottom:10px;">
+      <input id="giftMoneyInput" type="number" min="1" max="${gameManager.data.currency}" style="width:80px;border-radius:7px;padding:4px;margin-right:7px;">
+      <button onclick="GiftManager.sendMoneyGift()" style="padding:6px 18px;">💸 Перевести монеты</button>
+    </div>`;
+    html += `<div style="margin:10px 0 7px 0;color:#FFD700;">или выбери карточку:</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:center;max-height:170px;overflow:auto;">`;
+    gameManager.data.collection.forEach((card, idx) => {
+      html += `<div style="text-align:center;">
+        <img src="${card.image}" title="${card.name}" style="width:48px;height:60px;object-fit:cover;border-radius:7px;border:2px solid #AB47BC;cursor:pointer;" onclick="GiftManager.sendCardGift(${idx})">
+        <div style="font-size:12px;color:#fff;">${card.name}</div>
+      </div>`;
+    });
+    html += `</div>`;
+    wrap.innerHTML = html;
+  }
+
+  // Отправка монет
+  static async sendMoneyGift() {
+    if (!this.selectedRecipient) return;
+    const input = document.getElementById('giftMoneyInput');
+    let amount = parseInt(input.value);
+    if (!amount || amount <= 0 || amount > gameManager.data.currency) {
+      gameManager.showNotification('Некорректная сумма!');
+      return;
+    }
+    // Получить баланс друга
+    const snapshot = await db.ref(`players/${this.selectedRecipient.id}/currency`).once('value');
+    let hisCoins = snapshot.val() || 0;
+    await db.ref(`players/${this.selectedRecipient.id}/currency`).set(hisCoins + amount);
+    gameManager.data.currency -= amount;
+    gameManager.data.lastGiftTimestamp = Date.now();
+    await gameManager.savePlayerData();
+    GiftManager.closeGiftModal();
+    gameManager.showNotification(`🎁 ${amount} монет отправлено игроку ${this.selectedRecipient.name}!`);
+  }
+
+  // Отправка карточки
+  static async sendCardGift(idx) {
+    if (!this.selectedRecipient) return;
+    const card = gameManager.data.collection[idx];
+    if (!card) return;
+    const snap = await db.ref(`players/${this.selectedRecipient.id}/collection`).once('value');
+    let hisCards = snap.val() || [];
+    hisCards.push(card);
+    await db.ref(`players/${this.selectedRecipient.id}/collection`).set(hisCards);
+    gameManager.data.collection.splice(idx, 1);
+    gameManager.data.lastGiftTimestamp = Date.now();
+    await gameManager.savePlayerData();
+    GiftManager.closeGiftModal();
+    gameManager.showNotification(`🎁 Карточка ${card.name} отправлена игроку ${this.selectedRecipient.name}!`);
+  }
+}
+
+// Слушаем ввод для поиска игрока:
+document.addEventListener('DOMContentLoaded', ()=>{
+  const inp = document.getElementById('giftRecipientInput');
+  if (inp) {
+    inp.addEventListener('input', (e) => {
+      GiftManager.searchPlayers(e.target.value);
+    });
+  }
+});
+		
+
+
 
 </script>
 </body>
