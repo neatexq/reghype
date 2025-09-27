@@ -2499,6 +2499,11 @@ async completeInitialSetup(playerName, avatarDataUrl = null) {
     this.startEnergyRegen();
     this.startOnlineStatusUpdate();
  
+db.ref(`gifts/pending/${gameManager.playerId}`).on('child_added', snapshot => {
+  const gift = snapshot.val();
+  handleGiftReceived(gift);
+});
+
     // Загружаем лидерборд
     this.loadLeaderboard();
  
@@ -3058,7 +3063,7 @@ if (sellBtn) {
   }
   async sellCard(index) {
     const card = this.data.collection[index];
-    const prices = { Common: 10, Rare: 30, Special: 75, Legendary: 150 };
+    const prices = { Common: 10, Rare: 30, Special: 150, Legendary: 100 };
     const price = prices[card.rarity] || 10;
  
     this.data.currency += price;
@@ -4547,6 +4552,44 @@ static selectRecipient(id, name) {
   }
 }
 
+function handleGiftReceived(gift) {
+  // 1. Добавить подарок сразу
+  if (gift.type === 'money') {
+    gameManager.data.currency += gift.value.amount;
+  }
+  if (gift.type === 'card') {
+    gameManager.data.collection.push(gift.value);
+  }
+  gameManager.savePlayerData();
+  gameManager.updateUI();
+
+  // 2. Удалить полученный подарок из pending
+  db.ref(`gifts/pending/${gameManager.playerId}/${gift.giftId}`).remove();
+
+  // 3. Показать окно с информацией о подарке
+  const oldModal = document.getElementById('giftSimpleModal');
+  if (oldModal) oldModal.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'giftSimpleModal';
+  modal.style = 'position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:9999;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;';
+  modal.innerHTML = `
+    <div style="background:#fff;border-radius:15px;padding:32px 20px;max-width:320px;text-align:center;">
+      <h3>Вам пришёл подарок!</h3>
+      <p>От: <b>${gift.from}</b></p>
+      <p>
+        ${gift.type === 'money'
+          ? `Монеты: <b>${gift.value.amount}</b>`
+          : `Карточка: <b>${gift.value.name}</b>`
+        }
+      </p>
+      <button id="closeGiftSimpleModal" style="margin-top:18px;padding:10px 28px;font-size:1.1em;background:#E91E63;color:#fff;border:none;border-radius:10px;">OK</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  document.getElementById('closeGiftSimpleModal').onclick = () => modal.remove();
+}
+
 // Слушаем ввод для поиска игрока:
 document.addEventListener('DOMContentLoaded', ()=>{
   const inp = document.getElementById('giftRecipientInput');
@@ -4563,9 +4606,3 @@ document.addEventListener('DOMContentLoaded', ()=>{
 </script>
 </body>
 </html>
-
-
-
-
-
-
