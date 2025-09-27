@@ -1707,15 +1707,17 @@ h2 {
 
 @media (max-width: 480px) {
   #chatPanel {
-    width: 100vw !important;
-    height: 48vh !important;
-    bottom: 0 !important;
-    top: auto !important;
+    position: fixed !important;
     left: 0 !important;
     right: 0 !important;
-    border-radius: 18px 18px 0 0;
+    width: 100vw !important;
+    height: 48vh !important; /* чуть меньше половины экрана */
+    bottom: -55vh !important; /* по умолчанию скрыт за экраном */
+    top: auto !important;
+    border-radius: 18px 18px 0 0 !important;
     transition: bottom 0.35s cubic-bezier(.4,1.6,.4,1);
     box-shadow: 0 -6px 24px #E91E6340;
+    z-index: 5000;
   }
 }
 
@@ -2178,7 +2180,7 @@ const regcandyCards = [
   {name:"Regcandy & Minecraft",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandypickaxe.jpg", exclusive: true},
   {name:"Regcandy & Sailor Moon",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandyseilor.jpg", exclusive: true},
   {name:"Regcandy & Shadow",rarity:"Legendary",type:"Skin",image:"cards/regcandy/regcandyshadow.jpg", exclusive: true},
-  {name:"Regcandy & Scorpion",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandyscorpion.jpg", exclusive: true},
+  {name:"Regcandy & Scorpion",rarity:"Special",type:"Skin",image:"cards/regcandyscorpion.jpg", exclusive: true},
   // Добавляем основную карточку Regcandy в Regcandy пак тоже
   {name:"Regcandy",rarity:"Special",type:"Twitch",image:"cards/Regcandy.png", tgLink:"https://t.me/reghypearchive/2", exclusive: true}
 ];
@@ -4494,13 +4496,12 @@ static toggle() {
 
   if (this.panelOpen) {
     if (window.innerWidth <= 480) {
-      // На телефоне — открываем снизу
+      // Открываем чат снизу
       chatPanel.style.bottom = "0";
       chatPanel.style.right = "0";
       chatPanel.style.width = "100vw";
-      chatPanel.style.height = "48vh"; // чуть меньше половины
+      chatPanel.style.height = "48vh";
     } else {
-      // Десктоп — по старому
       chatPanel.style.right = "0";
       chatPanel.style.width = "360px";
       chatPanel.style.height = "100vh";
@@ -4511,10 +4512,14 @@ static toggle() {
     this.open();
   } else {
     if (window.innerWidth <= 480) {
-      chatPanel.style.bottom = "-55vh";
-      // Можно добавить transition для плавности
+      // Прячем чат вниз за пределы экрана
+      chatPanel.style.bottom = "-55vh"; // ОБЯЗАТЕЛЬНО! именно это уберет чат с экрана
+      chatPanel.style.right = "0";
+      chatPanel.style.width = "100vw";
+      chatPanel.style.height = "48vh";
     } else {
       chatPanel.style.right = "-370px";
+      chatPanel.style.bottom = "";
     }
     document.getElementById('chatOpenBtn').style.display = 'flex';
     document.getElementById('giftOpenBtn').style.display = 'flex';
@@ -4718,7 +4723,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
 </script>
 </body>
 </html>
-
 
 
 
