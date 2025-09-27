@@ -1764,41 +1764,21 @@ h2 {
 <input type="file" id="avatarInput" accept="image/*" onchange="handleAvatarUpload(event)">
 <!-- СЧЕТЧИК КЛИКОВ ДЛЯ АДМИН ПАНЕЛИ (скрытый) -->
 <div id="adminClickCounter" style="display: none;"></div>
-<!-- АДМИН ПАНЕЛЬ -->
+<!-- АДМИН-ПАНЕЛЬ "БОГ" -->
 <div id="adminPanel">
   <div class="admin-header">
-    <h2 data-i18n="admin_panel">🛡️ АДМИН-ПАНЕЛЬ</h2>
+    <h2 data-i18n="admin_panel">🛡️ АДМИН-ПАНЕЛЬ БОГА</h2>
     <button class="admin-close-btn" onclick="AdminManager.close()">&times;</button>
   </div>
-  <div class="admin-section">
-    <h3 data-i18n="currency_management">💰 Управление валютой</h3>
-    <div class="admin-input-group">
-      <input type="number" class="admin-input" id="adminCurrency" placeholder="Сумма" min="0" max="999999">
-      <button class="admin-button success" onclick="AdminManager.setCurrency()" data-i18n="set">Установить</button>
-      <button class="admin-button" onclick="AdminManager.addCurrency()" data-i18n="add">Добавить</button>
-    </div>
 
-  </div>
+  <!-- ПОИСК И ВЫБОР ИГРОКА -->
   <div class="admin-section">
-    <h3 data-i18n="card_management">🃏 Управление карточками</h3>
+    <h3>🔎 Поиск игрока</h3>
     <div class="admin-input-group">
-      <select class="admin-select" id="adminCardSelect">
-        <option value="" data-i18n="choose_card">Выберите карточку...</option>
-      </select>
-      <button class="admin-button success" onclick="AdminManager.giveCard()" data-i18n="give">Выдать</button>
+      <input type="text" class="admin-input" id="playerSearch" placeholder="Введите имя игрока..." oninput="AdminManager.searchPlayers(this.value)">
     </div>
-    <div class="admin-input-group">
-      <input type="number" class="admin-input" id="adminCardAmount" placeholder="Количество" min="1" max="50" value="1">
-      <button class="admin-button" onclick="AdminManager.giveMultipleCards()" data-i18n="give_multiple">Выдать несколько</button>
-    </div>
-  </div>
-  <div class="admin-section">
-    <h3 data-i18n="player_management">👥 Управление игроками</h3>
-    <div class="admin-input-group">
-      <input type="text" class="admin-input" id="playerSearch" placeholder="Поиск игрока..." onkeyup="AdminManager.searchPlayers(this.value)">
-    </div>
-    <div id="playerSearchResults" class="player-search-list" style="display: none;"></div>
-    <div id="selectedPlayer" style="display: none;">
+    <div id="playerSearchResults" class="player-search-list" style="display:none;"></div>
+    <div id="selectedPlayer" style="display:none;">
       <p data-i18n="selected_player">Выбран: <span id="selectedPlayerName"></span></p>
       <div class="admin-input-group">
         <input type="number" class="admin-input" id="playerCurrency" placeholder="Валюта">
@@ -1820,8 +1800,85 @@ h2 {
         <button class="admin-button warning" onclick="AdminManager.setPlayerRole()" data-i18n="set_role">Установить роль</button>
       </div>
       <button class="admin-button danger" onclick="AdminManager.banPlayer()" data-i18n="ban_player">Забанить игрока</button>
+      <button class="admin-button success" onclick="AdminManager.unbanPlayer()">Разбанить игрока</button>
+      <button class="admin-button warning" onclick="AdminManager.resetPlayer()">Сбросить аккаунт</button>
+      <button class="admin-button danger" onclick="AdminManager.deletePlayer()">Удалить аккаунт</button>
+      <div class="admin-input-group">
+        <input type="text" class="admin-input" id="adminNewPlayerName" placeholder="Новый ник">
+        <button class="admin-button" onclick="AdminManager.changePlayerName()">Сменить ник</button>
+        <input type="text" class="admin-input" id="adminNewPlayerAvatar" placeholder="Ссылка на аватар">
+        <button class="admin-button" onclick="AdminManager.changePlayerAvatar()">Сменить аватар</button>
+      </div>
+      <button class="admin-button" onclick="AdminManager.showPlayerStats()">Показать статистику</button>
+      <button class="admin-button" onclick="AdminManager.showPlayerLog()">Показать лог игрока</button>
     </div>
   </div>
+
+  <!-- 1. Управление коллекциями -->
+  <div class="admin-section">
+    <h3>🃏 Коллекции игроков</h3>
+    <div class="admin-input-group">
+      <select class="admin-select" id="adminCardToGive">
+        <option value="">Выберите карту...</option>
+      </select>
+      <button class="admin-button success" onclick="AdminManager.giveCardToPlayer()">Добавить карту выбранному игроку</button>
+      <button class="admin-button danger" onclick="AdminManager.removeCardFromPlayer()">Удалить карту у выбранного игрока</button>
+    </div>
+    <div class="admin-input-group">
+      <button class="admin-button warning" onclick="AdminManager.clearPlayerCollection()">Забрать все карты у выбранного</button>
+      <button class="admin-button success" onclick="AdminManager.giveFullCollection()">Выдать все карты выбранному</button>
+    </div>
+  </div>
+
+  <!-- 2. Управление валютой -->
+  <div class="admin-section">
+    <h3>💰 Валюта (выбранный игрок)</h3>
+    <div class="admin-input-group">
+      <input type="number" class="admin-input" id="adminCurrencyAmount" placeholder="Сумма">
+      <button class="admin-button" onclick="AdminManager.setPlayerCurrency()">Установить</button>
+      <button class="admin-button" onclick="AdminManager.addPlayerCurrency()">Добавить</button>
+      <button class="admin-button danger" onclick="AdminManager.subtractPlayerCurrency()">Отнять</button>
+      <button class="admin-button success" onclick="AdminManager.makePlayerMillionaire()">💸 Миллионер</button>
+    </div>
+  </div>
+
+  <!-- 3. Управление шансами -->
+  <div class="admin-section">
+    <h3>🎲 Шансы выпадения карт</h3>
+    <div class="admin-input-group">
+      <input type="text" class="admin-input" id="adminRarityChances" placeholder="Common=70,Rare=20,...">
+      <button class="admin-button" onclick="AdminManager.setRarityChances()">Изменить шансы для выбранного</button>
+      <button class="admin-button" onclick="AdminManager.setRarityChancesGlobal()">Изменить глобальные шансы</button>
+    </div>
+  </div>
+
+  <!-- 4. Управление апгрейдами -->
+  <div class="admin-section">
+    <h3>🔥 Апгрейды (выбранный игрок)</h3>
+    <div class="admin-input-group">
+      <select class="admin-select" id="adminUpgradeType">
+        <option value="cooldownReduction">Кулдаун</option>
+        <option value="clickMultiplier">Множитель</option>
+        <option value="maxEnergy">Энергия</option>
+      </select>
+      <input type="number" class="admin-input" id="adminUpgradeLevel" placeholder="Уровень (0-10)">
+      <button class="admin-button" onclick="AdminManager.setPlayerUpgrade()">Установить</button>
+      <button class="admin-button" onclick="AdminManager.maxAllUpgrades()">Максимум апгрейдов</button>
+      <button class="admin-button warning" onclick="AdminManager.resetAllUpgrades()">Сбросить апгрейды</button>
+    </div>
+  </div>
+
+  <!-- 5. Массовые рассылки -->
+  <div class="admin-section">
+    <h3>📢 Массовые действия</h3>
+    <div class="admin-input-group">
+      <input type="text" class="admin-input" id="adminNotificationText" placeholder="Текст уведомления">
+      <button class="admin-button" onclick="AdminManager.notifyAllPlayers()">Отправить всем</button>
+      <button class="admin-button success" onclick="AdminManager.giveGiftToAll()">Подарок всем онлайн</button>
+    </div>
+  </div>
+
+  <!-- 6. Статистика сервера -->
   <div class="admin-section">
     <h3 data-i18n="server_stats">📊 Статистика сервера</h3>
     <div id="serverStats">
@@ -1831,14 +1888,18 @@ h2 {
     </div>
     <button class="admin-button" onclick="AdminManager.refreshStats()" data-i18n="refresh_stats">Обновить статистику</button>
   </div>
+
+  <!-- 7. Быстрые действия -->
   <div class="admin-section">
     <h3 data-i18n="quick_actions">🔧 Быстрые действия</h3>
     <button class="admin-button" onclick="AdminManager.resetTimer()" data-i18n="reset_timer">Сбросить таймер</button>
     <button class="admin-button warning" onclick="AdminManager.clearCollection()" data-i18n="clear_collection">Очистить мои карточки</button>
     <button class="admin-button" onclick="AdminManager.maxEnergy()" data-i18n="max_energy">Макс энергия</button>
     <button class="admin-button success" onclick="AdminManager.giveRandomLegendary()" data-i18n="give_legendary">Выдать легендарку</button>
-<button class="admin-button" onclick="AdminManager.resetGiftTimer()" data-i18n="reset_gift_timer">Сбросить таймер подарка</button>
+    <button class="admin-button" onclick="AdminManager.resetGiftTimer()" data-i18n="reset_gift_timer">Сбросить таймер подарка</button>
   </div>
+
+  <!-- 8. Опасная зона -->
   <div class="admin-danger-zone">
     <h3 data-i18n="danger_zone">⚠️ ОПАСНАЯ ЗОНА</h3>
     <div class="admin-warning" data-i18n="danger_warning">
@@ -1847,12 +1908,14 @@ h2 {
     <button class="admin-button danger" onclick="AdminManager.resetAllPlayers()" data-i18n="reset_all">🔄 СБРОСИТЬ ВСЕ АККАУНТЫ</button>
     <button class="admin-button danger" onclick="AdminManager.clearAllData()" data-i18n="clear_data">💥 СТЕРЕТЬ БАЗУ ДАННЫХ</button>
     <button class="admin-button danger" onclick="AdminManager.shutdownServer()" data-i18n="maintenance_mode">🛑 РЕЖИМ ОБСЛУЖИВАНИЯ</button>
-<div class="admin-section">
-  <h3>🗑️ Удалить свой аккаунт</h3>
-  <button class="admin-button danger" onclick="AdminManager.deleteSelf()">Удалить мой аккаунт из базы</button>
-  <div id="deleteSelfStatus" style="margin-top:10px;color:#E91E63;"></div>
-</div>
+    <div class="admin-section">
+      <h3>🗑️ Удалить свой аккаунт</h3>
+      <button class="admin-button danger" onclick="AdminManager.deleteSelf()">Удалить мой аккаунт из базы</button>
+      <div id="deleteSelfStatus" style="margin-top:10px;color:#E91E63;"></div>
+    </div>
   </div>
+
+  <!-- 9. Лог админа -->
   <div class="admin-section">
     <h3 data-i18n="admin_log">📝 Лог админа</h3>
     <div id="adminLog" class="admin-log">
@@ -1861,7 +1924,8 @@ h2 {
     <button class="admin-button" onclick="AdminManager.clearLog()" data-i18n="clear_log">Очистить лог</button>
   </div>
 </div>
-<!-- МОДАЛЬНОЕ ОКНО АУТЕНТИФИКАЦИИ АДМИНА -->
+
+<!-- Модальное окно аутентификации админа -->
 <div id="adminAuthModal">
   <div class="admin-auth-content">
     <h3 data-i18n="admin_auth">Админ Аутентификация</h3>
@@ -1872,27 +1936,8 @@ h2 {
     </div>
   </div>
 </div>
-<!-- МОДАЛЬНОЕ ОКНО КАРТОЧКИ -->
-<div id="cardModal">
-  <div id="cardContent">
-    <img id="modalImage" src="">
-    <h2 id="modalName"></h2>
-    <p id="modalRarity" data-i18n="rarity"></p>
-    <p id="modalType" data-i18n="type"></p>
-    <button id="sellCardBtn" data-i18n="sell_card">💰 Продать карточку</button>
-  </div>
-</div>
-<!-- МОДАЛЬНОЕ ОКНО СМЕНЫ ИМЕНИ -->
-<div id="nameModal">
-  <div class="name-content">
-    <h3 data-i18n="change_name_title">Смена имени</h3>
-    <input type="text" id="nameInput" placeholder="Введите новое имя" maxlength="20">
-    <div class="name-actions">
-      <button onclick="confirmNameChange()" data-i18n="save">✅ Сохранить</button>
-      <button onclick="closeNameModal()" style="background: linear-gradient(45deg,#ff3333,#ff6666);" data-i18n="cancel">❌ Отмена</button>
-    </div>
-  </div>
-</div>
+
+
 <!-- НАВБАР -->
 <div id="navbar">
   <button onclick="MenuManager.toggle('profile')" data-i18n="profile">👤 Профиль</button>
@@ -2936,7 +2981,7 @@ displayIndex() {
   if (!indexContent) return;
 
   // Собираем все обычные и regcandy карты, убираем дубликаты по имени
-  const allCards = [...cards, ...regcandyCards];
+  const allCards = [...cards, ...regcandyCards, secretCard];
   const uniqueCards = allCards.filter(
     (card, idx, arr) => arr.findIndex(c => c.name === card.name) === idx
   );
@@ -3044,7 +3089,7 @@ displayIndex() {
     if (modalType) modalType.textContent = `${translations[lang].type || 'Type:'} ${card.type}`;
  
 const sellBtn = document.getElementById('sellCardBtn');
-const price = {Common:10, Rare:30, Special:150, Legendary:100}[card.rarity]||10;
+const price = { Common: 10, Rare: 30, Special: 150, Legendary: 100, Secret: 1500 }[card.rarity] || 10;
 if (sellBtn) {
   if (isOtherPlayer || index === -1) {
     sellBtn.style.display = 'none';
@@ -3061,19 +3106,19 @@ if (sellBtn) {
     const modal = document.getElementById('cardModal');
     if (modal) modal.style.display = 'none';
   }
-  async sellCard(index) {
-    const card = this.data.collection[index];
-    const prices = { Common: 10, Rare: 30, Special: 150, Legendary: 100 };
-    const price = prices[card.rarity] || 10;
- 
-    this.data.currency += price;
-    this.data.collection.splice(index, 1);
-    await this.savePlayerData();
-    this.updateUI();
-    this.closeCardModal();
- 
-    this.showNotification(`Продано за ${price} монет!`);
-  }
+async sellCard(index) {
+  const card = this.data.collection[index];
+  const prices = { Common: 10, Rare: 30, Special: 150, Legendary: 100, Secret: 1500 };
+  const price = prices[card.rarity] || 10;
+
+  this.data.currency += price;
+  this.data.collection.splice(index, 1);
+  await this.savePlayerData();
+  this.updateUI();
+  this.closeCardModal();
+
+  this.showNotification(`Продано за ${price} монет!`);
+}
 
 async openPack(packType = 'free') {
   if (packType === 'free') {
@@ -3091,14 +3136,15 @@ async openPack(packType = 'free') {
     this.data.currency -= 50;
 
     // Вот тут добавь шанс на секретку!
-    if (Math.random() < 0.001) { // 0.01%
-      this.data.collection.push(secretCard);
-      await this.savePlayerData();
-      this.displayNewCard(secretCard);
-      this.updateUI();
-      this.showNotification('Ты выбил секретную карту: Regcandy & Dark Bloom!');
-      return; // выходим, обычная карта не выпадает
-    }
+   if (Math.random() < 0.001) { // 0.1%
+     this.data.collection.push(secretCard);
+     await this.savePlayerData();
+     this.displayNewCard(secretCard);
+     this.updateUI();
+     this.displayIndex(); // ВАЖНО!
+     this.showNotification('Ты выбил секретную карту: Regcandy & Dark Bloom!');
+     return; // выходим, обычная карта не выпадает
+   }
   }
 
   // Обычная выдача карты
@@ -3258,13 +3304,16 @@ function getRandomCardFromPack(pack) {
 }
 
 
-// АДМИН МЕНЕДЖЕР
+// АДМИН МЕНЕДЖЕР "БОГ" — с поиском по имени игрока и UI-выбором
+
 class AdminManager {
   static selectedPlayer = null;
   static isAuthenticated = false;
-  static adminPassword = 'admin1337'; // В реальности хранить securely, но для примера
+  static adminPassword = 'admin1337';
   static adminSequence = ['KeyA', 'KeyD', 'KeyM', 'KeyI', 'KeyN', 'Digit1', 'Digit3', 'Digit3', 'Digit7'];
   static currentSequence = [];
+
+  // --- Аутентификация ---
   static showAuthModal() {
     const modal = document.getElementById('adminAuthModal');
     if (modal) modal.style.display = 'flex';
@@ -3286,30 +3335,21 @@ class AdminManager {
     const input = document.getElementById('adminPasswordInput');
     if (input) input.value = '';
   }
-  static init() {
-    this.populateCardSelects();
-    this.refreshStats();
-    this.log('Админ-панель готова', 'success');
- 
-  }
-static authenticate() {
-  this.isAuthenticated = true;
-  // НЕ сохраняем в localStorage - только для текущей сессии
-  const adminPanel = document.getElementById('adminPanel');
-  if (adminPanel) adminPanel.classList.add('show');
-  this.log('Админ успешно аутентифицирован', 'success');
-  this.refreshStats();
-}
-static openQuick() {
-  // Проверяем, был ли уже введен пароль в этой сессии
-  if (this.isAuthenticated) {
+  static authenticate() {
+    this.isAuthenticated = true;
     const adminPanel = document.getElementById('adminPanel');
     if (adminPanel) adminPanel.classList.add('show');
-  } else {
-    // Если пароль еще не вводился - показываем окно аутентификации
-    this.showAuthModal();
+    this.log('Админ успешно аутентифицирован', 'success');
+    this.refreshStats();
   }
-}
+  static openQuick() {
+    if (this.isAuthenticated) {
+      const adminPanel = document.getElementById('adminPanel');
+      if (adminPanel) adminPanel.classList.add('show');
+    } else {
+      this.showAuthModal();
+    }
+  }
   static close() {
     const adminPanel = document.getElementById('adminPanel');
     if (adminPanel) adminPanel.classList.remove('show');
@@ -3328,35 +3368,301 @@ static openQuick() {
     const logDiv = document.getElementById('adminLog');
     if (logDiv) logDiv.innerHTML = '<div class="log-entry">Лог очищен...</div>';
   }
- static populateCardSelects() {
-  const selects = [
-    document.getElementById('adminCardSelect'),
-    document.getElementById('playerCardSelect')
-  ];
+  static init() {
+    this.populateCardSelects();
+    this.refreshStats();
+    this.log('Админ-панель готова', 'success');
+  }
+  static populateCardSelects() {
+    const selects = [
+      document.getElementById('adminCardSelect'),
+      document.getElementById('playerCardSelect'),
+      document.getElementById('adminCardToGive')
+    ];
+    selects.forEach(select => {
+      if (select) {
+        select.innerHTML = '<option value="">Выберите карточку...</option>';
+        cards.forEach((card, index) => {
+          const option = document.createElement('option');
+          option.value = `normal_${index}`;
+          option.textContent = `${card.name} (${card.rarity})`;
+          select.appendChild(option);
+        });
+        regcandyCards.forEach((card, index) => {
+          const option = document.createElement('option');
+          option.value = `regcandy_${index}`;
+          option.textContent = `${card.name} (${card.rarity}) [Regcandy]`;
+          select.appendChild(option);
+        });
+        const secretOption = document.createElement('option');
+        secretOption.value = 'secretCard';
+        secretOption.textContent = `${secretCard.name} (${secretCard.rarity}) [SECRET]`;
+        select.appendChild(secretOption);
+      }
+    });
+  }
+  static getCardByValue(val) {
+    if (val === 'secretCard') return secretCard;
+    if (val.startsWith('regcandy_')) return regcandyCards[parseInt(val.replace('regcandy_', ''))];
+    if (val.startsWith('normal_')) return cards[parseInt(val.replace('normal_', ''))];
+    return null;
+  }
 
-  selects.forEach(select => {
-    if (select) {
-      select.innerHTML = '<option value="">Выберите карточку...</option>';
-      
-      // Добавляем обычные карточки
-      cards.forEach((card, index) => {
-        const option = document.createElement('option');
-        option.value = `normal_${index}`;
-        option.textContent = `${card.name} (${card.rarity})`;
-        select.appendChild(option);
-      });
-      
-      // Добавляем Regcandy карточки
-      regcandyCards.forEach((card, index) => {
-        const option = document.createElement('option');
-        option.value = `regcandy_${index}`;
-        option.textContent = `${card.name} (${card.rarity}) [Regcandy]`;
-        select.appendChild(option);
-      });
+  // --- Поиск игроков по имени с результатами ---
+  static async searchPlayers(query) {
+    query = (query || '').trim();
+    const resultsDiv = document.getElementById('playerSearchResults');
+    if (!query || query.length < 2) {
+      if (resultsDiv) resultsDiv.style.display = 'none';
+      return;
     }
-  });
-}
-  // Управление валютой
+    try {
+      const snapshot = await db.ref('players').once('value');
+      const players = snapshot.val() || {};
+      // Фильтруем по имени (без учета регистра)
+      const results = Object.entries(players)
+        .filter(([id, data]) =>
+          data.playerName &&
+          data.playerName.toLowerCase().includes(query.toLowerCase())
+        )
+        .slice(0, 15);
+
+      if (!resultsDiv) return;
+      resultsDiv.innerHTML = '';
+      if (results.length === 0) {
+        resultsDiv.innerHTML = '<div style="color:#888;padding:8px;">Нет совпадений</div>';
+      } else {
+        results.forEach(([id, data]) => {
+          const item = document.createElement('div');
+          item.className = 'player-search-item';
+          item.innerHTML = `
+            <img src="${data.playerAvatar || gameManager.getDefaultAvatar()}" style="width:28px;height:28px;border-radius:50%;margin-right:7px;">
+            <strong>${data.playerName}</strong>
+            <span style="color:#aaa;margin-left:6px;">(${data.role || 'user'}, ${data.currency || 0} монет, ${data.collection?.length || 0} карт)</span>
+          `;
+          item.onclick = () => AdminManager.selectPlayer(id, data);
+          resultsDiv.appendChild(item);
+        });
+      }
+      resultsDiv.style.display = 'block';
+    } catch (error) {
+      this.log(`Ошибка поиска игроков: ${error.message}`, 'error');
+    }
+  }
+  static selectPlayer(id, data) {
+    this.selectedPlayer = { id, data };
+    const selectedPlayerName = document.getElementById('selectedPlayerName');
+    if (selectedPlayerName) selectedPlayerName.textContent = data.playerName;
+    const selectedPlayer = document.getElementById('selectedPlayer');
+    if (selectedPlayer) selectedPlayer.style.display = 'block';
+    const playerSearchResults = document.getElementById('playerSearchResults');
+    if (playerSearchResults) playerSearchResults.style.display = 'none';
+    const playerSearch = document.getElementById('playerSearch');
+    if (playerSearch) playerSearch.value = data.playerName;
+    const playerRoleSelect = document.getElementById('playerRoleSelect');
+    if (playerRoleSelect) playerRoleSelect.value = data.role || 'user';
+    this.log(`Выбран игрок: ${data.playerName}`, 'info');
+  }
+
+  // --- 1. Управление коллекциями для выбранного игрока ---
+  static async giveCardToPlayer() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    const cardVal = document.getElementById('adminCardToGive').value;
+    if (!cardVal) return this.log('Укажите карту', 'error');
+    let card = this.getCardByValue(cardVal);
+    const ref = db.ref(`players/${this.selectedPlayer.id}/collection`);
+    const snap = await ref.once('value');
+    const coll = snap.val() || [];
+    coll.push(card);
+    await ref.set(coll);
+    this.log(`Карта ${card.name} добавлена игроку ${this.selectedPlayer.data.playerName}`, 'success');
+  }
+  static async removeCardFromPlayer() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    const cardVal = document.getElementById('adminCardToGive').value;
+    if (!cardVal) return this.log('Укажите карту', 'error');
+    let card = this.getCardByValue(cardVal);
+    const ref = db.ref(`players/${this.selectedPlayer.id}/collection`);
+    const snap = await ref.once('value');
+    let coll = snap.val() || [];
+    coll = coll.filter(c => c.name !== card.name);
+    await ref.set(coll);
+    this.log(`Карта ${card.name} удалена у игрока ${this.selectedPlayer.data.playerName}`, 'success');
+  }
+  static async clearPlayerCollection() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    await db.ref(`players/${this.selectedPlayer.id}/collection`).set([]);
+    this.log(`Коллекция очищена у игрока ${this.selectedPlayer.data.playerName}`, 'warning');
+  }
+  static async giveFullCollection() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    const allCards = [...cards, ...regcandyCards, secretCard];
+    await db.ref(`players/${this.selectedPlayer.id}/collection`).set(allCards);
+    this.log(`ВЫДАНА ПОЛНАЯ КОЛЛЕКЦИЯ игроку ${this.selectedPlayer.data.playerName}`, 'success');
+  }
+
+  // --- 2. Управление валютой ---
+  static async setPlayerCurrency() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    const val = parseInt(document.getElementById('adminCurrencyAmount').value);
+    await db.ref(`players/${this.selectedPlayer.id}/currency`).set(val);
+    this.log(`Валюта установлена игроку ${this.selectedPlayer.data.playerName}: ${val}`, 'success');
+  }
+  static async addPlayerCurrency() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    const val = parseInt(document.getElementById('adminCurrencyAmount').value);
+    const ref = db.ref(`players/${this.selectedPlayer.id}/currency`);
+    const snap = await ref.once('value');
+    const cur = snap.val() || 0;
+    await ref.set(cur + val);
+    this.log(`Добавлено ${val} монет игроку ${this.selectedPlayer.data.playerName}`, 'success');
+  }
+  static async subtractPlayerCurrency() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    const val = parseInt(document.getElementById('adminCurrencyAmount').value);
+    const ref = db.ref(`players/${this.selectedPlayer.id}/currency`);
+    const snap = await ref.once('value');
+    const cur = snap.val() || 0;
+    await ref.set(Math.max(cur - val, 0));
+    this.log(`Отнято ${val} монет у игрока ${this.selectedPlayer.data.playerName}`, 'success');
+  }
+  static async makePlayerMillionaire() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    await db.ref(`players/${this.selectedPlayer.id}/currency`).set(1000000);
+    this.log(`Игрок ${this.selectedPlayer.data.playerName} теперь миллионер`, 'success');
+  }
+
+  // --- 3. Управление игроками ---
+  static async changePlayerName() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    const name = document.getElementById('adminNewPlayerName').value;
+    await db.ref(`players/${this.selectedPlayer.id}/playerName`).set(name);
+    this.log(`Имя игрока ${this.selectedPlayer.data.playerName} изменено на ${name}`, 'success');
+  }
+  static async changePlayerAvatar() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    const avatar = document.getElementById('adminNewPlayerAvatar').value;
+    await db.ref(`players/${this.selectedPlayer.id}/playerAvatar`).set(avatar);
+    this.log(`Аватар игрока ${this.selectedPlayer.data.playerName} изменён`, 'success');
+  }
+  static async banPlayer() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    await db.ref(`players/${this.selectedPlayer.id}/role`).set('banned');
+    this.log(`Игрок ${this.selectedPlayer.data.playerName} забанен`, 'warning');
+  }
+  static async unbanPlayer() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    await db.ref(`players/${this.selectedPlayer.id}/role`).set('user');
+    this.log(`Игрок ${this.selectedPlayer.data.playerName} разбанен`, 'success');
+  }
+  static async resetPlayer() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    await db.ref(`players/${this.selectedPlayer.id}`).set({
+      playerName: "Сброшенный игрок",
+      playerAvatar: gameManager.getDefaultAvatar(),
+      collection: [],
+      currency: 100,
+      lastFreePack: 0,
+      energy: 50,
+      lastOnline: Date.now(),
+      role: 'user',
+      upgrades: { cooldownReduction: 0, clickMultiplier: 0, maxEnergy: 0 }
+    });
+    this.log(`Аккаунт ${this.selectedPlayer.data.playerName} сброшен`, 'warning');
+  }
+  static async deletePlayer() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    await db.ref(`players/${this.selectedPlayer.id}`).remove();
+    this.log(`Аккаунт ${this.selectedPlayer.data.playerName} удалён`, 'error');
+  }
+
+  // --- 4. Управление шансами ---
+  static async setRarityChances() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    const txt = document.getElementById('adminRarityChances').value;
+    const chances = {};
+    txt.split(',').forEach(part => {
+      const [rar, val] = part.split('=');
+      chances[rar.trim()] = parseFloat(val);
+    });
+    await db.ref(`players/${this.selectedPlayer.id}/customRarityChances`).set(chances);
+    this.log(`Шансы выпадения изменены для игрока ${this.selectedPlayer.data.playerName}`, 'success');
+  }
+  static async setRarityChancesGlobal() {
+    const txt = document.getElementById('adminRarityChances').value;
+    const chances = {};
+    txt.split(',').forEach(part => {
+      const [rar, val] = part.split('=');
+      chances[rar.trim()] = parseFloat(val);
+    });
+    await db.ref('globalRarityChances').set(chances);
+    this.log(`Глобальные шансы выпадения карт изменены`, 'success');
+  }
+
+  // --- 5. Управление апгрейдами ---
+  static async setPlayerUpgrade() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    const type = document.getElementById('adminUpgradeType').value;
+    const lvl = parseInt(document.getElementById('adminUpgradeLevel').value);
+    const ref = db.ref(`players/${this.selectedPlayer.id}/upgrades/${type}`);
+    await ref.set(lvl);
+    this.log(`Апгрейд ${type} установлен игроку ${this.selectedPlayer.data.playerName}: ${lvl}`, 'success');
+  }
+  static async maxAllUpgrades() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    await db.ref(`players/${this.selectedPlayer.id}/upgrades`).set({
+      cooldownReduction: 5,
+      clickMultiplier: 10,
+      maxEnergy: 5
+    });
+    this.log(`Максимальные апгрейды игроку ${this.selectedPlayer.data.playerName}`, 'success');
+  }
+  static async resetAllUpgrades() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    await db.ref(`players/${this.selectedPlayer.id}/upgrades`).set({
+      cooldownReduction: 0,
+      clickMultiplier: 0,
+      maxEnergy: 0
+    });
+    this.log(`Апгрейды сброшены игроку ${this.selectedPlayer.data.playerName}`, 'warning');
+  }
+
+  // --- 6. Массовые рассылки/подарки ---
+  static async notifyAllPlayers() {
+    const text = document.getElementById('adminNotificationText').value;
+    const snap = await db.ref('players').once('value');
+    const players = snap.val() || {};
+    Object.keys(players).forEach(pid => {
+      db.ref(`players/${pid}/notifications`).push({ message: text, time: Date.now() });
+    });
+    this.log('Уведомление отправлено всем игрокам', 'info');
+  }
+  static async giveGiftToAll() {
+    const snap = await db.ref('players').once('value');
+    const players = snap.val() || {};
+    Object.keys(players).forEach(pid => {
+      db.ref(`players/${pid}/gifts`).push({ type: 'card', value: secretCard, from: 'Админ', time: Date.now() });
+    });
+    this.log('Подарок отправлен всем игрокам', 'success');
+  }
+
+  // --- 7. Контроль активности ---
+  static async showPlayerStats() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    const snap = await db.ref(`players/${this.selectedPlayer.id}`).once('value');
+    const data = snap.val();
+    alert(JSON.stringify(data, null, 2));
+    this.log(`Статистика игрока ${this.selectedPlayer.data.playerName} показана`, 'info');
+  }
+  static async showPlayerLog() {
+    if (!this.selectedPlayer) return this.log('Выберите игрока!', 'error');
+    const snap = await db.ref(`players/${this.selectedPlayer.id}/actionsLog`).once('value');
+    const log = snap.val();
+    alert(JSON.stringify(log, null, 2));
+    this.log(`Лог игрока ${this.selectedPlayer.data.playerName} показан`, 'info');
+  }
+
+  // --- Быстрые действия для текущего игрока ---
   static async setCurrency() {
     const adminCurrency = document.getElementById('adminCurrency');
     if (!adminCurrency) return;
@@ -3365,7 +3671,6 @@ static openQuick() {
       this.log('Неверная сумма валюты', 'error');
       return;
     }
- 
     try {
       gameManager.data.currency = amount;
       await gameManager.savePlayerData();
@@ -3383,7 +3688,6 @@ static openQuick() {
       this.log('Неверная сумма валюты', 'error');
       return;
     }
- 
     try {
       gameManager.data.currency += amount;
       await gameManager.savePlayerData();
@@ -3393,240 +3697,45 @@ static openQuick() {
       this.log(`Ошибка добавления валюты: ${error.message}`, 'error');
     }
   }
-  // Управление карточками
   static async giveCard() {
-  const adminCardSelect = document.getElementById('adminCardSelect');
-  if (!adminCardSelect) return;
-  const cardValue = adminCardSelect.value;
-  if (!cardValue) {
-    this.log('Карточка не выбрана', 'error');
-    return;
-  }
-
-  try {
-    let card;
-    if (cardValue.startsWith('regcandy_')) {
-      const index = parseInt(cardValue.replace('regcandy_', ''));
-      card = regcandyCards[index];
-    } else {
-      const index = parseInt(cardValue.replace('normal_', ''));
-      card = cards[index];
-    }
-    
-    gameManager.data.collection.push(card);
-    await gameManager.savePlayerData();
-    gameManager.updateUI();
-    this.log(`Выдана карточка: ${card.name}`, 'success');
-  } catch (error) {
-    this.log(`Ошибка выдачи карточки: ${error.message}`, 'error');
-  }
-}
-  static async giveMultipleCards() {
     const adminCardSelect = document.getElementById('adminCardSelect');
     if (!adminCardSelect) return;
-    const cardIndex = adminCardSelect.value;
-    const adminCardAmount = document.getElementById('adminCardAmount');
-    if (!adminCardAmount) return;
-    const amount = parseInt(adminCardAmount.value) || 1;
- 
-    if (!cardIndex) {
+    const cardValue = adminCardSelect.value;
+    if (!cardValue) {
       this.log('Карточка не выбрана', 'error');
       return;
     }
- 
     try {
-      const card = cards[parseInt(cardIndex)];
+      let card = this.getCardByValue(cardValue);
+      gameManager.data.collection.push(card);
+      await gameManager.savePlayerData();
+      gameManager.updateUI();
+      this.log(`Выдана карточка: ${card.name}`, 'success');
+    } catch (error) {
+      this.log(`Ошибка выдачи карточки: ${error.message}`, 'error');
+    }
+  }
+  static async giveMultipleCards() {
+    const adminCardSelect = document.getElementById('adminCardSelect');
+    if (!adminCardSelect) return;
+    const cardValue = adminCardSelect.value;
+    const adminCardAmount = document.getElementById('adminCardAmount');
+    if (!adminCardAmount) return;
+    const amount = parseInt(adminCardAmount.value) || 1;
+    if (!cardValue) {
+      this.log('Карточка не выбрана', 'error');
+      return;
+    }
+    try {
+      let card = this.getCardByValue(cardValue);
       for (let i = 0; i < amount; i++) {
-        gameManager.data.collection.push({...card});
+        gameManager.data.collection.push({ ...card });
       }
       await gameManager.savePlayerData();
       gameManager.updateUI();
       this.log(`Выдано ${amount} x ${card.name}`, 'success');
     } catch (error) {
       this.log(`Ошибка выдачи карточек: ${error.message}`, 'error');
-    }
-  }
-  // Поиск игроков
- static async searchPlayers(query) {
-  if (!query || query.length < 2) {
-    const playerSearchResults = document.getElementById('playerSearchResults');
-    if (playerSearchResults) playerSearchResults.style.display = 'none';
-    return;
-  }
-
-  try {
-    const snapshot = await db.ref('players').once('value');
-    const players = snapshot.val() || {};
-
-    // Ищем по playerName по-русски и по-английски (и по id для удобства)
-    const results = Object.entries(players)
-      .filter(([id, data]) =>
-        data.playerName &&
-        (
-          data.playerName.toLowerCase().includes(query.toLowerCase()) ||
-          id.toLowerCase().includes(query.toLowerCase())
-        )
-      )
-      .slice(0, 10);
-
-    const resultsDiv = document.getElementById('playerSearchResults');
-    if (!resultsDiv) return;
-    resultsDiv.innerHTML = '';
-
-    results.forEach(([id, data]) => {
-      const item = document.createElement('div');
-      item.className = 'player-search-item';
-      item.textContent = `${data.playerName} (${data.role || 'user'}) (${data.collection?.length || 0} cards, ${data.currency || 0} coins)`;
-      item.onclick = () => this.selectPlayer(id, data);
-      resultsDiv.appendChild(item);
-    });
-
-    resultsDiv.style.display = results.length > 0 ? 'block' : 'none';
-
-  } catch (error) {
-    this.log(`Ошибка поиска игроков: ${error.message}`, 'error');
-  }
-}
-
-static selectPlayer(id, data) {
-  this.selectedPlayer = { id, data };
-  const selectedPlayerName = document.getElementById('selectedPlayerName');
-  if (selectedPlayerName) selectedPlayerName.textContent = data.playerName;
-  const selectedPlayer = document.getElementById('selectedPlayer');
-  if (selectedPlayer) selectedPlayer.style.display = 'block';
-  const playerSearchResults = document.getElementById('playerSearchResults');
-  if (playerSearchResults) playerSearchResults.style.display = 'none';
-  const playerSearch = document.getElementById('playerSearch');
-  if (playerSearch) playerSearch.value = data.playerName;
-  const playerRoleSelect = document.getElementById('playerRoleSelect');
-  if (playerRoleSelect) playerRoleSelect.value = data.role || 'user';
-  this.log(`Выбран игрок: ${data.playerName}`, 'info');
-}
-
-  // Управление другими игроками
-  static async setPlayerCurrency() {
-    if (!this.selectedPlayer) {
-      this.log('Игрок не выбран', 'error');
-      return;
-    }
- 
-    const playerCurrency = document.getElementById('playerCurrency');
-    if (!playerCurrency) return;
-    const amount = parseInt(playerCurrency.value);
-    if (isNaN(amount) || amount < 0) {
-      this.log('Неверная сумма валюты', 'error');
-      return;
-    }
- 
-    try {
-      await db.ref(`players/${this.selectedPlayer.id}/currency`).set(amount);
-      this.log(`Установлена валюта ${this.selectedPlayer.data.playerName} на ${amount}`, 'success');
-    } catch (error) {
-      this.log(`Ошибка установки валюты игрока: ${error.message}`, 'error');
-    }
-  }
- static async givePlayerCard() {
-  if (!this.selectedPlayer) {
-    this.log('Игрок не выбран', 'error');
-    return;
-  }
-
-  const playerCardSelect = document.getElementById('playerCardSelect');
-  if (!playerCardSelect) return;
-  const cardValue = playerCardSelect.value;
-  if (!cardValue) {
-    this.log('Карточка не выбрана', 'error');
-    return;
-  }
-
-  try {
-    let card;
-    if (cardValue.startsWith('regcandy_')) {
-      const index = parseInt(cardValue.replace('regcandy_', ''));
-      card = regcandyCards[index];
-    } else {
-      const index = parseInt(cardValue.replace('normal_', ''));
-      card = cards[index];
-    }
-    
-    const playerRef = db.ref(`players/${this.selectedPlayer.id}/collection`);
-    const snapshot = await playerRef.once('value');
-    const collection = snapshot.val() || [];
-    collection.push(card);
-    await playerRef.set(collection);
-    this.log(`Выдана ${card.name} игроку ${this.selectedPlayer.data.playerName}`, 'success');
-  } catch (error) {
-    this.log(`Ошибка выдачи карточки игроку: ${error.message}`, 'error');
-  }
-}
-  static async setPlayerRole() {
-    if (!this.selectedPlayer) {
-      this.log('Игрок не выбран', 'error');
-      return;
-    }
- 
-    const playerRoleSelect = document.getElementById('playerRoleSelect');
-    if (!playerRoleSelect) return;
-    const role = playerRoleSelect.value;
- 
-    try {
-      await db.ref(`players/${this.selectedPlayer.id}/role`).set(role);
-      this.selectedPlayer.data.role = role;
-      this.log(`Установлена роль ${role} для ${this.selectedPlayer.data.playerName}`, 'success');
-      if (this.selectedPlayer.id === gameManager.playerId) {
-        gameManager.data.role = role;
-      }
-    } catch (error) {
-      this.log(`Ошибка установки роли игрока: ${error.message}`, 'error');
-    }
-  }
-  static async banPlayer() {
-    if (!this.selectedPlayer) {
-      this.log('Игрок не выбран', 'error');
-      return;
-    }
- 
-    if (confirm(`Забанить ${this.selectedPlayer.data.playerName}?`)) {
-      try {
-        await db.ref(`players/${this.selectedPlayer.id}/role`).set('banned');
-        this.log(`Забанен ${this.selectedPlayer.data.playerName}`, 'warning');
-      } catch (error) {
-        this.log(`Ошибка бана игрока: ${error.message}`, 'error');
-      }
-    }
-  }
-  // Статистика сервера
-  static async refreshStats() {
-    try {
-      const snapshot = await db.ref('players').once('value');
-      const players = snapshot.val() || {};
-   
-      const playerCount = Object.keys(players).length;
-      const onlineCount = Object.values(players)
-        .filter(player => gameManager.isPlayerOnline(player.lastOnline || 0)).length;
-      const totalCards = Object.values(players)
-        .reduce((sum, player) => sum + (player.collection?.length || 0), 0);
-   
-      const totalPlayers = document.getElementById('totalPlayers');
-      if (totalPlayers) totalPlayers.textContent = playerCount;
-      const onlinePlayers = document.getElementById('onlinePlayers');
-      if (onlinePlayers) onlinePlayers.textContent = onlineCount;
-      const totalCardsElem = document.getElementById('totalCards');
-      if (totalCardsElem) totalCardsElem.textContent = totalCards;
-   
-      this.log('Статистика сервера обновлена', 'info');
-    } catch (error) {
-      this.log(`Ошибка обновления статистики: ${error.message}`, 'error');
-    }
-  }
-  // Быстрые действия
-  static async resetTimer() {
-    try {
-      gameManager.data.lastFreePack = 0;
-      await gameManager.savePlayerData();
-      this.log('Таймер сброшен', 'success');
-    } catch (error) {
-      this.log(`Ошибка сброса таймера: ${error.message}`, 'error');
     }
   }
   static async clearCollection() {
@@ -3657,47 +3766,67 @@ static selectPlayer(id, data) {
         this.log('Нет легендарных карточек', 'error');
         return;
       }
-   
-const randomCard = legendaryCards[Math.floor(Math.random() * legendaryCards.length)];
-gameManager.data.collection.push(randomCard);
-await gameManager.savePlayerData();
-gameManager.updateUI();
-this.log(`Выдана случайная легендарка: ${randomCard.name}`, 'success');
-} catch (error) {
-  this.log(`Ошибка выдачи легендарки: ${error.message}`, 'error');
-}
-}
-
-static async resetGiftTimer() {
-  try {
-    gameManager.data.lastGiftTimestamp = 0;
-    await gameManager.savePlayerData();
-    this.log('Таймер подарка сброшен', 'success');
-    gameManager.showNotification('Таймер отправки подарка сброшен!');
-  } catch (error) {
-    this.log(`Ошибка сброса таймера подарка: ${error.message}`, 'error');
+      const randomCard = legendaryCards[Math.floor(Math.random() * legendaryCards.length)];
+      gameManager.data.collection.push(randomCard);
+      await gameManager.savePlayerData();
+      gameManager.updateUI();
+      this.log(`Выдана случайная легендарка: ${randomCard.name}`, 'success');
+    } catch (error) {
+      this.log(`Ошибка выдачи легендарки: ${error.message}`, 'error');
+    }
   }
-}
-// ОПАСНАЯ ЗОНА
-static async resetAllPlayers() {
-  if (!confirm('⚠️ ВНИМАНИЕ: Это сбросит ВСЕ аккаунты игроков! Вы абсолютно уверены?')) {
-    return;
+  static async resetTimer() {
+    try {
+      gameManager.data.lastFreePack = 0;
+      await gameManager.savePlayerData();
+      this.log('Таймер сброшен', 'success');
+    } catch (error) {
+      this.log(`Ошибка сброса таймера: ${error.message}`, 'error');
+    }
+  }
+  static async resetGiftTimer() {
+    try {
+      gameManager.data.lastGiftTimestamp = 0;
+      await gameManager.savePlayerData();
+      this.log('Таймер подарка сброшен', 'success');
+      gameManager.showNotification('Таймер отправки подарка сброшен!');
+    } catch (error) {
+      this.log(`Ошибка сброса таймера подарка: ${error.message}`, 'error');
+    }
+  }
+  static async refreshStats() {
+    try {
+      const snapshot = await db.ref('players').once('value');
+      const players = snapshot.val() || {};
+      const playerCount = Object.keys(players).length;
+      const onlineCount = Object.values(players)
+        .filter(player => gameManager.isPlayerOnline(player.lastOnline || 0)).length;
+      const totalCards = Object.values(players)
+        .reduce((sum, player) => sum + (player.collection?.length || 0), 0);
+      const totalPlayers = document.getElementById('totalPlayers');
+      if (totalPlayers) totalPlayers.textContent = playerCount;
+      const onlinePlayers = document.getElementById('onlinePlayers');
+      if (onlinePlayers) onlinePlayers.textContent = onlineCount;
+      const totalCardsElem = document.getElementById('totalCards');
+      if (totalCardsElem) totalCardsElem.textContent = totalCards;
+      this.log('Статистика сервера обновлена', 'info');
+    } catch (error) {
+      this.log(`Ошибка обновления статистики: ${error.message}`, 'error');
+    }
   }
 
-  if (!confirm('Это действие нельзя отменить! Введите "RESET" для подтверждения:')) {
-    return;
-  }
-
-  const confirmation = prompt('Введите "RESET ALL PLAYERS" для подтверждения опасного действия:');
+  // --- ОПАСНАЯ ЗОНА ---
+  static async resetAllPlayers() {
+    if (!confirm('⚠️ ВНИМАНИЕ: Это сбросит ВСЕ аккаунты игроков! Вы абсолютно уверены?')) return;
+    if (!confirm('Это действие нельзя отменить! Введите "RESET" для подтверждения:')) return;
+    const confirmation = prompt('Введите "RESET ALL PLAYERS" для подтверждения опасного действия:');
     if (confirmation !== 'RESET ALL PLAYERS') {
       this.log('Сброс отменен - неверное подтверждение', 'warning');
       return;
     }
- 
     try {
       const snapshot = await db.ref('players').once('value');
       const players = snapshot.val() || {};
-   
       const resetPromises = Object.keys(players).map(playerId => {
         return db.ref(`players/${playerId}`).set({
           playerName: players[playerId].playerName || 'Сброс Игрока',
@@ -3708,45 +3837,28 @@ static async resetAllPlayers() {
           energy: 50,
           lastOnline: Date.now(),
           role: 'user',
-          upgrades: {
-            cooldownReduction: 0,
-            clickMultiplier: 0,
-            maxEnergy: 0
-          }
+          upgrades: { cooldownReduction: 0, clickMultiplier: 0, maxEnergy: 0 }
         });
       });
-   
       await Promise.all(resetPromises);
       this.log('🔄 ВСЕ АККАУНТЫ ИГРОКОВ СБРОШЕНЫ', 'warning');
-   
-      // Перезагружаем данные текущего игрока
       await gameManager.loadPlayerData();
       gameManager.updateUI();
-   
     } catch (error) {
       this.log(`Ошибка сброса всех игроков: ${error.message}`, 'error');
     }
   }
   static async clearAllData() {
-    if (!confirm('💥 ЭКСТРЕМАЛЬНОЕ ПРЕДУПРЕЖДЕНИЕ: Это УДАЛИТ ВСЕ ДАННЫЕ из базы!')) {
-      return;
-    }
- 
+    if (!confirm('💥 ЭКСТРЕМАЛЬНОЕ ПРЕДУПРЕЖДЕНИЕ: Это УДАЛИТ ВСЕ ДАННЫЕ из базы!')) return;
     const confirmation = prompt('Введите "DELETE EVERYTHING" для подтверждения полного стирания базы:');
     if (confirmation !== 'DELETE EVERYTHING') {
       this.log('Стирание базы отменено', 'warning');
       return;
     }
- 
     try {
       await db.ref('players').remove();
       this.log('💥 БАЗА ДАННЫХ СТЁРТА - ВСЕ ДАННЫЕ УДАЛЕНЫ', 'error');
-   
-      // Перезагружаем страницу
-      setTimeout(() => {
-        location.reload();
-      }, 2000);
-   
+      setTimeout(() => { location.reload(); }, 2000);
     } catch (error) {
       this.log(`Ошибка стирания базы: ${error.message}`, 'error');
     }
@@ -3754,11 +3866,8 @@ static async resetAllPlayers() {
   static shutdownServer() {
     this.log('🛑 РЕЖИМ ОБСЛУЖИВАНИЯ активирован', 'warning');
     alert('🛑 Сервер входит в режим обслуживания...');
- 
-    // Блокируем интерфейс
     document.body.style.pointerEvents = 'none';
     document.body.style.opacity = '0.5';
- 
     const overlay = document.createElement('div');
     overlay.style.cssText = `
       position: fixed;
@@ -3781,7 +3890,6 @@ static async resetAllPlayers() {
   }
 }
 
-
 // МЕНЕДЖЕР МЕНЮ
 class MenuManager {
   static activeMenu = null;
@@ -3793,49 +3901,63 @@ class MenuManager {
       this.open(menuType);
     }
   }
-  static open(menuType) {
-    const modal = document.getElementById(`${menuType}Modal`);
-    if (modal) {
-      modal.style.display = 'block';
-      this.activeMenu = menuType;
-   
-      // Обновление активной кнопки
-      document.querySelectorAll('#navbar button').forEach(btn => btn.classList.remove('active'));
-      const btn = document.querySelector(`#navbar button[onclick*="${menuType}"]`);
-      if (btn) btn.classList.add('active');
-   
-      // Специальные действия для разных меню
-      if (menuType === 'index') {
-        gameManager.displayIndex();
-      }
-      if (menuType === 'profile') {
-        gameManager.displayProfileCollection();
-        showCurrentProfile();
-      } else if (menuType === 'leaderboard') {
-        gameManager.loadLeaderboard();
-      } else if (menuType === 'upgrades') {
-        UpgradeManager.displayUpgrades();
-      }
-    }
-  }
-  static close(menuType) {
-    const modal = document.getElementById(`${menuType}Modal`);
-    if (modal) {
-      modal.style.display = 'none';
-      this.activeMenu = null;
-   
-      // Убираем активную кнопку
-      document.querySelectorAll('#navbar button').forEach(btn => btn.classList.remove('active'));
-    }
-  }
-  static closeAll() {
-    document.querySelectorAll('.menu-modal').forEach(modal => {
-      modal.style.display = 'none';
-    });
+static open(menuType) {
+  const modal = document.getElementById(`${menuType}Modal`);
+  if (modal) {
+    // Скрыть кнопку подарка при открытии любого меню
+    const giftBtn = document.getElementById('giftOpenBtn');
+    if (giftBtn) giftBtn.style.display = 'none';
+
+    modal.style.display = 'block';
+    this.activeMenu = menuType;
+
+    // Обновление активной кнопки
     document.querySelectorAll('#navbar button').forEach(btn => btn.classList.remove('active'));
-    this.activeMenu = null;
+    const btn = document.querySelector(`#navbar button[onclick*="${menuType}"]`);
+    if (btn) btn.classList.add('active');
+
+    // Специальные действия для разных меню
+    if (menuType === 'index') {
+      gameManager.displayIndex();
+    }
+    if (menuType === 'profile') {
+      gameManager.displayProfileCollection();
+      showCurrentProfile();
+    } else if (menuType === 'leaderboard') {
+      gameManager.loadLeaderboard();
+    } else if (menuType === 'upgrades') {
+      UpgradeManager.displayUpgrades();
+    }
   }
 }
+static close(menuType) {
+  const modal = document.getElementById(`${menuType}Modal`);
+  if (modal) {
+    modal.style.display = 'none';
+    this.activeMenu = null;
+
+    // Если не осталось ни одного открытого меню — вернуть кнопку подарка
+    const anyOpen = Array.from(document.querySelectorAll('.menu-modal')).some(m => m.style.display === 'block');
+    const giftBtn = document.getElementById('giftOpenBtn');
+    if (!anyOpen && giftBtn) giftBtn.style.display = 'flex';
+
+    // Убираем активную кнопку
+    document.querySelectorAll('#navbar button').forEach(btn => btn.classList.remove('active'));
+  }
+}
+static closeAll() {
+  document.querySelectorAll('.menu-modal').forEach(modal => {
+    modal.style.display = 'none';
+  });
+  document.querySelectorAll('#navbar button').forEach(btn => btn.classList.remove('active'));
+  this.activeMenu = null;
+
+  // Всегда показать кнопку подарка, когда все меню закрыты
+  const giftBtn = document.getElementById('giftOpenBtn');
+  if (giftBtn) giftBtn.style.display = 'flex';
+ }
+}
+
 // МЕНЕДЖЕР УЛУЧШЕНИЙ
 class UpgradeManager {
   static upgrades = [
@@ -4438,84 +4560,116 @@ function selectCardsFromCollection({title, collection, already=[], max=10}) {
 
 
 class GiftManager {
-  // Открыть универсальное окно
- // Открыть окно подарка — теперь всегда показываем список игроков
-static async openGlobalGiftModal() {
-  this.selectedRecipient = null;
-  document.getElementById('giftRecipientList').style.display = 'block';
-  document.getElementById('giftModal').style.display = 'flex';
-  await this.showRecipientList();
-  this.renderGiftOptions();
-}
-
-// Показываем список всех игроков
-static async showRecipientList() {
-  const listDiv = document.getElementById('giftRecipientList');
-  listDiv.innerHTML = '<div style="color:#999;padding:15px;">Загрузка игроков...</div>';
-  const snap = await db.ref('players').once('value');
-  const players = snap.val() || {};
-  const arr = Object.entries(players)
-    .filter(([id, data]) =>
-      id !== gameManager.playerId &&
-      data.playerName && data.playerName.trim() !== ""
-    )
-    .sort((a, b) => (b[1].currency || 0) - (a[1].currency || 0));
-
-  listDiv.innerHTML = arr.map(([id, data]) => {
-    const avatar = data.playerAvatar;
-    // Не показывать рамку если аватарки нет или она дефолтная
-    let showBorder = false;
-    if (avatar && avatar !== "" && avatar !== gameManager.getDefaultAvatar()) showBorder = true;
-
-    return `
-      <div onclick="GiftManager.selectRecipient('${id}','${(data.playerName||'').replace(/'/g,'')}')" 
-        style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:8px 10px;border-bottom:1px solid #ab47bc11;transition:.15s;">
-        <img src="${avatar ? avatar : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzgiIGhlaWdodD0iMzgiIHZpZXdCb3g9IjAgMCAzOCAzOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxOSIgY3k9IjE5IiByPSIxOSIgZmlsbD0iIzNjMzMzMyIvPjwvc3ZnPg=='}"
-          style="width:38px;height:38px;object-fit:cover;border-radius:50%;${showBorder ? 'border:2px solid #AB47BC;' : ''}">
-        <div style="flex:1;">
-          <div style="color:#fff;font-weight:bold;font-size:16px;">${data.playerName}</div>
-          <div style="color:#AB47BC;font-size:13px;">${data.currency||0} монет, ${data.collection?.length||0} карт</div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-// Выбор игрока из списка
-static selectRecipient(id, name) {
-  this.selectedRecipient = { id, name };
-  document.getElementById('giftRecipientList').style.display = 'none';
-  this.renderGiftOptions();
-}
-
-  // Закрыть модалку
-  static closeGiftModal() {
-    document.getElementById('giftModal').style.display = 'none';
+  // Открыть окно подарка — всегда показываем список игроков
+  static async openGlobalGiftModal() {
+    this.selectedRecipient = null;
+    const giftModal = document.getElementById('giftModal');
+    const giftRecipientList = document.getElementById('giftRecipientList');
+    if (giftRecipientList) {
+      giftRecipientList.style.display = 'block';
+      giftRecipientList.innerHTML = '';
+    }
+    if (giftModal) giftModal.style.display = 'flex';
+    await this.showRecipientList();
+    this.renderGiftOptions();
   }
 
-  // Рендер опций подарка
+  // Показываем список всех игроков (выбор получателя)
+  static async showRecipientList() {
+    const listDiv = document.getElementById('giftRecipientList');
+
+    // Если уже выбран получатель — скрываем список полностью
+    if (GiftManager.selectedRecipient) {
+      listDiv.innerHTML = '';
+      listDiv.style.display = 'none';
+      return;
+    }
+
+    listDiv.innerHTML = '<div style="color:#999;padding:15px;">Загрузка игроков...</div>';
+
+    const snap = await db.ref('players').once('value');
+    const players = snap.val() || {};
+    const arr = Object.entries(players)
+      .filter(([id, data]) =>
+        id !== gameManager.playerId &&
+        data.playerName && data.playerName.trim() !== ""
+      )
+      .sort((a, b) => (b[1].currency || 0) - (a[1].currency || 0));
+
+    // Если подходящих игроков нет — показываем сообщение
+    if (!arr.length) {
+      listDiv.innerHTML = '<div style="color:#999;padding:15px;">Нет подходящих игроков</div>';
+      listDiv.style.display = 'block';
+      return;
+    }
+
+    // Рисуем список игроков для выбора
+    listDiv.innerHTML = arr.map(([id, data]) => {
+      const avatar = data.playerAvatar;
+      let showBorder = false;
+      if (avatar && avatar !== "" && avatar !== gameManager.getDefaultAvatar()) showBorder = true;
+
+      return `
+        <div onclick="GiftManager.selectRecipient('${id}','${(data.playerName||'').replace(/'/g,'')}')" 
+          style="display:flex;align-items:center;gap:12px;cursor:pointer;padding:8px 10px;border-bottom:1px solid #ab47bc11;transition:.15s;">
+          <img src="${avatar ? avatar : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzgiIGhlaWdodD0iMzgiIHZpZXdCb3g9IjAgMCAzOCAzOCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxOSIgY3k9IjE5IiByPSIxOSIgZmlsbD0iIzNjMzMzMyIvPjwvc3ZnPg=='}"
+            style="width:38px;height:38px;object-fit:cover;border-radius:50%;${showBorder ? 'border:2px solid #AB47BC;' : ''}">
+          <div style="flex:1;">
+            <div style="color:#fff;font-weight:bold;font-size:16px;">${data.playerName}</div>
+            <div style="color:#AB47BC;font-size:13px;">${data.currency||0} монет, ${data.collection?.length||0} карт</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    listDiv.style.display = 'block';
+  }
+
+  // Выбор игрока из списка
+  static selectRecipient(id, name) {
+    this.selectedRecipient = { id, name };
+    const giftRecipientList = document.getElementById('giftRecipientList');
+    if (giftRecipientList) {
+      giftRecipientList.innerHTML = '';
+      giftRecipientList.style.display = 'none';
+    }
+    this.renderGiftOptions();
+  }
+
+  // Закрыть модалку подарка
+  static closeGiftModal() {
+    const giftModal = document.getElementById('giftModal');
+    if (giftModal) giftModal.style.display = 'none';
+    this.selectedRecipient = null;
+    const giftRecipientList = document.getElementById('giftRecipientList');
+    if (giftRecipientList) {
+      giftRecipientList.innerHTML = '';
+      giftRecipientList.style.display = 'block';
+    }
+    this.renderGiftOptions();
+  }
+
+  // Рендер опций подарка (выбрать карточку)
   static renderGiftOptions() {
     const wrap = document.getElementById('giftOptions');
     if (!wrap) return;
+
     // Если не выбран получатель:
     if (!this.selectedRecipient) {
       wrap.innerHTML = '<div style="color:#ccc;">Сначала выберите получателя</div>';
       return;
     }
-    // Лимит 1 час
+
+    // Лимит 1 час между подарками
     const now = Date.now();
     const lastGift = gameManager.data.lastGiftTimestamp || 0;
     if (now - lastGift < 3600_000) {
-      const mins = Math.ceil((3600_000 - (now - lastGift))/60000);
+      const mins = Math.ceil((3600_000 - (now - lastGift)) / 60000);
       wrap.innerHTML = `<div style="color:#FFEBEE;margin-bottom:14px;">Подарок можно отправить через ${mins} мин.</div>`;
       return;
     }
-    // Ввод суммы монет и карточки
-    let html = `<div style="margin-bottom:10px;">
-      <input id="giftMoneyInput" type="number" min="1" max="${gameManager.data.currency}" style="width:80px;border-radius:7px;padding:4px;margin-right:7px;">
-      <button onclick="GiftManager.sendMoneyGift()" style="padding:6px 18px;">💸 Перевести монеты</button>
-    </div>`;
-    html += `<div style="margin:10px 0 7px 0;color:#FFD700;">или выбери карточку:</div>
+
+    // Список карточек для подарка
+    let html = `<div style="margin:10px 0 7px 0;color:#FFD700;">Выбери карточку:</div>
       <div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:center;max-height:170px;overflow:auto;">`;
     gameManager.data.collection.forEach((card, idx) => {
       html += `<div style="text-align:center;">
@@ -4527,58 +4681,41 @@ static selectRecipient(id, name) {
     wrap.innerHTML = html;
   }
 
-  // Отправка монет
-  static async sendMoneyGift() {
-    if (!this.selectedRecipient) return;
-    const input = document.getElementById('giftMoneyInput');
-    let amount = parseInt(input.value);
-    if (!amount || amount <= 0 || amount > gameManager.data.currency) {
-      gameManager.showNotification('Некорректная сумма!');
-      return;
-    }
-    // Получить баланс друга
-    const snapshot = await db.ref(`players/${this.selectedRecipient.id}/currency`).once('value');
-    let hisCoins = snapshot.val() || 0;
-    await db.ref(`players/${this.selectedRecipient.id}/currency`).set(hisCoins + amount);
-    gameManager.data.currency -= amount;
-    gameManager.data.lastGiftTimestamp = Date.now();
-    await gameManager.savePlayerData();
-    GiftManager.closeGiftModal();
-    gameManager.showNotification(`🎁 ${amount} монет отправлено игроку ${this.selectedRecipient.name}!`);
-  }
-
   // Отправка карточки
-  static async sendCardGift(idx) {
-    if (!this.selectedRecipient) return;
-    const card = gameManager.data.collection[idx];
-    if (!card) return;
-    const snap = await db.ref(`players/${this.selectedRecipient.id}/collection`).once('value');
-    let hisCards = snap.val() || [];
-    hisCards.push(card);
-    await db.ref(`players/${this.selectedRecipient.id}/collection`).set(hisCards);
-    gameManager.data.collection.splice(idx, 1);
-    gameManager.data.lastGiftTimestamp = Date.now();
-    await gameManager.savePlayerData();
-    GiftManager.closeGiftModal();
-    gameManager.showNotification(`🎁 Карточка ${card.name} отправлена игроку ${this.selectedRecipient.name}!`);
-  }
+static async sendCardGift(idx) {
+  if (!this.selectedRecipient) return;
+  const card = gameManager.data.collection[idx];
+  if (!card) return;
+
+  const playerRef = db.ref(`players/${this.selectedRecipient.id}/collection`);
+  // Транзакция — гарантирует корректное добавление!
+  await playerRef.transaction(collection => {
+    if (!Array.isArray(collection)) collection = [];
+    collection.push(card);
+    return collection;
+  });
+
+  // Только после успешного добавления — удаляем у себя
+  gameManager.data.collection.splice(idx, 1);
+  gameManager.data.lastGiftTimestamp = Date.now();
+  await gameManager.savePlayerData();
+  GiftManager.closeGiftModal();
+  gameManager.showNotification(`🎁 Карточка ${card.name} отправлена игроку ${this.selectedRecipient.name}!`);
+ }
 }
 
+// Обработка получения подарка (карточки)
 function handleGiftReceived(gift) {
-  // 1. Добавить подарок сразу
-  if (gift.type === 'money') {
-    gameManager.data.currency += gift.value.amount;
-  }
   if (gift.type === 'card') {
     gameManager.data.collection.push(gift.value);
   }
   gameManager.savePlayerData();
   gameManager.updateUI();
 
-  // 2. Удалить полученный подарок из pending
+  // Удалить полученный подарок из pending
   db.ref(`gifts/pending/${gameManager.playerId}/${gift.giftId}`).remove();
 
-  // 3. Показать окно с информацией о подарке
+  // Показать окно с информацией о подарке
   const oldModal = document.getElementById('giftSimpleModal');
   if (oldModal) oldModal.remove();
 
@@ -4589,12 +4726,7 @@ function handleGiftReceived(gift) {
     <div style="background:#fff;border-radius:15px;padding:32px 20px;max-width:320px;text-align:center;">
       <h3>Вам пришёл подарок!</h3>
       <p>От: <b>${gift.from}</b></p>
-      <p>
-        ${gift.type === 'money'
-          ? `Монеты: <b>${gift.value.amount}</b>`
-          : `Карточка: <b>${gift.value.name}</b>`
-        }
-      </p>
+      <p>Карточка: <b>${gift.value.name}</b></p>
       <button id="closeGiftSimpleModal" style="margin-top:18px;padding:10px 28px;font-size:1.1em;background:#E91E63;color:#fff;border:none;border-radius:10px;">OK</button>
     </div>
   `;
@@ -4602,20 +4734,7 @@ function handleGiftReceived(gift) {
   document.getElementById('closeGiftSimpleModal').onclick = () => modal.remove();
 }
 
-// Слушаем ввод для поиска игрока:
-document.addEventListener('DOMContentLoaded', ()=>{
-  const inp = document.getElementById('giftRecipientInput');
-  if (inp) {
-    inp.addEventListener('input', (e) => {
-      GiftManager.searchPlayers(e.target.value);
-    });
-  }
-});
-		
-
-
 
 </script>
 </body>
 </html>
-
