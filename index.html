@@ -3091,7 +3091,7 @@ async openPack(packType = 'free') {
     this.data.currency -= 50;
 
     // Вот тут добавь шанс на секретку!
-    if (Math.random() < 0.0001) { // 0.01%
+    if (Math.random() < 0.001) { // 0.01%
       this.data.collection.push(secretCard);
       await this.savePlayerData();
       this.displayNewCard(secretCard);
@@ -3206,6 +3206,18 @@ async function buyPackById(packId) {
   if (!pack) return gameManager.showNotification('Пак не найден!');
   if (gameManager.data.currency < pack.cost) return gameManager.showNotification('Недостаточно монет!');
   gameManager.data.currency -= pack.cost;
+
+  // Шанс на секретную карту для regcandy пака (0.01%)
+  if (packId === "regcandy" && Math.random() < 0.0001) {
+    gameManager.data.collection.push(secretCard);
+    await gameManager.savePlayerData();
+    gameManager.updateUI();
+    gameManager.displayNewCard(secretCard);
+    showPackOpenModal(secretCard);
+    gameManager.showNotification('Ты выбил секретную карту: Regcandy & Dark Bloom!');
+    return;
+  }
+
   const newCard = getRandomCardFromPack(pack);
   gameManager.data.collection.push(newCard);
   await gameManager.savePlayerData();
