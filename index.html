@@ -2013,6 +2013,9 @@ const regcandyCards = [
   {name:"Regcandy & Subzero",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandysubzero.jpg", exclusive: true},
   {name:"Regcandy & Miku",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandymiku.jpg", exclusive: true},
   {name:"Regcandy & Bonnie",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandybonnie.jpg", exclusive: true},
+  {name:"Regcandy & Melody", rarity:"Legendary", type:"Skin", image:"cards/regcandy/regcandymelody.jpg", exclusive:true},
+  {name:"Regcandy & Kuromi", rarity:"Special", type:"Skin", image:"cards/regcandy/regcandykuromi.jpg", exclusive:true},
+  {name:"Regcandy & Hello Kitty", rarity:"Legendary", type:"Skin", image:"cards/regcandy/regcandyhellokitty.jpg", exclusive:true},
   // Добавляем основную карточку Regcandy в Regcandy пак тоже
   {name:"Regcandy",rarity:"Special",type:"Twitch",image:"cards/Regcandy.png", tgLink:"https://t.me/reghypearchive/2", exclusive: true}
 ];
@@ -2045,20 +2048,23 @@ const packs = [
     name: "Regcandy пак",
     cost: 500,
     drops: [
-      { card: regcandyCards[0], chance: 7.69 },
-      { card: regcandyCards[1], chance: 7.69 },
-      { card: regcandyCards[2], chance: 7.69 },
-      { card: regcandyCards[3], chance: 7.69 },
-      { card: regcandyCards[4], chance: 7.69 },
-      { card: regcandyCards[5], chance: 7.69 },
-      { card: regcandyCards[6], chance: 7.69 },
-      { card: regcandyCards[7], chance: 7.69 },
-      { card: regcandyCards[8], chance: 7.69 },
-      { card: regcandyCards[9], chance: 7.69 },
-      { card: regcandyCards[10], chance: 7.69 },
-      { card: regcandyCards[11], chance: 7.69 },
-      { card: regcandyCards[12], chance: 7.69 },
-      { card: regcandyCards[13], chance: 7.69 }
+      { card: regcandyCards[0], chance: 5.88235294118 },
+      { card: regcandyCards[1], chance: 5.88235294118 },
+      { card: regcandyCards[2], chance: 5.88235294118 },
+      { card: regcandyCards[3], chance: 5.88235294118 },
+      { card: regcandyCards[4], chance: 5.88235294118 },
+      { card: regcandyCards[5], chance: 5.88235294118 },
+      { card: regcandyCards[6], chance: 5.88235294118 },
+      { card: regcandyCards[7], chance: 5.88235294118 },
+      { card: regcandyCards[8], chance: 5.88235294118 },
+      { card: regcandyCards[9], chance: 5.88235294118 },
+      { card: regcandyCards[10], chance: 5.88235294118 },
+      { card: regcandyCards[11], chance: 5.88235294118 },
+      { card: regcandyCards[12], chance: 5.88235294118 },
+      { card: regcandyCards[13], chance: 5.88235294118 },
+      { card: regcandyCards[14], chance: 5.88235294118 },
+      { card: regcandyCards[15], chance: 5.88235294118 },
+      { card: regcandyCards[16], chance: 5.88235294118 }
     ]
   },
   {
@@ -4265,6 +4271,7 @@ function getRandomRarity() {
     // Ставим кнопку прямо под фильтром
     f.insertAdjacentElement('afterend', dBtn);
 
+
     window.hideDuplicates = false;
     dBtn.onclick = function() {
       hideDuplicates = !hideDuplicates;
@@ -4786,7 +4793,10 @@ function handleGiftReceived(gift) {
   </div>
 </div>
 
-
+<label style="margin-left:10px;cursor:pointer;">
+  <input type="checkbox" id="autoSellDuplicatesToggle" style="vertical-align:middle;">
+  <span style="vertical-align:middle;">Автопродажа дубликатов</span>
+</label>
 
 </body>
 </html>
