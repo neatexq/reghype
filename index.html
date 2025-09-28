@@ -1937,6 +1937,13 @@ const regcandyCards = [
   {name:"Regcandy & Sailor Moon",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandyseilor.jpg", exclusive: true},
   {name:"Regcandy & Shadow",rarity:"Legendary",type:"Skin",image:"cards/regcandy/regcandyshadow.jpg", exclusive: true},
   {name:"Regcandy & Scorpion",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandyscorpion.jpg", exclusive: true},
+  {name:"Regcandy & Chica",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandychica.jpg", exclusive: true},
+  {name:"Regcandy & Sonic",rarity:"Legendary",type:"Skin",image:"cards/regcandy/regcandysonic.jpg", exclusive: true},
+  {name:"Regcandy & Foxy",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandyfoxy.jpg", exclusive: true},
+  {name:"Regcandy & Subzero",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandysubzero.jpg", exclusive: true},
+  {name:"Regcandy & Miku",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandycmiku.jpg", exclusive: true},
+  {name:"Regcandy & AmNyam",rarity:"Legendary",type:"Skin",image:"cards/regcandy/regcandyamnyam.jpg", exclusive: true},
+  {name:"Regcandy & Bonnie",rarity:"Special",type:"Skin",image:"cards/regcandy/regcandybonnie.jpg", exclusive: true},
   // Добавляем основную карточку Regcandy в Regcandy пак тоже
   {name:"Regcandy",rarity:"Special",type:"Twitch",image:"cards/Regcandy.png", tgLink:"https://t.me/reghypearchive/2", exclusive: true}
 ];
@@ -2279,35 +2286,39 @@ async completeInitialSetup(playerName, avatarDataUrl = null) {
     if (loadingScreen) loadingScreen.style.display = 'flex';
     const initialSetup = document.getElementById('initialSetup');
     if (initialSetup) initialSetup.style.display = 'none';
- 
+
     // Генерируем уникальный ID игрока
     this.playerId = 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
- 
+
     // Инициализируем данные
     this.data.playerName = playerName;
     if (avatarDataUrl) {
       this.data.playerAvatar = avatarDataUrl;
     }
     this.data.lastOnline = Date.now();
- 
+
+    // === ДОБАВЬ createdAt для рейтинга! ===
+    this.data.createdAt = Date.now();
+
     // ВАЖНО: Сохраняем в localStorage ДО вызова savePlayerData
     localStorage.setItem('playerId', this.playerId);
     localStorage.setItem('playerName', playerName);
-    
+
     // Помечаем как инициализированный
     this.isInitialized = true;
- 
+
     // Сохраняем в Firebase
     await this.savePlayerData();
- 
+
     // Запускаем игру
     this.startGame();
- 
+
   } catch (error) {
     console.error('Ошибка создания профиля:', error);
     this.showNotification('Ошибка создания профиля');
   }
 }
+
   startGame() {
     const loadingScreen = document.getElementById('loadingScreen');
     if (loadingScreen) loadingScreen.style.display = 'none';
@@ -2580,27 +2591,54 @@ async savePlayerData() {
 
 async loadLeaderboard() {
   try {
-    const snapshot = await db.ref('players').orderByChild('currency').limitToLast(50).once('value');
+    // Загружаем всех игроков
+    const snapshot = await db.ref('players').once('value');
     const players = snapshot.val();
+    const allCards = [...cards, ...regcandyCards, secretCard];
 
     if (players) {
       this.leaderboardCache = Object.entries(players)
-        .map(([id, data]) => ({
-          id,
-          name: data.playerName || 'Неизвестный игрок',
-          cards: data.collection ? data.collection.length : 0,
-          currency: data.currency || 0,
-          avatar: data.playerAvatar || this.getDefaultAvatar(),
-          lastOnline: data.lastOnline || 0,
-          role: data.role || 'user',
-          isCurrentPlayer: id === this.playerId
-        }))
-        // УБИРАЕМ ФИЛЬТРАЦИЮ - показываем всех игроков
+        .map(([id, data]) => {
+          // Считаем параметры для рейтинга
+          const cardsCount = data.collection ? data.collection.length : 0;
+          const currency = data.currency || 0;
+          const indexCount = allCards.filter(card =>
+            data.collection && data.collection.some(c => c.name === card.name)
+          ).length;
+          const specialCount = data.collection ? data.collection.filter(c => c.rarity === "Special").length : 0;
+          const legendaryCount = data.collection ? data.collection.filter(c => c.rarity === "Legendary").length : 0;
+          const createdAt = data.createdAt || (Date.now() - 1000 * 60 * 60 * 24); // если нет — 1 день назад
+          const lastOnline = data.lastOnline || Date.now();
+          const playedHours = Math.floor((lastOnline - createdAt) / 3600000);
+
+          // Формула рейтинга — можешь менять веса!
+          const score =
+            cardsCount * 2 +
+            currency * 0.2 +
+            indexCount * 1.5 +
+            specialCount * 3 +
+            legendaryCount * 4 +
+            playedHours * 5;
+
+          return {
+            id,
+            name: data.playerName || 'Неизвестный игрок',
+            cards: cardsCount,
+            currency,
+            avatar: data.playerAvatar || this.getDefaultAvatar(),
+            lastOnline,
+            role: data.role || 'user',
+            isCurrentPlayer: id === this.playerId,
+            indexCount,
+            specialCount,
+            legendaryCount,
+            playedHours,
+            score
+          };
+        })
         .filter(player => player.name.trim() !== '' && player.name !== 'Неизвестный игрок')
-        .sort((a, b) => {
-          if (b.cards !== a.cards) return b.cards - a.cards;
-          return b.currency - a.currency;
-        });
+        // Сортируем по баллам!
+        playersArray.sort((a, b) => b.score - a.score);
     }
 
     this.displayLeaderboard();
@@ -2608,19 +2646,44 @@ async loadLeaderboard() {
   } catch (error) {
     console.error('Ошибка загрузки лидерборда:', error);
     // Показываем хотя бы текущего игрока
+    const cardsCount = this.data.collection.length;
+    const currency = this.data.currency;
+    const allCards = [...cards, ...regcandyCards, secretCard];
+    const indexCount = allCards.filter(card =>
+      this.data.collection.some(c => c.name === card.name)
+    ).length;
+    const specialCount = this.data.collection.filter(c => c.rarity === "Special").length;
+    const legendaryCount = this.data.collection.filter(c => c.rarity === "Legendary").length;
+    const createdAt = this.data.createdAt || (Date.now() - 1000 * 60 * 60 * 24);
+    const lastOnline = Date.now();
+    const playedHours = Math.floor((lastOnline - createdAt) / 3600000);
+    const score =
+      cardsCount * 2 +
+      currency * 0.2 +
+      indexCount * 1.5 +
+      specialCount * 3 +
+      legendaryCount * 4 +
+      playedHours * 5;
+
     this.leaderboardCache = [{
       id: this.playerId,
       name: this.data.playerName || 'Вы',
-      cards: this.data.collection.length,
-      currency: this.data.currency,
+      cards: cardsCount,
+      currency,
       avatar: this.data.playerAvatar,
-      lastOnline: Date.now(),
+      lastOnline,
       role: this.data.role,
-      isCurrentPlayer: true
+      isCurrentPlayer: true,
+      indexCount,
+      specialCount,
+      legendaryCount,
+      playedHours,
+      score
     }];
     this.displayLeaderboard();
   }
 }
+
   displayLeaderboard() {
     const content = document.getElementById('leaderboardContent');
     if (!content) return;
