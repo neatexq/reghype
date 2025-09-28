@@ -1695,6 +1695,36 @@ h2 {
   100% { transform: scale(1) rotateY(0deg); opacity:1; }
 }
 
+.styled-duplicates-btn {
+  margin: 14px auto 22px auto;
+  display: block;
+  padding: 12px 28px;
+  font-size: 16px;
+  font-family: 'Orbitron', sans-serif;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(45deg, #E91E63, #AB47BC);
+  color: #fff;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.15);
+  cursor: pointer;
+  transition: 0.2s;
+  letter-spacing: 0.5px;
+  outline: none;
+  text-shadow: 0 1px 3px #AB47BC66;
+}
+.styled-duplicates-btn.active,
+.styled-duplicates-btn:active {
+  background: linear-gradient(45deg, #43e97b, #38f9d7);
+  color: #222;
+  box-shadow: 0 6px 30px rgba(67,233,123,0.15);
+  text-shadow: 0 1px 2px #43e97b66;
+  transform: translateY(-2px) scale(1.03);
+}
+.styled-duplicates-btn:hover {
+  filter: brightness(1.07);
+  box-shadow: 0 8px 24px #ab47bc44;
+}
 
 </style>
 
@@ -4196,37 +4226,99 @@ function getRandomRarity() {
   return 'common';
 }
 
-// ===== СТИЛЬНЫЙ ФИЛЬТР/СОРТИРОВКА КОЛЛЕКЦИИ (без кнопки крафта, в твоём фирменном стиле) =====
+
+
+// ===== СТИЛЬНЫЙ ФИЛЬТР/СОРТИРОВКА КОЛЛЕКЦИИ: кнопка "Скрывать дубликаты" СТИЛЬНАЯ и ЗА ПРЕДЕЛАМИ filterBar =====
 (function(){
   if(document.getElementById('collectionFilterBar')) return;
   let f = document.createElement('div');
   f.id = 'collectionFilterBar';
-f.innerHTML = `
-  <input id="filterName" placeholder="Поиск по имени...">
-  <select id="filterRarity">
-    <option value="">Все редкости</option>
-    <option>Common</option>
-    <option>Rare</option>
-    <option>Special</option>
-    <option>Legendary</option>
-  </select>
-  <select id="filterSort">
-    <option value="dateDesc">Сначала новые</option>
-    <option value="dateAsc">Сначала старые</option>
-    <option value="az">А-Я</option>
-    <option value="za">Я-А</option>
-    <option value="rarityDesc">По редкости ↓</option>
-    <option value="rarityAsc">По редкости ↑</option>
-  </select>
-`;
+  f.innerHTML = `
+    <input id="filterName" placeholder="Поиск по имени...">
+    <select id="filterRarity">
+      <option value="">Все редкости</option>
+      <option>Common</option>
+      <option>Rare</option>
+      <option>Special</option>
+      <option>Legendary</option>
+    </select>
+    <select id="filterSort">
+      <option value="dateDesc">Сначала новые</option>
+      <option value="dateAsc">Сначала старые</option>
+      <option value="az">А-Я</option>
+      <option value="za">Я-А</option>
+      <option value="rarityDesc">По редкости ↓</option>
+      <option value="rarityAsc">По редкости ↑</option>
+    </select>
+  `;
   let coll = document.getElementById('collection');
-  coll && coll.parentNode.insertBefore(f, coll);
+  if (coll) {
+    coll.parentNode.insertBefore(f, coll);
+
+    // СТИЛЬНАЯ кнопка вне рамки фильтра
+    let dBtn = document.createElement('button');
+    dBtn.id = "hideDuplicatesBtn";
+    dBtn.type = "button";
+    dBtn.innerHTML = "Скрывать дубликаты";
+    dBtn.title = "Показать только уникальные карточки";
+    dBtn.className = "styled-duplicates-btn";
+    // Ставим кнопку прямо под фильтром
+    f.insertAdjacentElement('afterend', dBtn);
+
+    window.hideDuplicates = false;
+    dBtn.onclick = function() {
+      hideDuplicates = !hideDuplicates;
+      this.classList.toggle("active", hideDuplicates);
+      this.innerHTML = hideDuplicates ? "Показывать все" : "Скрывать дубликаты";
+      this.title = hideDuplicates ? "Показывать все карточки" : "Показать только уникальные карточки";
+      filterCollection();
+    };
+  }
 
   ['filterName','filterRarity','filterSort'].forEach(id=>{
     document.getElementById(id).addEventListener('input', filterCollection);
     document.getElementById(id).addEventListener('change', filterCollection);
   });
 })();
+
+// СТИЛЬ для кнопки (вставьте в <style> или в конец стилей, если ещё не добавлен)
+if (!document.getElementById('styled-duplicates-btn-style')) {
+  let s = document.createElement('style');
+  s.id = 'styled-duplicates-btn-style';
+  s.innerHTML = `
+    .styled-duplicates-btn {
+      margin: 14px auto 22px auto;
+      display: block;
+      padding: 12px 28px;
+      font-size: 16px;
+      font-family: 'Orbitron', sans-serif;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(45deg, #E91E63, #AB47BC);
+      color: #fff;
+      font-weight: bold;
+      box-shadow: 0 4px 15px rgba(233, 30, 99, 0.15);
+      cursor: pointer;
+      transition: 0.2s;
+      letter-spacing: 0.5px;
+      outline: none;
+      text-shadow: 0 1px 3px #AB47BC66;
+    }
+    .styled-duplicates-btn.active,
+    .styled-duplicates-btn:active {
+      background: linear-gradient(45deg, #43e97b, #38f9d7);
+      color: #222;
+      box-shadow: 0 6px 30px rgba(67,233,123,0.15);
+      text-shadow: 0 1px 2px #43e97b66;
+      transform: translateY(-2px) scale(1.03);
+    }
+    .styled-duplicates-btn:hover {
+      filter: brightness(1.07);
+      box-shadow: 0 8px 24px #ab47bc44;
+    }
+  `;
+  document.head.appendChild(s);
+}
 
 function rarityToNum(r) {
   return { Common: 0, Rare: 1, Legendary: 2, Special: 3 }[r] || 0;
@@ -4239,6 +4331,16 @@ function filterCollection() {
   let sort = (document.getElementById('filterSort')||{}).value || "dateDesc";
   let arr = gameManager.data.collection
     .filter(c=>(!rarity||c.rarity===rarity)&&(!name||c.name.toLowerCase().includes(name)));
+
+  // Скрывать дубликаты
+  if(window.hideDuplicates) {
+    const seen = new Set();
+    arr = arr.filter(card => {
+      if(seen.has(card.name)) return false;
+      seen.add(card.name);
+      return true;
+    });
+  }
 
   arr = [...arr];
   if(sort==="az") arr.sort((a,b)=>a.name.localeCompare(b.name));
@@ -4258,6 +4360,7 @@ function filterCollection() {
     collection.appendChild(cardDiv);
   });
 }
+
 // Чтобы всегда после любого обновления коллекции фильтр работал:
 (function(){
   let origUpdateUI = gameManager.updateUI.bind(gameManager);
@@ -4266,7 +4369,6 @@ function filterCollection() {
     filterCollection();
   };
 })();
-
 
 
 
@@ -4683,6 +4785,7 @@ function handleGiftReceived(gift) {
     </div>
   </div>
 </div>
+
 
 
 </body>
