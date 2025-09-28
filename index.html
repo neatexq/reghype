@@ -2594,51 +2594,25 @@ async loadLeaderboard() {
     // Загружаем всех игроков
     const snapshot = await db.ref('players').once('value');
     const players = snapshot.val();
-    const allCards = [...cards, ...regcandyCards, secretCard];
 
     if (players) {
       this.leaderboardCache = Object.entries(players)
-        .map(([id, data]) => {
-          // Считаем параметры для рейтинга
-          const cardsCount = data.collection ? data.collection.length : 0;
-          const currency = data.currency || 0;
-          const indexCount = allCards.filter(card =>
-            data.collection && data.collection.some(c => c.name === card.name)
-          ).length;
-          const specialCount = data.collection ? data.collection.filter(c => c.rarity === "Special").length : 0;
-          const legendaryCount = data.collection ? data.collection.filter(c => c.rarity === "Legendary").length : 0;
-          const createdAt = data.createdAt || (Date.now() - 1000 * 60 * 60 * 24); // если нет — 1 день назад
-          const lastOnline = data.lastOnline || Date.now();
-          const playedHours = Math.floor((lastOnline - createdAt) / 3600000);
-
-          // Формула рейтинга — можешь менять веса!
-          const score =
-            cardsCount * 2 +
-            currency * 0.2 +
-            indexCount * 1.5 +
-            specialCount * 3 +
-            legendaryCount * 4 +
-            playedHours * 5;
-
-          return {
-            id,
-            name: data.playerName || 'Неизвестный игрок',
-            cards: cardsCount,
-            currency,
-            avatar: data.playerAvatar || this.getDefaultAvatar(),
-            lastOnline,
-            role: data.role || 'user',
-            isCurrentPlayer: id === this.playerId,
-            indexCount,
-            specialCount,
-            legendaryCount,
-            playedHours,
-            score
-          };
-        })
+        .map(([id, data]) => ({
+          id,
+          name: data.playerName || 'Неизвестный игрок',
+          cards: data.collection ? data.collection.length : 0,
+          currency: data.currency || 0,
+          avatar: data.playerAvatar || this.getDefaultAvatar(),
+          lastOnline: data.lastOnline || 0,
+          role: data.role || 'user',
+          isCurrentPlayer: id === this.playerId
+        }))
         .filter(player => player.name.trim() !== '' && player.name !== 'Неизвестный игрок')
-        // Сортируем по баллам!
-        playersArray.sort((a, b) => b.score - a.score);
+        .sort((a, b) => {
+          // Сортировка только по количеству карточек, потом по монетам
+          if (b.cards !== a.cards) return b.cards - a.cards;
+          return b.currency - a.currency;
+        });
     }
 
     this.displayLeaderboard();
@@ -2646,39 +2620,15 @@ async loadLeaderboard() {
   } catch (error) {
     console.error('Ошибка загрузки лидерборда:', error);
     // Показываем хотя бы текущего игрока
-    const cardsCount = this.data.collection.length;
-    const currency = this.data.currency;
-    const allCards = [...cards, ...regcandyCards, secretCard];
-    const indexCount = allCards.filter(card =>
-      this.data.collection.some(c => c.name === card.name)
-    ).length;
-    const specialCount = this.data.collection.filter(c => c.rarity === "Special").length;
-    const legendaryCount = this.data.collection.filter(c => c.rarity === "Legendary").length;
-    const createdAt = this.data.createdAt || (Date.now() - 1000 * 60 * 60 * 24);
-    const lastOnline = Date.now();
-    const playedHours = Math.floor((lastOnline - createdAt) / 3600000);
-    const score =
-      cardsCount * 2 +
-      currency * 0.2 +
-      indexCount * 1.5 +
-      specialCount * 3 +
-      legendaryCount * 4 +
-      playedHours * 5;
-
     this.leaderboardCache = [{
       id: this.playerId,
       name: this.data.playerName || 'Вы',
-      cards: cardsCount,
-      currency,
+      cards: this.data.collection.length,
+      currency: this.data.currency,
       avatar: this.data.playerAvatar,
-      lastOnline,
+      lastOnline: Date.now(),
       role: this.data.role,
-      isCurrentPlayer: true,
-      indexCount,
-      specialCount,
-      legendaryCount,
-      playedHours,
-      score
+      isCurrentPlayer: true
     }];
     this.displayLeaderboard();
   }
